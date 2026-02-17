@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CPII Portugal - Club Privado de Inversión Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#C1A85D",
+                        "primary-hover": "#A8924D",
+                        "background-dark": "#161513",
+                        "card-dark": "#1e1b14",
+                        "border-dark": "#35332c",
+                        "text-secondary": "#b2afa3",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-dark text-white font-display min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-background-dark/95 backdrop-blur-md">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="size-8 text-primary">
+                    <span class="material-symbols-outlined text-3xl">apartment</span>
+                </div>
+                <h2 class="text-white text-xl font-bold tracking-tight font-serif">CPII <span class="text-primary font-normal">PORTUGAL</span></h2>
+            </div>
+            <nav class="hidden md:flex gap-8">
+                <a class="text-primary border-b border-primary pb-1 text-sm font-semibold" href="#inicio">Inicio</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium" href="simulator.html">Simulador</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium" href="#como-funciona">Cómo Funciona</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium" href="webinars.html">Webinars</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <a href="access-form.html" class="flex items-center justify-center rounded-xl h-10 px-6 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.15)]">
+                    Solicitar Acceso
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative overflow-hidden bg-gradient-radial from-card-dark to-background-dark py-20 lg:py-32">
+        <div class="absolute -left-20 top-20 h-96 w-96 rounded-full bg-primary/5 blur-3xl"></div>
+        <div class="mx-auto max-w-7xl px-6 lg:px-10 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="flex-1 space-y-8">
+                    <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-primary">
+                        <span class="material-symbols-outlined text-sm">workspace_premium</span>
+                        Club Privado de Inversión
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight font-serif">
+                        Construye tu <span class="text-primary italic">Patrimonio</span> con Inversión Inteligente
+                    </h1>
+                    <p class="text-lg text-text-secondary max-w-2xl leading-relaxed">
+                        Accede a oportunidades exclusivas de inversión inmobiliaria de alto rendimiento. 
+                        Únete a una red de inversores seletos y aprovecha el poder del <strong class="text-white">Revenue Share</strong> 
+                        para acelerar tu camino hacia la <strong class="text-white">Autofinanciación</strong>.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="access-form.html" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-background-dark px-8 py-4 text-base font-bold transition-all shadow-[0_0_20px_rgba(193,168,92,0.2)]">
+                            <span>Solicitar Acceso</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </a>
+                        <a href="simulator.html" class="inline-flex items-center justify-center gap-2 rounded-xl border border-border-dark hover:border-primary bg-transparent text-white px-8 py-4 text-base font-bold transition-all">
+                            <span class="material-symbols-outlined">monitoring</span>
+                            <span>Ver Simulación</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex-1 relative">
+                    <div class="aspect-square max-w-md mx-auto relative">
+                        <div class="absolute inset-0 bg-primary/20 rounded-2xl blur-3xl"></div>
+                        <div class="relative bg-card-dark rounded-2xl border border-border-dark p-8 shadow-2xl">
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between pb-4 border-b border-border-dark">
+                                    <span class="text-sm text-text-secondary uppercase tracking-wider">Patrimonio Proyectado</span>
+                                    <span class="text-xs text-primary">24 meses</span>
+                                </div>
+                                <div>
+                                    <p class="text-5xl font-black text-white">€ 3.721</p>
+                                    <p class="text-sm text-text-secondary mt-2">Con 50€/mes + Red Nivel 1</p>
+                                </div>
+                                <div class="space-y-3 pt-4 border-t border-border-dark">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-text-secondary">Ahorro Personal</span>
+                                        <span class="text-white font-medium">€ 1.200</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-text-secondary">Revenue Share (Red)</span>
+                                        <span class="text-primary font-medium">€ 334</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-text-secondary">Rendimiento Inversión</span>
+                                        <span class="text-primary font-medium">€ 2.187</span>
+                                    </div>
+                                </div>
+                                <div class="bg-primary/10 border border-primary/30 rounded-lg p-4 flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary">verified</span>
+                                    <div>
+                                        <p class="text-sm font-bold text-primary">Autofinanciación: Mes 12</p>
+                                        <p class="text-xs text-text-secondary">Patrimonio > Ahorro Acumulado</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 Access Types Section -->
+    <section id="como-funciona" class="py-20 bg-background-dark">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4 font-serif">Tres Vías de Acceso</h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+                    Elige el perfil que mejor se adapte a tus objetivos financieros y capacidades
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Inversor -->
+                <div class="group relative bg-card-dark rounded-2xl border border-border-dark hover:border-primary/50 p-8 transition-all hover:-translate-y-2 shadow-xl">
+                    <div class="absolute -top-4 left-8 bg-primary text-background-dark px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        Más Popular
+                    </div>
+                    <div class="flex flex-col h-full">
+                        <div class="mb-6">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-primary text-3xl">account_balance</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 font-serif">Inversor</h3>
+                            <p class="text-text-secondary text-sm mb-4">Construye patrimonio desde 100€</p>
+                            <div class="flex items-baseline gap-1 mb-2">
+                                <span class="text-4xl font-black text-white">€100</span>
+                                <span class="text-text-secondary text-sm">/inicial</span>
+                            </div>
+                            <p class="text-primary text-sm font-medium">o 50€/mes recurrente</p>
+                        </div>
+                        <ul class="space-y-3 flex-1 mb-6">
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Acceso a Ventanas de Inversión (Tier A y B)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Revenue Share hasta Nivel 3</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Rentabilidad: 8-20% APY</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Dashboard de seguimiento</span>
+                            </li>
+                        </ul>
+                        <a href="access-form.html?tipo=inversor" class="w-full py-3 bg-primary hover:bg-primary-hover text-background-dark font-bold text-sm rounded-lg transition-colors text-center">
+                            Quiero Ser Inversor
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: Promotor/Agente -->
+                <div class="group relative bg-card-dark rounded-2xl border border-border-dark hover:border-primary/50 p-8 transition-all hover:-translate-y-2 shadow-xl">
+                    <div class="flex flex-col h-full">
+                        <div class="mb-6">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-primary text-3xl">handshake</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 font-serif">Promotor / Agente</h3>
+                            <p class="text-text-secondary text-sm mb-4">Captura activos off-market</p>
+                            <div class="flex items-baseline gap-1 mb-2">
+                                <span class="text-4xl font-black text-white">Red</span>
+                            </div>
+                            <p class="text-primary text-sm font-medium">Acceso por networking</p>
+                        </div>
+                        <ul class="space-y-3 flex-1 mb-6">
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Comisiones por captación de activos</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Revenue Share en tu red</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Herramientas de prospección</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Formación especializada</span>
+                            </li>
+                        </ul>
+                        <a href="access-form.html?tipo=promotor" class="w-full py-3 bg-transparent border border-primary hover:bg-primary hover:text-background-dark text-primary font-bold text-sm rounded-lg transition-all text-center">
+                            Quiero Ser Promotor
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3: Gestor -->
+                <div class="group relative bg-card-dark rounded-2xl border border-border-dark hover:border-primary/50 p-8 transition-all hover:-translate-y-2 shadow-xl">
+                    <div class="absolute -top-4 left-8 bg-gradient-to-r from-primary to-yellow-600 text-background-dark px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        Elite
+                    </div>
+                    <div class="flex flex-col h-full">
+                        <div class="mb-6">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-primary text-3xl">workspace_premium</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2 font-serif">Gestor</h3>
+                            <p class="text-text-secondary text-sm mb-4">Liderazgo estratégico</p>
+                            <div class="flex items-baseline gap-1 mb-2">
+                                <span class="text-4xl font-black text-white">1M€</span>
+                            </div>
+                            <p class="text-primary text-sm font-medium">en 2 años de volumen</p>
+                        </div>
+                        <ul class="space-y-3 flex-1 mb-6">
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Revenue Share ampliado</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Bonos por hitos de equipo</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Acceso a deals premium</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">check_circle</span>
+                                <span class="text-sm text-text-secondary">Mentoría ejecutiva</span>
+                            </li>
+                        </ul>
+                        <a href="access-form.html?tipo=gestor" class="w-full py-3 bg-transparent border border-primary hover:bg-primary hover:text-background-dark text-primary font-bold text-sm rounded-lg transition-all text-center">
+                            Quiero Ser Gestor
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="py-20 bg-gradient-to-r from-card-dark to-background-dark relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnptMCAyYy0yLjIxIDAtNCAxLjc5LTQgNHMxLjc5IDQgNCA0IDQtMS43OSA0LTQtMS43OS00LTQtNHoiIGZpbGw9IiNDMUE4NUQiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-30"></div>
+        <div class="mx-auto max-w-4xl px-6 lg:px-10 text-center relative z-10">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6 font-serif">¿Listo para Empezar?</h2>
+            <p class="text-lg text-text-secondary mb-8 max-w-2xl mx-auto">
+                Completa tu solicitud de acceso y nuestro equipo te contactará en 24-48 horas para validar tu perfil
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="access-form.html" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-background-dark px-8 py-4 text-base font-bold transition-all shadow-[0_0_20px_rgba(193,168,92,0.3)]">
+                    <span>Solicitar Acceso Ahora</span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+                <a href="simulator.html" class="inline-flex items-center justify-center gap-2 rounded-xl border border-border-dark hover:border-primary bg-transparent text-white px-8 py-4 text-base font-bold transition-all">
+                    <span class="material-symbols-outlined">monitoring</span>
+                    <span>Simular mi Patrimonio</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-border-dark py-10 bg-background-dark">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined text-primary text-2xl">apartment</span>
+                        <span class="text-white text-lg font-bold font-serif">CPII PORTUGAL</span>
+                    </div>
+                    <p class="text-text-secondary text-sm">
+                        Club Privado de Inversión Inmobiliaria. Construyendo patrimonio sostenible desde 2024.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Enlaces</h4>
+                    <ul class="space-y-2">
+                        <li><a href="simulator.html" class="text-text-secondary hover:text-primary transition-colors text-sm">Simulador</a></li>
+                        <li><a href="webinars.html" class="text-text-secondary hover:text-primary transition-colors text-sm">Webinars</a></li>
+                        <li><a href="referrals.html" class="text-text-secondary hover:text-primary transition-colors text-sm">Mi Red</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-text-secondary hover:text-primary transition-colors text-sm">Política de Privacidad</a></li>
+                        <li><a href="#" class="text-text-secondary hover:text-primary transition-colors text-sm">Términos de Servicio</a></li>
+                        <li><a href="#" class="text-text-secondary hover:text-primary transition-colors text-sm">Soporte</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-border-dark pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-text-secondary text-sm">© 2024 CPII Portugal. Todos los derechos reservados.</p>
+                <div class="flex gap-4">
+                    <span class="text-text-secondary text-xs">Stack: HTML + Vanilla CSS</span>
+                    <span class="text-text-secondary text-xs">•</span>
+                    <span class="text-text-secondary text-xs">Diseño: Stitch</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Capture referral from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        if (ref) {
+            sessionStorage.setItem('cpii_ref', ref);
+            console.log('Referral captured:', ref);
+        }
+    </script>
+</body>
+</html>
