@@ -1,145 +1,416 @@
+<!--
+================================================================================
+  ARCHIVO:  apps/cpii/scenes/access-form.html
+  VERSIÓN:  1.2.0
+  FECHA:    2026-02-17
+  PROPÓSITO: Formulario de solicitud de acceso CPII con captura de leads,
+             asignación territorial de Responsable de Club (tabla fija) y
+             vinculación de genealogía (Prescriptor/Referido). Integración Firestore.
+             Esquema de datos completo: Fase 1 (formulario) + Fase 2 (null, pendiente
+             de completar vía email/reunión: POF, presupuesto, tipo propiedad).
+  AUTOR:    Claude Sonnet 4.5 — Protocolo Cartografía Quirúrgica v3.1
+
+  ÍNDICE MAESTRO [SEC-XX]:
+  ├── [SEC-01] METADATOS E IMPORTACIONES (head)
+  ├── [SEC-02] CONFIGURACIÓN DE TEMA (Tailwind config)
+  ├── [SEC-03] NAVEGACIÓN (header sticky)
+  ├── [SEC-04] CONTENIDO LATERAL — BENEFICIOS (left panel)
+  ├── [SEC-05] NÚCLEO: FORMULARIO DE ACCESO (right panel)
+  │     ├── [SEC-05a] Selector de perfil (Inversor / Promotor)
+  │     ├── [SEC-05b] Campos personales (Nombre, Email, Teléfono, País)
+  │     ├── [SEC-05c] Sección de Referido / Genealogía (≠ Responsable de Club)
+  │     ├── [SEC-05d] Checkbox RGPD obligatorio
+  │     └── [SEC-05e] Botón de envío + mensaje de éxito
+  ├── [SEC-06] PIE DE PÁGINA (legal / soporte)
+  ├── [SEC-07] LÓGICA: TABLA DE ASIGNACIÓN TERRITORIAL (club_manager_map)
+  ├── [SEC-08] LÓGICA: CAPTURA DE REFERIDOS (URL params + sessionStorage)
+  └── [SEC-09] LÓGICA: FIRESTORE — INICIALIZACIÓN Y ENVÍO DE LEAD
+
+  NOTAS DE ARQUITECTURA:
+  · Responsable de Club (location.club_manager) ← tabla fija por país [SEC-07]
+    Absorbe leads huérfanos (sin padrino, baja o expulsión del progenitor).
+  · Padrino (genealogy.padrino) ← capturado desde URL ?ref= o sessionStorage
+    Entidad INDEPENDIENTE. Base para cálculo de Revenue Share multinivel.
+  · Ambas entidades NO se cruzan nunca en este formulario.
+
+  DEPENDENCIAS:
+  · Tailwind CSS CDN v3 (plugins: forms, container-queries)
+  · Google Fonts: Playfair Display + Manrope
+  · Google Material Symbols Outlined
+  · Firebase SDK v10.8.1 (módulos CDN) → [SEC-09]
+================================================================================
+-->
 <!DOCTYPE html>
 <html lang="pt">
 
+<!-- ═══════════════════════════════════════════════════════ [SEC-01] HEAD ══ -->
+
 <head>
-    <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CPII Portugal - Solicitar Acceso</title>
+    <meta name="description"
+        content="Solicita acceso al Club Privado de Inversión Inmobiliaria CPII Portugal. Formulario de registro exclusivo para inversores y promotores." />
+    <title>CPII Portugal — Solicitar Acceso</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Tipografía: Playfair Display (display) + Manrope (body) -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         rel="stylesheet" />
+
+    <!-- ══════════════════════════════════════════════ [SEC-02] TAILWIND CONFIG ══ -->
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "gold": "#C1A85D",
+                        gold: "#C1A85D",
+                        "gold-light": "#D4BC7A",
                         "gold-hover": "#A8924D",
-                        "carbon": "#1C1C1C",
-                        "dark-grey": "#3A3A3A",
-                        "text-main": "#FFFFFF",
-                        "text-muted": "#A1A1AA",
+                        "gold-dim": "rgba(193,168,93,0.12)",
+                        carbon: "#131313",
+                        "carbon-mid": "#1C1C1C",
+                        "dark-grey": "#282828",
+                        "input-bg": "#222222",
+                        "text-main": "#F5F0E8",
+                        "text-muted": "#8A8A8A",
+                        "text-dim": "#555555",
+                        "border-sub": "rgba(255,255,255,0.07)",
                     },
                     fontFamily: {
-                        "sans": ["Inter", "sans-serif"],
-                        "serif": ["Playfair Display", "serif"],
+                        display: ["Playfair Display", "Georgia", "serif"],
+                        body: ["Manrope", "system-ui", "sans-serif"],
+                    },
+                    boxShadow: {
+                        gold: "0 0 30px rgba(193,168,93,0.18)",
+                        "gold-sm": "0 0 12px rgba(193,168,93,0.12)",
+                        card: "0 8px 48px rgba(0,0,0,0.55)",
                     },
                 },
             },
-        }
+        };
     </script>
+
+    <style>
+        /* Estilos base */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Manrope", system-ui, sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-display {
+            font-family: "Playfair Display", Georgia, serif;
+        }
+
+        /* Grain overlay sutil */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity: 0.6;
+        }
+
+        /* Inputs — reset de estilos nativos del plugin forms */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            background-color: #222222 !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #F5F0E8 !important;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #C1A85D !important;
+            box-shadow: 0 0 0 2px rgba(193, 168, 93, 0.15) !important;
+            outline: none !important;
+        }
+
+        input::placeholder {
+            color: rgba(138, 138, 138, 0.5) !important;
+        }
+
+        option {
+            background: #222;
+            color: #F5F0E8;
+        }
+
+        /* Checkbox dorado */
+        input[type="checkbox"] {
+            accent-color: #C1A85D;
+            background-color: #222 !important;
+            border-color: rgba(193, 168, 93, 0.4) !important;
+            border-radius: 3px;
+        }
+
+        /* Scroll bar discreta */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #131313;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3a;
+            border-radius: 2px;
+        }
+
+        /* Animaciones de entrada */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .anim-1 {
+            animation: fadeUp 0.55s ease both 0.05s;
+        }
+
+        .anim-2 {
+            animation: fadeUp 0.55s ease both 0.15s;
+        }
+
+        .anim-3 {
+            animation: fadeUp 0.55s ease both 0.25s;
+        }
+
+        .anim-4 {
+            animation: fadeUp 0.55s ease both 0.35s;
+        }
+
+        .anim-5 {
+            animation: fadeUp 0.55s ease both 0.45s;
+        }
+
+        /* Estado de envío en el botón */
+        .btn-loading .btn-text {
+            display: none;
+        }
+
+        .btn-loading .btn-loader {
+            display: flex;
+        }
+
+        .btn-loader {
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-top-color: #131313;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        /* Línea decorativa animada en el panel izquierdo */
+        .gold-line {
+            width: 1px;
+            height: 0;
+            background: linear-gradient(to bottom, transparent, #C1A85D, transparent);
+            animation: growLine 1.2s ease 0.6s forwards;
+        }
+
+        @keyframes growLine {
+            to {
+                height: 100px;
+            }
+        }
+    </style>
 </head>
 
-<body
-    class="bg-carbon text-text-main flex min-h-screen flex-col overflow-x-hidden antialiased selection:bg-gold/30 selection:text-gold dark">
-    <!-- Header -->
+<body class="bg-carbon text-text-main min-h-screen flex flex-col overflow-x-hidden antialiased dark">
+
+    <!-- ══════════════════════════════════════════════ [SEC-03] HEADER / NAV ══ -->
     <header
-        class="sticky top-0 z-50 flex items-center justify-between border-b border-white/5 bg-carbon/90 px-6 py-4 backdrop-blur-md lg:px-10">
-        <div class="flex items-center gap-3">
+        class="sticky top-0 z-50 flex items-center justify-between border-b border-border-sub bg-carbon/85 px-6 py-4 backdrop-blur-md lg:px-10">
+        <div class="flex items-center gap-3.5">
+            <!-- Logotipo -->
             <div
-                class="flex size-10 items-center justify-center rounded-full border border-gold/30 bg-gradient-to-br from-dark-grey to-black text-gold shadow-[0_0_15px_rgba(193,168,93,0.15)]">
-                <span class="material-symbols-outlined text-2xl">apartment</span>
+                class="flex size-9 items-center justify-center rounded-full border border-gold/25 bg-gradient-to-br from-dark-grey to-carbon text-gold shadow-gold-sm">
+                <span class="material-symbols-outlined"
+                    style="font-size:18px;font-variation-settings:'FILL' 0,'wght' 300">apartment</span>
             </div>
-            <div>
-                <h2 class="text-xl font-bold tracking-wide text-white font-serif">CPII <span
-                        class="font-light text-gold text-sm tracking-widest uppercase ml-1">Portugal</span></h2>
+            <div class="leading-none">
+                <span class="font-display text-lg font-medium tracking-wide text-text-main">CPII</span>
+                <span class="ml-1.5 text-[10px] font-light uppercase tracking-[0.2em] text-gold">Portugal</span>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="index.html" class="text-text-muted hover:text-gold transition-colors text-sm">Volver al Inicio</a>
-        </div>
+
+        <a href="index.html"
+            class="flex items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-gold">
+            <span class="material-symbols-outlined"
+                style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 300">arrow_back</span>
+            Volver al inicio
+        </a>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex flex-1 flex-col lg:flex-row">
-        <!-- Left Side: Benefits -->
+    <!-- ══════════════════════════════════════════ [SEC-04/05] MAIN CONTENT ══ -->
+    <main class="relative z-10 flex flex-1 flex-col lg:flex-row">
+
+        <!-- ─────────────────────────────────── [SEC-04] PANEL IZQUIERDO: BENEFICIOS ── -->
         <div
-            class="relative flex w-full flex-col justify-between overflow-hidden bg-carbon px-6 py-10 lg:w-5/12 lg:px-12 lg:py-16 xl:w-1/2">
-            <div class="absolute -left-20 top-20 h-96 w-96 rounded-full bg-gold/5 blur-3xl"></div>
-            <div class="absolute bottom-0 right-0 h-64 w-full bg-gradient-to-t from-black to-transparent"></div>
-            <div class="relative z-10 flex flex-col gap-8">
+            class="relative flex w-full flex-col justify-between overflow-hidden bg-carbon-mid px-8 py-12 lg:w-5/12 lg:px-14 lg:py-20 xl:w-1/2">
+
+            <!-- Orbe decorativo fondo -->
+            <div
+                class="pointer-events-none absolute -left-32 top-10 h-[500px] w-[500px] rounded-full bg-gold/[0.04] blur-[80px]">
+            </div>
+            <div
+                class="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-carbon to-transparent">
+            </div>
+
+            <div class="relative z-10 flex flex-col gap-10">
+
+                <!-- Badge -->
                 <div
-                    class="inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-gold shadow-[0_0_10px_rgba(193,168,93,0.2)]">
-                    <span class="material-symbols-outlined text-sm">workspace_premium</span>
+                    class="anim-1 inline-flex w-fit items-center gap-2 rounded-full border border-gold/25 bg-gold-dim px-4 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-gold">
+                    <span class="material-symbols-outlined"
+                        style="font-size:13px;font-variation-settings:'FILL' 1,'wght' 400">workspace_premium</span>
                     Acceso Exclusivo
                 </div>
-                <div class="space-y-6">
+
+                <!-- Titular -->
+                <div class="anim-2 space-y-5">
                     <h1
-                        class="text-4xl font-medium leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl font-serif">
-                        El poder de la <span class="text-gold italic">Red</span> a tu alcance
+                        class="font-display text-5xl font-light leading-[1.05] tracking-tight text-text-main sm:text-6xl lg:text-7xl">
+                        El poder<br />de la
+                        <span class="italic text-gold"> Red</span><br />
+                        a tu alcance
                     </h1>
-                    <p class="max-w-md text-lg leading-relaxed text-text-muted font-light">
-                        Accede a oportunidades exclusivas de inversión inmobiliaria de alto rendimiento.
-                        Únete a una comunidad de inversores seletos.
+                    <p class="max-w-sm text-sm leading-relaxed text-text-muted font-light">
+                        Tu acceso es validado individualmente. Se te asignará un
+                        <strong class="font-medium text-text-main/80">Responsable de Club</strong> según
+                        tu país de residencia para garantizar atención personalizada.
                     </p>
                 </div>
-                <ul class="flex flex-col gap-4 mt-4">
-                    <li class="flex items-start gap-3 group">
-                        <span
-                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
-                        <span class="font-light text-white/90">Rentabilidad verificada y auditada</span>
-                    </li>
-                    <li class="flex items-start gap-3 group">
-                        <span
-                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
-                        <span class="font-light text-white/90">Revenue Share hasta Nivel 3</span>
-                    </li>
-                    <li class="flex items-start gap-3 group">
-                        <span
-                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
-                        <span class="font-light text-white/90">Autofinanciación garantizada</span>
-                    </li>
-                    <li class="flex items-start gap-3 group">
-                        <span
-                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
-                        <span class="font-light text-white/90">Networking con líderes del sector</span>
-                    </li>
-                </ul>
+
+                <!-- Separador con línea dorada -->
+                <div class="anim-3 flex items-center gap-4">
+                    <div class="gold-line"></div>
+                    <ul class="flex flex-col gap-3.5">
+                        <li class="flex items-start gap-3 group">
+                            <span
+                                class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
+                            <span class="text-sm font-light text-text-main/85">Rentabilidad verificada y auditada</span>
+                        </li>
+                        <li class="flex items-start gap-3 group">
+                            <span
+                                class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
+                            <span class="text-sm font-light text-text-main/85">Revenue Share multinivel hasta Nivel
+                                3</span>
+                        </li>
+                        <li class="flex items-start gap-3 group">
+                            <span
+                                class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
+                            <span class="text-sm font-light text-text-main/85">Autofinanciación garantizada</span>
+                        </li>
+                        <li class="flex items-start gap-3 group">
+                            <span
+                                class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
+                            <span class="text-sm font-light text-text-main/85">Networking con líderes del sector</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Número decorativo fondo -->
+            <div
+                class="pointer-events-none absolute bottom-10 right-6 font-display text-[10rem] font-light leading-none text-white/[0.02] select-none lg:right-10">
+                II
             </div>
         </div>
 
-        <!-- Right Side: Form -->
+        <!-- ─────────────────────────────────────── [SEC-05] PANEL DERECHO: FORMULARIO ── -->
         <div
-            class="flex w-full items-center justify-center bg-[#151515] px-4 py-10 lg:w-7/12 lg:px-8 xl:w-1/2 relative">
-            <div class="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none opacity-5">
-                <div class="absolute top-10 right-10 w-96 h-96 border border-gold rounded-full"></div>
-                <div class="absolute bottom-10 left-10 w-64 h-64 border border-gold rounded-full"></div>
+            class="flex w-full items-start justify-center bg-carbon px-4 py-10 lg:w-7/12 lg:items-center lg:px-8 xl:w-1/2">
+
+            <!-- Fondo decorativo -->
+            <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.03]">
+                <div class="absolute right-10 top-10 h-80 w-80 rounded-full border border-gold"></div>
+                <div class="absolute bottom-20 left-10 h-48 w-48 rounded-full border border-gold"></div>
             </div>
+
             <div
-                class="relative w-full max-w-[520px] rounded-xl bg-dark-grey p-6 shadow-[0_0_25px_rgba(193,168,93,0.15)] border border-gold/20 sm:p-8 lg:p-10">
-                <div class="mb-8 text-center sm:text-left border-b border-white/10 pb-4">
-                    <h2 class="text-2xl text-white font-serif italic">Solicitar Acceso</h2>
-                    <p class="mt-2 text-sm text-text-muted font-light">Completa tus datos para validar tu invitación</p>
+                class="anim-4 relative w-full max-w-[500px] rounded-2xl border border-gold/15 bg-dark-grey p-7 shadow-card sm:p-8 lg:p-10">
+
+                <!-- Cabecera tarjeta -->
+                <div class="mb-7 border-b border-border-sub pb-5">
+                    <h2 class="font-display text-2xl font-medium italic text-text-main">Solicitar Acceso</h2>
+                    <p class="mt-1.5 text-xs text-text-muted font-light">Completa tus datos · Se te asignará un gestor
+                        en tu zona</p>
                 </div>
 
-                <!-- Success Message (hidden by default) -->
-                <div id="success-message" class="hidden mb-6 rounded-lg border border-gold/30 bg-gold/10 p-4">
+                <!-- ── [SEC-05e] Mensaje de ÉXITO (oculto por defecto) ── -->
+                <div id="success-message" class="hidden mb-6 rounded-xl border border-gold/30 bg-gold-dim p-5">
                     <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-gold text-2xl">check_circle</span>
+                        <span class="material-symbols-outlined text-gold"
+                            style="font-size:22px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
                         <div>
-                            <h3 class="font-bold text-gold mb-1">¡Solicitud Enviada!</h3>
-                            <p class="text-sm text-text-muted">Nuestro equipo revisará tu solicitud y te contactará en
-                                24-48 horas.</p>
+                            <h3 class="font-display text-lg italic text-gold">¡Solicitud recibida!</h3>
+                            <p class="mt-1 text-xs text-text-muted leading-relaxed">
+                                Tu Responsable de Club te contactará en <strong class="text-text-main/80">24–48
+                                    horas</strong>.
+                                Revisa también tu bandeja de spam.
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Form -->
-                <form id="access-form" class="flex flex-col gap-5">
-                    <!-- Profile Type Selection -->
+                <!-- ════════════════════════ FORMULARIO ════════════════════════ -->
+                <form id="access-form" class="flex flex-col gap-5" novalidate>
+
+                    <!-- ── [SEC-05a] Selector de perfil ── -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-xs uppercase tracking-wider font-medium text-gold">Selecciona tu
-                            perfil</label>
-                        <div class="grid grid-cols-2 rounded bg-[#2A2A2A] p-1 border border-white/5">
+                        <label class="text-[10px] uppercase tracking-[0.15em] font-medium text-gold">Perfil de
+                            acceso</label>
+                        <div class="grid grid-cols-2 rounded-lg bg-carbon p-1 border border-border-sub">
                             <label class="cursor-pointer">
                                 <input id="profile-inversor" class="peer sr-only" name="profile_type" type="radio"
                                     value="inversor" checked />
                                 <div
-                                    class="flex items-center justify-center rounded py-2.5 text-sm font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-black peer-checked:shadow-sm">
+                                    class="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-carbon peer-checked:font-semibold peer-checked:shadow-sm">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">trending_up</span>
                                     Inversor
                                 </div>
                             </label>
@@ -147,231 +418,469 @@
                                 <input id="profile-promotor" class="peer sr-only" name="profile_type" type="radio"
                                     value="promotor" />
                                 <div
-                                    class="flex items-center justify-center rounded py-2.5 text-sm font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-black peer-checked:shadow-sm">
+                                    class="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-carbon peer-checked:font-semibold peer-checked:shadow-sm">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">storefront</span>
                                     Promotor/Gestor
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Form Fields -->
-                    <div class="grid gap-5 sm:grid-cols-2">
-                        <!-- Full Name -->
-                        <div class="sm:col-span-2">
-                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
-                                for="fullname">Nombre Completo *</label>
+                    <!-- ── [SEC-05b] Campos personales ── -->
+                    <div class="grid gap-4">
+
+                        <!-- Nombre completo -->
+                        <div>
+                            <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
+                                for="fullname">
+                                Nombre completo <span class="text-gold">*</span>
+                            </label>
                             <div class="relative group">
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-white/30 group-focus-within:text-gold transition-colors">
-                                    <span class="material-symbols-outlined text-xl">person</span>
-                                </div>
-                                <input required
-                                    class="block w-full rounded border border-white/10 bg-[#2A2A2A] py-3 pl-10 text-sm text-white placeholder-white/20 focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none transition-all"
-                                    id="fullname" name="fullname" placeholder="Ej. João Silva" type="text" />
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
+                                    style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person</span>
+                                <input required id="fullname" name="fullname" type="text" placeholder="Ej. João Silva"
+                                    class="w-full rounded-lg border border-border-sub bg-input-bg py-3 pl-9 pr-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-fullname">Campo obligatorio</p>
                         </div>
 
-                        <!-- Email -->
-                        <div class="sm:col-span-2">
-                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
-                                for="email">Email *</label>
+                        <!-- Correo electrónico -->
+                        <div>
+                            <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
+                                for="email">
+                                Correo electrónico <span class="text-gold">*</span>
+                            </label>
                             <div class="relative group">
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-white/30 group-focus-within:text-gold transition-colors">
-                                    <span class="material-symbols-outlined text-xl">mail</span>
-                                </div>
-                                <input required
-                                    class="block w-full rounded border border-white/10 bg-[#2A2A2A] py-3 pl-10 text-sm text-white placeholder-white/20 focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none transition-all"
-                                    id="email" name="email" placeholder="nombre@empresa.com" type="email" />
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
+                                    style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">mail</span>
+                                <input required id="email" name="email" type="email" placeholder="nombre@empresa.com"
+                                    class="w-full rounded-lg border border-border-sub bg-input-bg py-3 pl-9 pr-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-email">Email inválido</p>
                         </div>
 
-                        <!-- Phone -->
-                        <div class="sm:col-span-2">
-                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
-                                for="phone">Telemóvel *</label>
+                        <!-- Teléfono -->
+                        <div>
+                            <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
+                                for="phone">
+                                Teléfono de contacto <span class="text-gold">*</span>
+                            </label>
                             <div class="flex gap-2">
-                                <select
-                                    class="w-24 rounded border border-white/10 bg-[#2A2A2A] py-3 pl-3 pr-8 text-sm text-white focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none">
-                                    <option>+351</option>
-                                    <option>+34</option>
-                                    <option>+1</option>
-                                    <option>+44</option>
+                                <!-- Prefijo -->
+                                <select id="phone_prefix" name="phone_prefix"
+                                    class="w-[108px] flex-shrink-0 rounded-lg border border-border-sub bg-input-bg py-3 pl-3 pr-2 text-xs text-text-main focus:border-gold focus:outline-none">
+                                    <option value="+351">🇵🇹 +351</option>
+                                    <option value="+34">🇪🇸 +34</option>
+                                    <option value="+55">🇧🇷 +55</option>
+                                    <option value="+52">🇲🇽 +52</option>
+                                    <option value="+54">🇦🇷 +54</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+33">🇫🇷 +33</option>
+                                    <option value="+49">🇩🇪 +49</option>
+                                    <option value="+39">🇮🇹 +39</option>
                                 </select>
-                                <input required
-                                    class="block flex-1 rounded border border-white/10 bg-[#2A2A2A] py-3 px-4 text-sm text-white placeholder-white/20 focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none transition-all"
-                                    id="phone" name="phone" placeholder="000 000 000" type="tel" />
+                                <!-- Número -->
+                                <input required id="phone" name="phone" type="tel" placeholder="000 000 000"
+                                    class="flex-1 rounded-lg border border-border-sub bg-input-bg py-3 px-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-phone">Campo obligatorio</p>
                         </div>
 
-                        <!-- Country -->
-                        <div class="sm:col-span-2">
-                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
-                                for="country">País *</label>
-                            <select required
-                                class="block w-full rounded border border-white/10 bg-[#2A2A2A] py-3 px-4 text-sm text-white focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none"
-                                id="country" name="country">
-                                <option value="">Selecciona tu país</option>
+                        <!-- País de residencia -->
+                        <div>
+                            <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
+                                for="country">
+                                País de residencia <span class="text-gold">*</span>
+                            </label>
+                            <select required id="country" name="country"
+                                class="w-full rounded-lg border border-border-sub bg-input-bg py-3 px-4 text-sm text-text-main focus:border-gold focus:outline-none">
+                                <option value="">Selecciona tu país…</option>
                                 <option value="PT">Portugal</option>
                                 <option value="ES">España</option>
                                 <option value="BR">Brasil</option>
                                 <option value="MX">México</option>
                                 <option value="AR">Argentina</option>
+                                <option value="US">Estados Unidos</option>
+                                <option value="GB">Reino Unido</option>
+                                <option value="FR">Francia</option>
+                                <option value="DE">Alemania</option>
+                                <option value="IT">Italia</option>
+                                <option value="OTHER">Otro país</option>
                             </select>
+                            <!-- Nota de asignación territorial -->
+                            <p class="mt-1.5 text-[10px] text-gold/50 italic">
+                                <span class="material-symbols-outlined align-middle"
+                                    style="font-size:11px">location_on</span>
+                                Este dato determina tu Responsable de Club asignado — independiente de tu
+                                Padrino/Referido
+                            </p>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-country">Selecciona un país</p>
                         </div>
                     </div>
+                    <!-- /[SEC-05b] -->
 
-                    <!-- Divider -->
-                    <div class="relative py-4">
+                    <!-- ── [SEC-05c] Prescriptor / Genealogía ── -->
+                    <!--
+          NOTA DE ARQUITECTURA:
+          · El Prescriptor (padrino) es quien invita al lead — selección por nombre, NO por código.
+          · Lista controlada: solo Prescriptores autorizados por CPII aparecen aquí.
+          · Para añadir/quitar prescriptores → intervención /laparoscopia en este bloque [SEC-05c]
+            y actualización del array PRESCRIPTORES_AUTORIZADOS en [SEC-08].
+          · Esta entidad es INDEPENDIENTE del Responsable de Club [SEC-07].
+        -->
+                    <div class="relative py-2">
                         <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-white/10"></div>
+                            <div class="w-full border-t border-border-sub"></div>
                         </div>
                         <div class="relative flex justify-center">
                             <span
-                                class="bg-dark-grey px-3 text-[10px] uppercase tracking-widest text-gold/70">Referencia</span>
+                                class="bg-dark-grey px-3 text-[9px] uppercase tracking-[0.2em] text-gold/50">Prescriptor</span>
                         </div>
                     </div>
 
-                    <!-- Referral -->
                     <div>
                         <label
-                            class="mb-1.5 flex items-center justify-between text-xs uppercase tracking-wider font-medium text-text-muted"
+                            class="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.12em] text-text-muted"
                             for="referral">
                             <span>¿Quién te invitó?</span>
-                            <span class="text-[10px] font-normal text-gold" id="ref-status">*Auto-capturado</span>
+                            <span id="ref-status" class="font-normal text-text-dim">Opcional</span>
                         </label>
                         <div class="relative group">
-                            <div
-                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-white/30 group-focus-within:text-gold transition-colors">
-                                <span class="material-symbols-outlined text-xl">search</span>
-                            </div>
-                            <input
-                                class="block w-full rounded border border-gold/30 bg-gold/5 py-3.5 pl-10 pr-12 text-sm text-white placeholder-white/30 focus:border-gold focus:bg-[#2A2A2A] focus:ring-1 focus:ring-gold focus:outline-none transition-all"
-                                id="referral" name="referral" placeholder="Código de referencia o nombre" type="text" />
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                <span
-                                    class="material-symbols-outlined cursor-help text-white/30 hover:text-gold text-lg transition-colors"
-                                    title="Código de referencia capturado automáticamente">help</span>
-                            </div>
+                            <span
+                                class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
+                                style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person_search</span>
+                            <select id="referral" name="referral"
+                                class="w-full appearance-none rounded-lg border border-gold/20 bg-gold/[0.04] py-3 pl-9 pr-8 text-sm text-text-main focus:border-gold focus:bg-input-bg focus:outline-none transition-all">
+                                <option value="">— Selecciona tu Prescriptor —</option>
+                                <!-- ╔══════════════════════════════════════════════════════════╗
+                   ║  PRESCRIPTORES AUTORIZADOS — actualiza aquí y en [SEC-08] ║
+                   ╚══════════════════════════════════════════════════════════╝ -->
+                                <option value="david_almeida">David Almeida</option>
+                                <option value="carlos_balboa">Carlos Balboa</option>
+                            </select>
+                            <!-- Chevron decorativo -->
+                            <span
+                                class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-text-dim material-symbols-outlined"
+                                style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">expand_more</span>
                         </div>
-                        <p class="mt-2 text-xs text-text-muted/60">
-                            Si no tienes un código de referencia, <a
-                                class="font-medium text-gold hover:text-white transition-colors underline decoration-gold/30 underline-offset-2"
-                                href="index.html">vuelve al inicio</a>.
+                        <p class="mt-1.5 text-[10px] text-text-dim">
+                            Solo aparecen Prescriptores autorizados por CPII.
+                            El Prescriptor <strong class="text-text-muted/80">no</strong> es tu Responsable de Club.
                         </p>
                     </div>
+                    <!-- /[SEC-05c] -->
 
-                    <!-- Terms and Conditions -->
-                    <div class="flex items-start gap-3 mt-2">
-                        <div class="flex h-5 items-center">
-                            <input required
-                                class="h-4 w-4 rounded border-white/20 bg-[#2A2A2A] text-gold focus:ring-gold focus:ring-offset-dark-grey"
-                                id="terms" name="terms" type="checkbox" />
+                    <!-- ── [SEC-05d] Checkbox RGPD ── -->
+                    <div class="flex items-start gap-3 rounded-lg border border-border-sub bg-carbon/50 p-3.5">
+                        <div class="flex h-5 items-center pt-0.5">
+                            <input required id="terms" name="terms" type="checkbox"
+                                class="h-4 w-4 cursor-pointer rounded border border-gold/30 bg-input-bg text-gold focus:ring-gold focus:ring-1 focus:ring-offset-0" />
                         </div>
-                        <label class="text-xs text-text-muted font-light" for="terms">
-                            Acepto la <a class="font-medium text-white hover:text-gold transition-colors"
-                                href="#">Política de Privacidad</a> y los <a
-                                class="font-medium text-white hover:text-gold transition-colors" href="#">Términos de
-                                Servicio</a>. Entiendo que mi solicitud está sujeta a aprobación.
+                        <label class="text-[11px] leading-relaxed text-text-muted font-light cursor-pointer"
+                            for="terms">
+                            Acepto la
+                            <a class="text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors"
+                                href="privacy.html">Política de Privacidad</a>
+                            y los
+                            <a class="text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors"
+                                href="terms.html">Términos de Servicio</a>.
+                            Entiendo que mis datos serán tratados conforme al
+                            <strong class="text-text-main/80">RGPD</strong>
+                            y que mi solicitud está sujeta a aprobación.
                         </label>
                     </div>
+                    <p class="hidden -mt-3 text-[10px] text-red-400" id="err-terms">Debes aceptar los términos para
+                        continuar</p>
+                    <!-- /[SEC-05d] -->
 
-                    <!-- Submit Button -->
-                    <button type="submit"
-                        class="group mt-4 flex w-full items-center justify-center gap-2 rounded bg-gold py-4 text-sm font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-hover hover:shadow-[0_0_20px_rgba(193,168,93,0.4)] active:scale-[0.98]">
-                        <span>Solicitar Acceso</span>
-                        <span
-                            class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+                    <!-- ── [SEC-05e] Botón de envío ── -->
+                    <button id="submit-btn" type="submit"
+                        class="group mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-gold py-4 text-xs font-semibold uppercase tracking-[0.15em] text-carbon transition-all hover:bg-gold-light hover:shadow-gold active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
+                        <span class="btn-text flex items-center gap-2">
+                            Validar solicitud
+                            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1"
+                                style="font-size:15px;font-variation-settings:'FILL' 0,'wght' 400">arrow_forward</span>
+                        </span>
+                        <span class="btn-loader">
+                            <span class="spinner"></span>
+                            Enviando…
+                        </span>
                     </button>
-                </form>
+                    <!-- /[SEC-05e] -->
 
-                <!-- Footer -->
-                <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                    <p class="text-[10px] uppercase tracking-[0.2em] text-white/20">Confidencial — Solo para miembros
-                        autorizados</p>
-                    <div class="flex justify-center gap-6 mt-4">
-                        <a class="text-xs font-medium text-text-muted hover:text-gold transition-colors"
-                            href="#">Privacidad</a>
-                        <a class="text-xs font-medium text-text-muted hover:text-gold transition-colors"
-                            href="#">Términos</a>
-                        <a class="text-xs font-medium text-text-muted hover:text-gold transition-colors"
-                            href="index.html">Ayuda</a>
-                    </div>
-                </div>
+                </form>
+                <!-- /FORMULARIO -->
+
             </div>
+            <!-- /tarjeta -->
         </div>
+        <!-- /[SEC-05] panel derecho -->
+
     </main>
 
+    <!-- ══════════════════════════════════════════════════════ [SEC-06] FOOTER ══ -->
+    <footer class="relative z-10 border-t border-border-sub bg-carbon px-6 py-6 text-center">
+        <p class="text-[9px] uppercase tracking-[0.25em] text-white/15">Confidencial — Solo para miembros autorizados ·
+            CPII © 2026</p>
+        <div class="mt-3 flex justify-center gap-6">
+            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="privacy.html">Privacidad</a>
+            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="terms.html">Términos</a>
+            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="index.html">Ayuda</a>
+        </div>
+    </footer>
+
+    <!-- ══════════════════════════════════════ [SEC-07] TABLA DE ASIGNACIÓN ══ -->
+    <!--
+  TABLA FIJA: club_manager_map
+  · Clave    = código ISO del país (campo "country" del formulario)
+  · Valor    = UID del Responsable de Club en Firestore (users/{uid})
+  · DEFAULT  = Responsable que absorbe leads huérfanos o de países sin asignar
+  · NOTA: Leads huérfanos (sin padrino, baja o expulsión del progenitor)
+          se asignan automáticamente al club_manager del país del lead.
+  · IMPORTANTE: Esta tabla es INDEPENDIENTE de la genealogía (padrino).
+                Actualiza los UIDs reales antes de desplegar en producción.
+-->
     <script>
-        // Auto-capture referral from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const refParam = urlParams.get('ref');
-        const tipoParam = urlParams.get('tipo');
-        const referralInput = document.getElementById('referral');
-        const refStatus = document.getElementById('ref-status');
+        const CLUB_MANAGER_MAP = {
+            PT: "UID_GESTOR_PORTUGAL",      // Responsable Club Portugal
+            ES: "UID_GESTOR_ESPANA",        // Responsable Club España
+            BR: "UID_GESTOR_BRASIL",        // Responsable Club Brasil
+            MX: "UID_GESTOR_MEXICO",        // Responsable Club México
+            AR: "UID_GESTOR_ARGENTINA",     // Responsable Club Argentina
+            US: "UID_GESTOR_DEFAULT",       // Pool internacional
+            GB: "UID_GESTOR_DEFAULT",
+            FR: "UID_GESTOR_DEFAULT",
+            DE: "UID_GESTOR_DEFAULT",
+            IT: "UID_GESTOR_DEFAULT",
+            OTHER: "UID_GESTOR_DEFAULT",       // Fallback para cualquier otro país
+            _DEFAULT: "UID_GESTOR_DEFAULT",     // Absorbe huérfanos
+        };
 
-        // Capture referral
-        if (refParam) {
-            referralInput.value = refParam;
-            refStatus.textContent = '✓ Auto-capturado';
-            refStatus.classList.add('text-green-500');
-        } else {
-            // Try to get from sessionStorage (set in index.html)
-            const sessionRef = sessionStorage.getItem('cpii_ref');
-            if (sessionRef) {
-                referralInput.value = sessionRef;
-                refStatus.textContent = '✓ Auto-capturado';
-                refStatus.classList.add('text-green-500');
-            } else {
-                refStatus.textContent = 'Opcional';
-                refStatus.classList.remove('text-gold');
-                refStatus.classList.add('text-text-muted');
+        /**
+         * Devuelve el UID del Responsable de Club para un país dado.
+         * Si el país no tiene gestor asignado, retorna el DEFAULT.
+         * @param {string} countryCode - Código ISO del país (ej: "PT")
+         * @returns {string} UID del gestor en Firestore
+         */
+        function getClubManager(countryCode) {
+            return CLUB_MANAGER_MAP[countryCode] || CLUB_MANAGER_MAP._DEFAULT;
+        }
+    </script>
+
+    <!-- ════════════════════════════════════ [SEC-08] CAPTURA DE PRESCRIPTOR ══ -->
+    <!--
+  PRESCRIPTORES AUTORIZADOS — array de referencia sincronizado con [SEC-05c].
+  Para añadir un prescriptor: añade la option en [SEC-05c] Y su value aquí.
+  El value del <select> viaja a Firestore como genealogy.padrino.
+-->
+    <script>
+        // Lista de values autorizados (debe coincidir con las options del select [SEC-05c])
+        const PRESCRIPTORES_AUTORIZADOS = [
+            "david_almeida",
+            "carlos_balboa",
+        ];
+
+        (function initPrescriptor() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tipoParam = urlParams.get("tipo");
+            const refParam = urlParams.get("ref") || sessionStorage.getItem("cpii_ref");
+            const select = document.getElementById("referral");
+            const refStatus = document.getElementById("ref-status");
+
+            // Pre-selección desde URL ?ref=david_almeida (para links de invitación directa)
+            if (refParam) {
+                const refNorm = refParam.toLowerCase().replace(/\s+/g, "_");
+                if (PRESCRIPTORES_AUTORIZADOS.includes(refNorm)) {
+                    select.value = refNorm;
+                    refStatus.textContent = "✓ Prescriptor detectado";
+                    refStatus.className = "font-medium text-emerald-400";
+                }
+                // Si el valor de la URL no está en la lista autorizada, se ignora silenciosamente
             }
+
+            // Pre-selección de perfil por URL (?tipo=inversor | promotor | gestor)
+            if (tipoParam) {
+                const tipoNorm = tipoParam.toLowerCase();
+                if (tipoNorm === "inversor") {
+                    document.getElementById("profile-inversor").checked = true;
+                } else if (tipoNorm === "promotor" || tipoNorm === "gestor") {
+                    document.getElementById("profile-promotor").checked = true;
+                }
+            }
+        })();
+    </script>
+
+    <!-- ════════════════════════ [SEC-09] FIRESTORE — INIT + ENVÍO DE LEAD ══ -->
+    <!--
+  INSTRUCCIONES DE CONFIGURACIÓN:
+  1. Ve a Firebase Console → Descripción general → Agregar app web
+  2. Copia el objeto firebaseConfig y sustituye los valores placeholder abajo
+  3. El modo de prueba de Firestore caduca en 30 días → configura reglas de seguridad antes
+  4. Colección de leads: "leads" (cámbiala en COLLECTION_NAME si usas otra)
+-->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // ── 🔑 SUSTITUYE ESTOS VALORES CON TU firebaseConfig REAL ──────────────────
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID",
+        };
+        // ────────────────────────────────────────────────────────────────────────────
+
+        const COLLECTION_NAME = "leads"; // ← cambia si tu colección se llama distinto
+
+        let db;
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            console.log("[CPII] Firebase + Firestore conectados ✓");
+        } catch (e) {
+            console.warn("[CPII] Firebase no inicializado — revisa firebaseConfig:", e.message);
         }
 
-        // Auto-select profile type
-        if (tipoParam) {
-            if (tipoParam === 'inversor') {
-                document.getElementById('profile-inversor').checked = true;
-            } else if (tipoParam === 'promotor' || tipoParam === 'gestor') {
-                document.getElementById('profile-promotor').checked = true;
-            }
+        // ── HELPERS DE VALIDACIÓN ───────────────────────────────────────────────────
+        function showError(id, show) {
+            document.getElementById("err-" + id).classList.toggle("hidden", !show);
         }
 
-        // Form submission handler
-        const form = document.getElementById('access-form');
-        const successMessage = document.getElementById('success-message');
+        function validateForm() {
+            let valid = true;
+            const fullname = document.getElementById("fullname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const country = document.getElementById("country").value;
+            const terms = document.getElementById("terms").checked;
+            const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        form.addEventListener('submit', function (e) {
+            showError("fullname", !fullname); if (!fullname) valid = false;
+            showError("email", !emailRx.test(email)); if (!emailRx.test(email)) valid = false;
+            showError("phone", !phone); if (!phone) valid = false;
+            showError("country", !country); if (!country) valid = false;
+            showError("terms", !terms); if (!terms) valid = false;
+
+            return valid;
+        }
+
+        // ── HANDLER DE ENVÍO ────────────────────────────────────────────────────────
+        document.getElementById("access-form").addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            // Gather form data
-            const formData = {
-                fullname: document.getElementById('fullname').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                country: document.getElementById('country').value,
-                profile_type: document.querySelector('input[name="profile_type"]:checked').value,
-                referral: referralInput.value,
-                timestamp: new Date().toISOString()
+            if (!validateForm()) return;
+
+            const btn = document.getElementById("submit-btn");
+            btn.classList.add("btn-loading");
+            btn.disabled = true;
+
+            const country = document.getElementById("country").value;
+            const phonePrefix = document.getElementById("phone_prefix").value;
+            const phoneFull = phonePrefix + document.getElementById("phone").value.trim();
+
+            // ══════════════════════════════════════════════════════════════════════════
+            // ESQUEMA FIRESTORE — colección: "leads"
+            // ──────────────────────────────────────────────────────────────────────────
+            // FASE 1 (este formulario):   campos poblados con valor real
+            // FASE 2 (email / reunión):   campos declarados como null → se actualizan
+            //                             vía Cloud Function o panel de administración
+            //
+            // ENTIDADES INDEPENDIENTES (nunca se cruzan):
+            //   location.club_manager  → asignación territorial, tabla fija [SEC-07]
+            //   genealogy.padrino      → red multinivel para Revenue Share
+            //   Leads huérfanos (padrino = "HUERFANO") → cloud function los asigna
+            //   al club_manager de su país cuando el progenitor se da de baja o es
+            //   expulsado.
+            // ══════════════════════════════════════════════════════════════════════════
+            // ── Captura de valores del formulario ──────────────────────────────────────
+            const padrino = document.getElementById("referral").value;
+
+            // ══════════════════════════════════════════════════════════════════════════
+            // ESQUEMA FIRESTORE — colección: "leads" — alineado con interfaz Usuario (Verdent)
+            // ──────────────────────────────────────────────────────────────────────────
+            // CICLO DE VIDA:
+            //   Este documento es un estado de TRANSICIÓN. Cuando el Lead se apruebe,
+            //   una Cloud Function lo promoverá a la colección "usuarios", mapeando:
+            //   metadata.club_manager → seccionCertificada.gestorId
+            //
+            // FASE 2 (fuera de este formulario):
+            //   investment_profile (POF, presupuesto, tipo propiedad) se completa
+            //   vía email/reunión y se actualiza desde el panel de administración.
+            // ══════════════════════════════════════════════════════════════════════════
+            const leadData = {
+
+                // ── Tipo de perfil (raíz — interfaz Usuario) ───────────────────────────
+                tipo: document.querySelector("input[name='profile_type']:checked").value,
+                // "inversor" | "promotor"
+
+                // ── Perfil del lead (alineado con Usuario.perfil) ──────────────────────
+                perfil: {
+                    nombre: document.getElementById("fullname").value.trim(),
+                    email: document.getElementById("email").value.trim().toLowerCase(),
+                    telefono: phoneFull,
+                    pais: country,
+                    idioma: "pt",
+                    referidoPor: padrino || null,
+                    // null = lead huérfano (sin prescriptor)
+                    // La Cloud Function de promoción calculará nivel y revenue_share
+                },
+
+                // ── Metadatos operativos ────────────────────────────────────────────────
+                metadata: {
+                    // Gestión y flujo
+                    club_manager: window.getClubManager ? window.getClubManager(country) : "UID_GESTOR_DEFAULT",
+                    // ↑ Al promover a Usuario → Cloud Function inyecta en seccionCertificada.gestorId
+                    status: "pending_review",       // pending_review | approved | rejected
+                    funnel_stage: "lead_captured",  // Posición en el funnel
+                    source: "access-form",          // Origen del lead
+                    // Legal — RGPD (no negociable)
+                    rgpd_consent: true,             // Checkbox obligatorio ya validado
+                    // Timestamps
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                },
+
             };
 
-            // Log to console (in production, send to backend)
-            console.log('Form submission:', formData);
+            console.log("── INICIO PROCESO DE ALTA ──────────────────");
+            console.log("1. Lead:", leadData.perfil.email);
+            console.log("2. Tipo:", leadData.tipo);
+            console.log("3. País / Club Manager:", leadData.perfil.pais, "→", leadData.metadata.club_manager);
+            console.log("4. Referido por:", leadData.perfil.referidoPor ?? "HUÉRFANO");
+            console.log("5. Estado inicial:", leadData.metadata.status);
+            console.log("6. Fase 2 pendiente:", "investment_profile (POF, presupuesto, tipo propiedad)");
+            console.log("────────────────────────────────────────────");
 
-            // Show success message
-            form.classList.add('hidden');
-            successMessage.classList.remove('hidden');
+            try {
+                if (db) {
+                    const docRef = await addDoc(collection(db, COLLECTION_NAME), leadData);
+                    console.log("[CPII] Lead guardado en Firestore. ID:", docRef.id);
+                } else {
+                    console.warn("[CPII] Firestore no disponible — lead solo en consola.");
+                }
 
-            // Scroll to success message
-            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Éxito: ocultar formulario y mostrar mensaje
+                this.classList.add("hidden");
+                const successEl = document.getElementById("success-message");
+                successEl.classList.remove("hidden");
+                successEl.scrollIntoView({ behavior: "smooth", block: "center" });
 
-            // Store in localStorage for demo purposes
-            const submissions = JSON.parse(localStorage.getItem('cpii_submissions') || '[]');
-            submissions.push(formData);
-            localStorage.setItem('cpii_submissions', JSON.stringify(submissions));
+            } catch (error) {
+                console.error("[CPII] Error al guardar en Firestore:", error);
+                btn.classList.remove("btn-loading");
+                btn.disabled = false;
+                alert("Hubo un error al enviar tu solicitud. Por favor, inténtalo de nuevo.");
+            }
         });
     </script>
+
 </body>
 
 </html>
