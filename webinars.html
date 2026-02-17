@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CPII Portugal - Webinars y Sesiones</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans:wght@400;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#eebd2b",
+                        "background-dark": "#181611",
+                        "surface-dark": "#232018",
+                        "surface-light": "#393528",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-dark text-white font-display min-h-screen flex flex-col">
+    <!-- Header -->
+    <header
+        class="flex items-center justify-between border-b border-surface-light bg-background-dark/95 backdrop-blur-md px-10 py-3 sticky top-0 z-50">
+        <div class="flex items-center gap-4 text-white">
+            <div class="size-8 text-primary">
+                <span class="material-symbols-outlined text-3xl">hub</span>
+            </div>
+            <div>
+                <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">CPII PORTUGAL</h2>
+                <p class="text-xs text-gray-400 font-medium">WEBINARS & FORMACIÓN</p>
+            </div>
+        </div>
+        <div class="flex gap-8">
+            <nav class="flex items-center gap-1 bg-surface-dark p-1 rounded-full border border-surface-light">
+                <a class="text-gray-400 hover:text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+                    href="index.html">Home</a>
+                <a class="text-gray-400 hover:text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+                    href="simulator.html">Simulador</a>
+                <a class="text-gray-400 hover:text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+                    href="referrals.html">Red</a>
+                <a class="text-primary bg-surface-light/50 px-4 py-1.5 rounded-full text-sm font-bold transition-colors"
+                    href="webinars.html">Webinars</a>
+            </nav>
+            <a href="access-form.html"
+                class="flex items-center gap-2 rounded-xl h-10 px-4 bg-primary hover:bg-yellow-400 text-background-dark text-sm font-bold transition-colors">
+                <span class="material-symbols-outlined text-lg">login</span>
+                <span>Acceder</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-10 py-12">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-12">
+                <div class="flex items-center gap-2 text-primary text-sm font-bold uppercase tracking-wider mb-4">
+                    <span class="material-symbols-outlined">play_circle</span>
+                    <span>Formación Continua</span>
+                </div>
+                <h1 class="text-4xl lg:text-5xl font-black text-white mb-4">Webinars y Sesiones Exclusivas</h1>
+                <p class="text-lg text-gray-400 max-w-3xl">
+                    Accede a formación especializada sobre inversión inmobiliaria, estrategias de Revenue Share,
+                    y gestión de patrimonio. Sesiones en vivo con expertos del sector.
+                </p>
+            </div>
+
+            <!-- Upcoming Webinars -->
+            <div class="mb-16">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">calendar_month</span>
+                    Próximas Sesiones
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Webinar Card 1 -->
+                    <div
+                        class="bg-surface-dark rounded-xl border border-surface-light overflow-hidden hover:border-primary/50 transition-all group">
+                        <div
+                            class="aspect-video bg-gradient-to-br from-primary/20 to-surface-light relative overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-6xl text-primary/50">school</span>
+                            </div>
+                            <div
+                                class="absolute top-4 right-4   bg-primary text-background-dark px-3 py-1 rounded-full text-xs font-bold">
+                                PRÓXIMO
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-xs text-primary mb-3">
+                                <span class="material-symbols-outlined text-sm">schedule</span>
+                                <span>25 Feb, 2024 - 19:00 CET</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                                Introducción al Club: Cómo Empezar
+                            </h3>
+                            <p class="text-sm text-gray-400 mb-4">
+                                Aprende los fundamentos del CPII, estructura de Revenue Share y primeros pasos como
+                                inversor.
+                            </p>
+                            <div class="flex items-center justify-between pt-4 border-t border-surface-light">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-sm">person</span>
+                                    </div>
+                                    <span class="text-sm text-gray-400">Dr. Miguel Silva</span>
+                                </div>
+                                <button
+                                    class="text-primary hover:text-white font-bold text-sm flex items-center gap-1 transition-colors">
+                                    <span>Reservar</span>
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Webinar Card 2 -->
+                    <div
+                        class="bg-surface-dark rounded-xl border border-surface-light overflow-hidden hover:border-primary/50 transition-all group">
+                        <div
+                            class="aspect-video bg-gradient-to-br from-blue-900/20 to-surface-light relative overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-6xl text-blue-500/50">analytics</span>
+                            </div>
+                            <div
+                                class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                2 MAR
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-xs text-blue-400 mb-3">
+                                <span class="material-symbols-outlined text-sm">schedule</span>
+                                <span>2 Mar, 2024 - 18:30 CET</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                                Estrategias de Red: Maximiza tu Revenue Share
+                            </h3>
+                            <p class="text-sm text-gray-400 mb-4">
+                                Técnicas avanzadas para construir y gestionar tu red de inversión eficientemente.
+                            </p>
+                            <div class="flex items-center justify-between pt-4 border-t border-surface-light">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-blue-500 text-sm">person</span>
+                                    </div>
+                                    <span class="text-sm text-gray-400">Ana Rodrigues</span>
+                                </div>
+                                <button
+                                    class="text-primary hover:text-white font-bold text-sm flex items-center gap-1 transition-colors">
+                                    <span>Reservar</span>
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Webinar Card 3 -->
+                    <div
+                        class="bg-surface-dark rounded-xl border border-surface-light overflow-hidden hover:border-primary/50 transition-all group">
+                        <div
+                            class="aspect-video bg-gradient-to-br from-purple-900/20 to-surface-light relative overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span
+                                    class="material-symbols-outlined text-6xl text-purple-500/50">real_estate_agent</span>
+                            </div>
+                            <div
+                                class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                                10 MAR
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 text-xs text-purple-400 mb-3">
+                                <span class="material-symbols-outlined text-sm">schedule</span>
+                                <span>10 Mar, 2024 - 19:00 CET</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
+                                Ventanas de Inversión: Tier A vs Tier B
+                            </h3>
+                            <p class="text-sm text-gray-400 mb-4">
+                                Comprende las diferencias entre Catapulta (20% APY) y Refugio (8% APY) y cuándo usar
+                                cada una.
+                            </p>
+                            <div class="flex items-center justify-between pt-4 border-t border-surface-light">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-purple-500 text-sm">person</span>
+                                    </div>
+                                    <span class="text-sm text-gray-400">Carlos Mendes</span>
+                                </div>
+                                <button
+                                    class="text-primary hover:text-white font-bold text-sm flex items-center gap-1 transition-colors">
+                                    <span>Reservar</span>
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recorded Sessions -->
+            <div class="mb-16">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">video_library</span>
+                    Sesiones Grabadas
+                </h2>
+                <div class="bg-surface-dark rounded-xl border border-surface-light p-8">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-3xl">lock</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-1">Contenido Exclusivo para Miembros</h3>
+                                <p class="text-gray-400 text-sm">
+                                    Accede a más de 25 sesiones grabadas una vez aprobado tu acceso al club
+                                </p>
+                            </div>
+                        </div>
+                        <a href="access-form.html"
+                            class="px-8 py-3 bg-primary hover:bg-yellow-400 text-background-dark font-bold rounded-xl transition-colors whitespace-nowrap">
+                            Solicitar Acceso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div
+                class="bg-gradient-to-r from-surface-dark to-background-dark rounded-xl border border-surface-light p-12 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <span class="material-symbols-outlined text-5xl text-primary mb-4">workspace_premium</span>
+                    <h2 class="text-3xl font-bold text-white mb-4">¿Quieres Formar Parte?</h2>
+                    <p class="text-lg text-gray-400 mb-8">
+                        Solicita tu acceso ahora y recibe invitaciones automáticas a todas las sesiones en vivo
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="access-form.html"
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-yellow-400 text-background-dark font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(238,189,43,0.2)]">
+                            <span>Solicitar Acceso Ahora</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </a>
+                        <a href="simulator.html"
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 border border-surface-light hover:border-primary text-white font-bold rounded-xl transition-all">
+                            <span class="material-symbols-outlined">monitoring</span>
+                            <span>Ver Simulador</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-surface-light py-8 bg-background-dark mt-12">
+        <div class="max-w-7xl mx-auto px-10">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+                <p>© 2024 CPII Portugal. Todos los derechos reservados.</p>
+                <div class="flex gap-6">
+                    <a class="hover:text-primary transition-colors" href="#">Privacidad</a>
+                    <a class="hover:text-primary transition-colors" href="#">Términos</a>
+                    <a class="hover:text-primary transition-colors" href="index.html">Inicio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
