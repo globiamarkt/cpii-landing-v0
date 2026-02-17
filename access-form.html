@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CPII Portugal - Solicitar Acceso</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "gold": "#C1A85D",
+                        "gold-hover": "#A8924D",
+                        "carbon": "#1C1C1C",
+                        "dark-grey": "#3A3A3A",
+                        "text-main": "#FFFFFF",
+                        "text-muted": "#A1A1AA",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body
+    class="bg-carbon text-text-main flex min-h-screen flex-col overflow-x-hidden antialiased selection:bg-gold/30 selection:text-gold dark">
+    <!-- Header -->
+    <header
+        class="sticky top-0 z-50 flex items-center justify-between border-b border-white/5 bg-carbon/90 px-6 py-4 backdrop-blur-md lg:px-10">
+        <div class="flex items-center gap-3">
+            <div
+                class="flex size-10 items-center justify-center rounded-full border border-gold/30 bg-gradient-to-br from-dark-grey to-black text-gold shadow-[0_0_15px_rgba(193,168,93,0.15)]">
+                <span class="material-symbols-outlined text-2xl">apartment</span>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold tracking-wide text-white font-serif">CPII <span
+                        class="font-light text-gold text-sm tracking-widest uppercase ml-1">Portugal</span></h2>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-text-muted hover:text-gold transition-colors text-sm">Volver al Inicio</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-1 flex-col lg:flex-row">
+        <!-- Left Side: Benefits -->
+        <div
+            class="relative flex w-full flex-col justify-between overflow-hidden bg-carbon px-6 py-10 lg:w-5/12 lg:px-12 lg:py-16 xl:w-1/2">
+            <div class="absolute -left-20 top-20 h-96 w-96 rounded-full bg-gold/5 blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 h-64 w-full bg-gradient-to-t from-black to-transparent"></div>
+            <div class="relative z-10 flex flex-col gap-8">
+                <div
+                    class="inline-flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-gold shadow-[0_0_10px_rgba(193,168,93,0.2)]">
+                    <span class="material-symbols-outlined text-sm">workspace_premium</span>
+                    Acceso Exclusivo
+                </div>
+                <div class="space-y-6">
+                    <h1
+                        class="text-4xl font-medium leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl font-serif">
+                        El poder de la <span class="text-gold italic">Red</span> a tu alcance
+                    </h1>
+                    <p class="max-w-md text-lg leading-relaxed text-text-muted font-light">
+                        Accede a oportunidades exclusivas de inversión inmobiliaria de alto rendimiento.
+                        Únete a una comunidad de inversores seletos.
+                    </p>
+                </div>
+                <ul class="flex flex-col gap-4 mt-4">
+                    <li class="flex items-start gap-3 group">
+                        <span
+                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
+                        <span class="font-light text-white/90">Rentabilidad verificada y auditada</span>
+                    </li>
+                    <li class="flex items-start gap-3 group">
+                        <span
+                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
+                        <span class="font-light text-white/90">Revenue Share hasta Nivel 3</span>
+                    </li>
+                    <li class="flex items-start gap-3 group">
+                        <span
+                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
+                        <span class="font-light text-white/90">Autofinanciación garantizada</span>
+                    </li>
+                    <li class="flex items-start gap-3 group">
+                        <span
+                            class="material-symbols-outlined mt-0.5 text-gold group-hover:text-white transition-colors">check_circle</span>
+                        <span class="font-light text-white/90">Networking con líderes del sector</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div
+            class="flex w-full items-center justify-center bg-[#151515] px-4 py-10 lg:w-7/12 lg:px-8 xl:w-1/2 relative">
+            <div class="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none opacity-5">
+                <div class="absolute top-10 right-10 w-96 h-96 border border-gold rounded-full"></div>
+                <div class="absolute bottom-10 left-10 w-64 h-64 border border-gold rounded-full"></div>
+            </div>
+            <div
+                class="relative w-full max-w-[520px] rounded-xl bg-dark-grey p-6 shadow-[0_0_25px_rgba(193,168,93,0.15)] border border-gold/20 sm:p-8 lg:p-10">
+                <div class="mb-8 text-center sm:text-left border-b border-white/10 pb-4">
+                    <h2 class="text-2xl text-white font-serif italic">Solicitar Acceso</h2>
+                    <p class="mt-2 text-sm text-text-muted font-light">Completa tus datos para validar tu invitación</p>
+                </div>
+
+                <!-- Success Message (hidden by default) -->
+                <div id="success-message" class="hidden mb-6 rounded-lg border border-gold/30 bg-gold/10 p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-gold text-2xl">check_circle</span>
+                        <div>
+                            <h3 class="font-bold text-gold mb-1">¡Solicitud Enviada!</h3>
+                            <p class="text-sm text-text-muted">Nuestro equipo revisará tu solicitud y te contactará en
+                                24-48 horas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form id="access-form" class="flex flex-col gap-5">
+                    <!-- Profile Type Selection -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs uppercase tracking-wider font-medium text-gold">Selecciona tu
+                            perfil</label>
+                        <div class="grid grid-cols-2 rounded bg-[#2A2A2A] p-1 border border-white/5">
+                            <label class="cursor-pointer">
+                                <input id="profile-inversor" class="peer sr-only" name="profile_type" type="radio"
+                                    value="inversor" checked />
+                                <div
+                                    class="flex items-center justify-center rounded py-2.5 text-sm font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-black peer-checked:shadow-sm">
+                                    Inversor
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input id="profile-promotor" class="peer sr-only" name="profile_type" type="radio"
+                                    value="promotor" />
+                                <div
+                                    class="flex items-center justify-center rounded py-2.5 text-sm font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-black peer-checked:shadow-sm">
+                                    Promotor/Gestor
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <!-- Full Name -->
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
+                                for="fullname">Nombre Completo *</label>
+                            <div class="relative group">
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-white/30 group-focus-within:text-gold transition-colors">
+                                    <span class="material-symbols-outlined text-xl">person</span>
+                                </div>
+                                <input required
+                                    class="block w-full rounded border border-white/10 bg-[#2A2A2A] py-3 pl-10 text-sm text-white placeholder-white/20 focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none transition-all"
+                                    id="fullname" name="fullname" placeholder="Ej. João Silva" type="text" />
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
+                                for="email">Email *</label>
+                            <div class="relative group">
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-white/30 group-focus-within:text-gold transition-colors">
+                                    <span class="material-symbols-outlined text-xl">mail</span>
+                                </div>
+                                <input required
+                                    class="block w-full rounded border border-white/10 bg-[#2A2A2A] py-3 pl-10 text-sm text-white placeholder-white/20 focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none transition-all"
+                                    id="email" name="email" placeholder="nombre@empresa.com" type="email" />
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
+                                for="phone">Telemóvel *</label>
+                            <div class="flex gap-2">
+                                <select
+                                    class="w-24 rounded border border-white/10 bg-[#2A2A2A] py-3 pl-3 pr-8 text-sm text-white focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none">
+                                    <option>+351</option>
+                                    <option>+34</option>
+                                    <option>+1</option>
+                                    <option>+44</option>
+                                </select>
+                                <input required
+                                    class="block flex-1 rounded border border-white/10 bg-[#2A2A2A] py-3 px-4 text-sm text-white placeholder-white/20 focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none transition-all"
+                                    id="phone" name="phone" placeholder="000 000 000" type="tel" />
+                            </div>
+                        </div>
+
+                        <!-- Country -->
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-xs uppercase tracking-wider font-medium text-text-muted"
+                                for="country">País *</label>
+                            <select required
+                                class="block w-full rounded border border-white/10 bg-[#2A2A2A] py-3 px-4 text-sm text-white focus:border-gold focus:ring-1 focus:ring-gold focus:outline-none"
+                                id="country" name="country">
+                                <option value="">Selecciona tu país</option>
+                                <option value="PT">Portugal</option>
+                                <option value="ES">España</option>
+                                <option value="BR">Brasil</option>
+                                <option value="MX">México</option>
+                                <option value="AR">Argentina</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="relative py-4">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-white/10"></div>
+                        </div>
+                        <div class="relative flex justify-center">
+                            <span
+                                class="bg-dark-grey px-3 text-[10px] uppercase tracking-widest text-gold/70">Referencia</span>
+                        </div>
+                    </div>
+
+                    <!-- Referral -->
+                    <div>
+                        <label
+                            class="mb-1.5 flex items-center justify-between text-xs uppercase tracking-wider font-medium text-text-muted"
+                            for="referral">
+                            <span>¿Quién te invitó?</span>
+                            <span class="text-[10px] font-normal text-gold" id="ref-status">*Auto-capturado</span>
+                        </label>
+                        <div class="relative group">
+                            <div
+                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-white/30 group-focus-within:text-gold transition-colors">
+                                <span class="material-symbols-outlined text-xl">search</span>
+                            </div>
+                            <input
+                                class="block w-full rounded border border-gold/30 bg-gold/5 py-3.5 pl-10 pr-12 text-sm text-white placeholder-white/30 focus:border-gold focus:bg-[#2A2A2A] focus:ring-1 focus:ring-gold focus:outline-none transition-all"
+                                id="referral" name="referral" placeholder="Código de referencia o nombre" type="text" />
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <span
+                                    class="material-symbols-outlined cursor-help text-white/30 hover:text-gold text-lg transition-colors"
+                                    title="Código de referencia capturado automáticamente">help</span>
+                            </div>
+                        </div>
+                        <p class="mt-2 text-xs text-text-muted/60">
+                            Si no tienes un código de referencia, <a
+                                class="font-medium text-gold hover:text-white transition-colors underline decoration-gold/30 underline-offset-2"
+                                href="index.html">vuelve al inicio</a>.
+                        </p>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="flex items-start gap-3 mt-2">
+                        <div class="flex h-5 items-center">
+                            <input required
+                                class="h-4 w-4 rounded border-white/20 bg-[#2A2A2A] text-gold focus:ring-gold focus:ring-offset-dark-grey"
+                                id="terms" name="terms" type="checkbox" />
+                        </div>
+                        <label class="text-xs text-text-muted font-light" for="terms">
+                            Acepto la <a class="font-medium text-white hover:text-gold transition-colors"
+                                href="#">Política de Privacidad</a> y los <a
+                                class="font-medium text-white hover:text-gold transition-colors" href="#">Términos de
+                                Servicio</a>. Entiendo que mi solicitud está sujeta a aprobación.
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="group mt-4 flex w-full items-center justify-center gap-2 rounded bg-gold py-4 text-sm font-bold uppercase tracking-wider text-black transition-all hover:bg-gold-hover hover:shadow-[0_0_20px_rgba(193,168,93,0.4)] active:scale-[0.98]">
+                        <span>Solicitar Acceso</span>
+                        <span
+                            class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+                    </button>
+                </form>
+
+                <!-- Footer -->
+                <div class="mt-8 pt-6 border-t border-white/5 text-center">
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-white/20">Confidencial — Solo para miembros
+                        autorizados</p>
+                    <div class="flex justify-center gap-6 mt-4">
+                        <a class="text-xs font-medium text-text-muted hover:text-gold transition-colors"
+                            href="#">Privacidad</a>
+                        <a class="text-xs font-medium text-text-muted hover:text-gold transition-colors"
+                            href="#">Términos</a>
+                        <a class="text-xs font-medium text-text-muted hover:text-gold transition-colors"
+                            href="index.html">Ayuda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Auto-capture referral from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const refParam = urlParams.get('ref');
+        const tipoParam = urlParams.get('tipo');
+        const referralInput = document.getElementById('referral');
+        const refStatus = document.getElementById('ref-status');
+
+        // Capture referral
+        if (refParam) {
+            referralInput.value = refParam;
+            refStatus.textContent = '✓ Auto-capturado';
+            refStatus.classList.add('text-green-500');
+        } else {
+            // Try to get from sessionStorage (set in index.html)
+            const sessionRef = sessionStorage.getItem('cpii_ref');
+            if (sessionRef) {
+                referralInput.value = sessionRef;
+                refStatus.textContent = '✓ Auto-capturado';
+                refStatus.classList.add('text-green-500');
+            } else {
+                refStatus.textContent = 'Opcional';
+                refStatus.classList.remove('text-gold');
+                refStatus.classList.add('text-text-muted');
+            }
+        }
+
+        // Auto-select profile type
+        if (tipoParam) {
+            if (tipoParam === 'inversor') {
+                document.getElementById('profile-inversor').checked = true;
+            } else if (tipoParam === 'promotor' || tipoParam === 'gestor') {
+                document.getElementById('profile-promotor').checked = true;
+            }
+        }
+
+        // Form submission handler
+        const form = document.getElementById('access-form');
+        const successMessage = document.getElementById('success-message');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Gather form data
+            const formData = {
+                fullname: document.getElementById('fullname').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                country: document.getElementById('country').value,
+                profile_type: document.querySelector('input[name="profile_type"]:checked').value,
+                referral: referralInput.value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Log to console (in production, send to backend)
+            console.log('Form submission:', formData);
+
+            // Show success message
+            form.classList.add('hidden');
+            successMessage.classList.remove('hidden');
+
+            // Scroll to success message
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Store in localStorage for demo purposes
+            const submissions = JSON.parse(localStorage.getItem('cpii_submissions') || '[]');
+            submissions.push(formData);
+            localStorage.setItem('cpii_submissions', JSON.stringify(submissions));
+        });
+    </script>
+</body>
+
+</html>
