@@ -157,6 +157,8 @@
                 <a class="text-primary border-b border-primary pb-1 text-sm font-semibold" href="#inicio"
                     data-i18n="nav.inicio">Início</a>
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="equipo-comercial.html" data-i18n="nav.grupo_comercial">Grupo Comercial</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
                     href="simulator.html" data-i18n="nav.simulador">Simulador</a>
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
                     href="#como-funciona" data-i18n="nav.como_funciona">Como Funciona</a>
@@ -463,30 +465,207 @@
         </div>
     </section>
 
-    <!-- ════════════════════════════════════════════ [SEC-05] CTA FINAL ══ -->
-    <section class="py-20 bg-gradient-to-r from-card-dark to-background-dark relative overflow-hidden">
-        <div
-            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnptMCAyYy0yLjIxIDAtNCAxLjc5LTQgNHMxLjc5IDQgNCA0IDQtMS43OSA0LTQtMS43OS00LTQtNHoiIGZpbGw9IiNDMUE4NUQiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-30 pointer-events-none">
+    <!-- ══════════════════════════ [SEC-05] EQUIPA COMERCIAL + CTA FINAL ══ -->
+    <!--
+      ÍNDICE SEC-05 (substituído):
+      · [SEC-05a] Header + stats bar — métricas de autoridade do grupo
+      · [SEC-05b] Cards de equipa — David Almeida + Carlos Balboa
+      · [SEC-05c] CTA duplo — equipo-comercial.html + access-form.html
+    -->
+    <section id="equipa-comercial"
+        class="py-20 bg-gradient-to-b from-background-dark to-card-dark relative overflow-hidden">
+
+        <div class="absolute -right-20 bottom-20 h-96 w-96 rounded-full bg-primary/5 blur-3xl pointer-events-none">
         </div>
-        <div class="mx-auto max-w-4xl px-6 lg:px-10 text-center relative z-10">
-            <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6 font-display" data-i18n="cta.title">Pronto para
-                Começar?</h2>
-            <p class="text-lg text-text-secondary mb-8 max-w-2xl mx-auto" data-i18n="cta.subtitle">
-                Complete o seu pedido de acesso e a nossa equipa entrará em contacto em 24-48 horas para validar o seu
-                perfil
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="access-form.html"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-background-dark px-8 py-4 text-base font-bold transition-all shadow-[0_0_20px_rgba(193,168,92,0.3)]">
-                    <span data-i18n="cta.btn.primary">Solicitar Acesso Agora</span>
-                    <span class="material-symbols-outlined">arrow_forward</span>
-                </a>
-                <a href="simulator.html"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl border border-border-dark hover:border-primary bg-transparent text-white px-8 py-4 text-base font-bold transition-all">
-                    <span class="material-symbols-outlined">monitoring</span>
-                    <span data-i18n="cta.btn.secondary">Simular o meu Património</span>
-                </a>
+        <div
+            class="absolute left-1/2 top-0 h-px w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-border-dark to-transparent">
+        </div>
+
+        <div class="mx-auto max-w-7xl px-6 lg:px-10 relative z-10">
+
+            <!-- ── [SEC-05a] HEADER ── -->
+            <div class="text-center mb-14">
+                <div
+                    class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-primary mb-6">
+                    <span class="material-symbols-outlined text-sm">groups</span>
+                    <span data-i18n="team.badge">eXp Portugal Commercial Group</span>
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4 font-display">
+                    <span data-i18n="team.title.main">O Grupo Comercial mais</span><br>
+                    <span class="text-primary italic" data-i18n="team.title.highlight">estruturado de Portugal</span>
+                </h2>
+                <p class="text-lg text-text-secondary max-w-2xl mx-auto" data-i18n="team.subtitle">
+                    Não vendemos propriedades — atraímos investimento estratégico. Uma fórmula de sucesso alinhada com
+                    os padrões internacionais da eXp Commercial USA e KYC/AML.
+                </p>
             </div>
+
+            <!-- ── [SEC-05a] STATS BAR ── -->
+            <div
+                class="grid grid-cols-3 divide-x divide-border-dark border border-border-dark rounded-2xl overflow-hidden mb-14 bg-card-dark/50">
+                <div class="py-8 px-6 text-center">
+                    <p class="text-4xl font-black text-primary font-display" data-i18n="team.stat1.value">+25%</p>
+                    <p class="text-xs text-text-secondary uppercase tracking-wider mt-2" data-i18n="team.stat1.label">da
+                        faturação total eXp Portugal</p>
+                </div>
+                <div class="py-8 px-6 text-center">
+                    <p class="text-4xl font-black text-primary font-display" data-i18n="team.stat2.value">7/17</p>
+                    <p class="text-xs text-text-secondary uppercase tracking-wider mt-2" data-i18n="team.stat2.label">
+                        CAPs do país no nosso grupo</p>
+                </div>
+                <div class="py-8 px-6 text-center">
+                    <p class="text-4xl font-black text-primary font-display" data-i18n="team.stat3.value">3+</p>
+                    <p class="text-xs text-text-secondary uppercase tracking-wider mt-2" data-i18n="team.stat3.label">
+                        anos de metodologia provada</p>
+                </div>
+            </div>
+
+            <!-- ── [SEC-05b] CARDS DE EQUIPA ── -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-14">
+
+                <!-- Card: David Almeida -->
+                <div
+                    class="group relative bg-card-dark rounded-2xl border border-border-dark hover:border-primary/50 p-8 transition-all hover:-translate-y-1 shadow-xl overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-yellow-400 to-primary opacity-80">
+                    </div>
+                    <div class="flex items-center gap-5 mb-6">
+                        <div class="relative flex-shrink-0">
+                            <div
+                                class="w-16 h-16 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <span class="text-xl font-black text-primary font-display">DA</span>
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center border-2 border-card-dark">
+                                <span class="material-symbols-outlined text-background-dark"
+                                    style="font-size:11px;font-variation-settings:'FILL' 1;">star</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs text-text-secondary uppercase tracking-widest mb-1"
+                                data-i18n="team.da.role">Agente Senior & Founder</p>
+                            <h3 class="text-2xl font-bold text-white font-display">David Almeida</h3>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span
+                            class="inline-flex items-center gap-1 bg-primary/15 border border-primary/30 text-primary text-xs font-bold px-3 py-1 rounded-full">
+                            <span class="material-symbols-outlined"
+                                style="font-size:12px;font-variation-settings:'FILL' 1;">emoji_events</span>
+                            <span data-i18n="team.da.badge1">Agente do Ano 2025</span>
+                        </span>
+                        <span
+                            class="inline-flex bg-border-dark/80 text-text-secondary text-xs font-medium px-3 py-1 rounded-full border border-border-dark"
+                            data-i18n="team.da.badge2">
+                            eXp Global Autorizado
+                        </span>
+                        <span
+                            class="inline-flex bg-border-dark/80 text-text-secondary text-xs font-medium px-3 py-1 rounded-full border border-border-dark"
+                            data-i18n="team.da.badge3">
+                            Exclusividade Comercial PT
+                        </span>
+                    </div>
+                    <p class="text-sm text-text-secondary leading-relaxed mb-6" data-i18n="team.da.bio"
+                        data-i18n-html="true">
+                        Fundador e líder estratégico do grupo. Responsável por mais de
+                        <strong class="text-white">25% da faturação total da eXp Portugal</strong>,
+                        com contrato de exclusividade assinado para a área Comercial.
+                        Mentor de referência e guardião da metodologia de captação estruturada no mercado ibérico.
+                    </p>
+                    <div class="pt-4 border-t border-border-dark text-xs text-text-secondary">
+                        <span class="text-primary font-semibold" data-i18n="team.da.focus.label">Foco: </span>
+                        <span data-i18n="team.da.focus.text">Liderança · Captação Senior · Estratégia de Mercado</span>
+                    </div>
+                </div>
+
+                <!-- Card: Carlos Balboa -->
+                <div
+                    class="group relative bg-card-dark rounded-2xl border border-border-dark hover:border-primary/50 p-8 transition-all hover:-translate-y-1 shadow-xl overflow-hidden">
+                    <div
+                        class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-teal-600 via-teal-400 to-teal-600 opacity-70">
+                    </div>
+                    <div class="flex items-center gap-5 mb-6">
+                        <div class="relative flex-shrink-0">
+                            <div
+                                class="w-16 h-16 rounded-full bg-teal-500/10 border border-teal-500/30 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <span class="text-xl font-black text-teal-400 font-display">CB</span>
+                            </div>
+                            <div
+                                class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-teal-500 flex items-center justify-center border-2 border-card-dark">
+                                <span class="material-symbols-outlined text-background-dark"
+                                    style="font-size:11px;font-variation-settings:'FILL' 1;">code</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs text-text-secondary uppercase tracking-widest mb-1"
+                                data-i18n="team.cb.role">Senior Agent & CTO</p>
+                            <h3 class="text-2xl font-bold text-white font-display">Carlos Balboa</h3>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span
+                            class="inline-flex items-center gap-1 bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs font-bold px-3 py-1 rounded-full">
+                            <span class="material-symbols-outlined"
+                                style="font-size:12px;font-variation-settings:'FILL' 1;">terminal</span>
+                            <span data-i18n="team.cb.badge1">Chief Technology Officer</span>
+                        </span>
+                        <span
+                            class="inline-flex bg-border-dark/80 text-text-secondary text-xs font-medium px-3 py-1 rounded-full border border-border-dark"
+                            data-i18n="team.cb.badge2">
+                            KYC/AML Specialist
+                        </span>
+                        <span
+                            class="inline-flex bg-border-dark/80 text-text-secondary text-xs font-medium px-3 py-1 rounded-full border border-border-dark"
+                            data-i18n="team.cb.badge3">
+                            Co-fundador CPII
+                        </span>
+                    </div>
+                    <p class="text-sm text-text-secondary leading-relaxed mb-6" data-i18n="team.cb.bio"
+                        data-i18n-html="true">
+                        Arquitecto digital do grupo. Combina experiência em mercados internacionais de commodities com
+                        o desenvolvimento do <strong class="text-white">CRM proprietário e da plataforma CPII</strong>.
+                        Especialista em compliance internacional e atração de investidores estratégicos à escala global.
+                    </p>
+                    <div class="pt-4 border-t border-border-dark text-xs text-text-secondary">
+                        <span class="text-teal-400 font-semibold" data-i18n="team.cb.focus.label">Foco: </span>
+                        <span data-i18n="team.cb.focus.text">Tecnologia · Atração de Investidores · Compliance
+                            Internacional</span>
+                    </div>
+                </div>
+
+            </div><!-- /grid cards -->
+
+            <!-- ── [SEC-05c] CTA DUPLO ── -->
+            <div class="rounded-2xl border border-border-dark bg-card-dark/50 p-8 lg:p-12">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+                    <div class="lg:flex-1">
+                        <p class="text-xs text-primary uppercase tracking-widest font-semibold mb-2"
+                            data-i18n="team.cta.pre">Acesso condicionado aos critérios do grupo</p>
+                        <h3 class="text-2xl lg:text-3xl font-bold text-white mb-3 font-display">
+                            <span data-i18n="team.cta.title.main">Conheça a metodologia</span><br>
+                            <span class="text-primary italic" data-i18n="team.cta.title.highlight">e os elementos
+                                nucleares</span>
+                        </h3>
+                        <p class="text-text-secondary text-sm leading-relaxed max-w-lg" data-i18n="team.cta.subtitle">
+                            Aceda aos perfis completos do grupo, à metodologia de captação estruturada e aos
+                            princípios de compliance internacional que diferenciam a eXp Portugal Commercial Group.
+                        </p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row lg:flex-col gap-3 flex-shrink-0">
+                        <a href="equipo-comercial.html"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-background-dark px-8 py-4 text-sm font-bold transition-all shadow-[0_0_20px_rgba(193,168,92,0.25)]">
+                            <span class="material-symbols-outlined text-lg">groups</span>
+                            <span data-i18n="team.cta.btn.primary">Conhecer o Grupo Comercial</span>
+                        </a>
+                        <a href="access-form.html"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl border border-border-dark hover:border-primary bg-transparent text-white px-8 py-4 text-sm font-bold transition-all">
+                            <span class="material-symbols-outlined text-lg">login</span>
+                            <span data-i18n="team.cta.btn.secondary">Solicitar Acesso Agora</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
