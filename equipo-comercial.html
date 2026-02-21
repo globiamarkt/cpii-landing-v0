@@ -3,7 +3,7 @@
   ARCHIVO:  equipo-comercial.html
   VERSIÓN:  1.0.0
   FECHA:    2026-02-19
-  PROPÓSITO: Página de presentación del Grupo eXp Portugal Commercial Group.
+  PROPÓSITO: Página de presentación del Grupo Commercial Group Portugal.
              Perfiles de David Almeida y Carlos Balboa + Metodología Nuclear
              + Elementos Nucleares del Área Comercial.
   SISTEMA:  CPII Portugal — Design System v2.0 (Playfair Display + Manrope)
@@ -31,8 +31,8 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="description"
-        content="eXp Portugal Commercial Group — Metodologia estruturada de captação e investimento imobiliário comercial. David Almeida e Carlos Balboa." />
-    <title>Grupo Comercial — eXp Portugal Commercial Group | CPII</title>
+        content="Commercial Group Portugal — Metodologia estruturada de captação e investimento imobiliário comercial. David Almeida e Carlos Balboa." />
+    <title>Grupo Comercial — Commercial Group Portugal | CPII</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
@@ -126,24 +126,26 @@
     <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-background-dark/95 backdrop-blur-md">
         <div class="mx-auto max-w-7xl px-6 lg:px-10 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <a href="index.html" class="flex items-center gap-4 group">
-                    <div class="size-8 text-primary">
-                        <span class="material-symbols-outlined text-3xl">apartment</span>
-                    </div>
-                    <h2 class="text-white text-xl font-bold tracking-tight font-display">CPII <span
-                            class="text-primary font-normal">PORTUGAL</span></h2>
-                </a>
+                <div class="size-8 text-primary">
+                    <span class="material-symbols-outlined text-3xl">apartment</span>
+                </div>
+                <h2 class="text-white text-xl font-bold tracking-tight font-display">CPII <span
+                        class="text-primary font-normal">PORTUGAL</span></h2>
             </div>
 
             <nav class="hidden md:flex gap-8">
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
-                    href="index.html">Início</a>
-                <a class="text-primary border-b border-primary pb-1 text-sm font-semibold"
-                    href="equipo-comercial.html">Grupo Comercial</a>
+                    href="index.html#inicio" data-i18n="nav.inicio">Início</a>
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
-                    href="simulator.html">Simulador</a>
+                    href="equipo-comercial.html" data-i18n="nav.grupo_comercial">Grupo Comercial</a>
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
-                    href="webinars.html">Webinars</a>
+                    href="simulator.html" data-i18n="nav.simulador">Simulador</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="referrals.html" data-i18n="nav.referrals">Minha Rede</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="index.html#como-funciona" data-i18n="nav.como_funciona">Como Funciona</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="webinars.html" data-i18n="nav.webinars">Webinars</a>
             </nav>
 
             <div class="flex items-center gap-4">
@@ -154,7 +156,8 @@
                     <option value="fr">FR</option>
                 </select>
                 <a href="access-form.html"
-                    class="flex items-center justify-center rounded-xl h-10 px-6 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.15)]">
+                    class="flex items-center justify-center rounded-xl h-10 px-6 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.15)]"
+                    data-i18n="btn.solicitar">
                     Solicitar Acesso
                 </a>
             </div>
@@ -179,21 +182,23 @@
             <div class="flex flex-col lg:flex-row items-start gap-16">
                 <div class="flex-1 space-y-8">
 
-                    <div
-                        class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-primary">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-bold tracking-widest uppercase mb-6"
+                        data-i18n="team.hero.badge">
                         <span class="material-symbols-outlined text-sm">verified</span>
-                        Marca Autorizada pela eXp Global
+                        OPERAÇÃO INTERNACIONAL AUTORIZADA
                     </div>
 
-                    <h1 class="text-4xl sm:text-5xl font-bold leading-tight tracking-tight font-display">
-                        eXp Portugal<br>
-                        <span class="text-primary italic">Commercial Group</span>
+                    <h1 class="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tight mb-6 font-display"
+                        data-i18n="team.hero.title">
+                        Commercial Group<br />
+                        <span class="text-primary italic font-serif font-medium">Portugal</span>
                     </h1>
 
-                    <p class="text-lg text-text-secondary max-w-xl leading-relaxed">
-                        O grupo comercial mais estruturado da Península Ibérica. Metodologia alinhada com os
-                        padrões internacionais da eXp Commercial USA, Canadá e normas KYC/AML do comércio internacional.
-                        <strong class="text-white">Não vendemos propriedades — atraímos investimento
+                    <p class="text-lg md:text-xl text-text-secondary max-w-2xl font-light leading-relaxed mb-10"
+                        data-i18n="team.hero.desc" data-i18n-html="true">
+                        O grupo comercial mais estruturado da Península Ibérica. Metodologia alinhada com os padrões
+                        internacionais do sector e normas KYC/AML do comércio internacional. <strong
+                            class="text-white font-medium">Não vendemos propriedades — atraímos investimento
                             estratégico.</strong>
                     </p>
 
@@ -214,16 +219,19 @@
                 <!-- Stats verticais -->
                 <div class="flex-shrink-0 grid grid-cols-1 gap-4 w-full lg:w-72">
                     <div class="bg-card-dark border border-border-dark rounded-2xl p-6">
-                        <p class="text-4xl font-black text-primary font-display">+25%</p>
-                        <p class="text-sm text-text-secondary mt-1">da faturação total eXp Portugal</p>
+                        <p class="text-4xl font-black text-primary font-display" data-i18n="team.stat1.value">+25%</p>
+                        <p class="text-sm text-text-secondary mt-1" data-i18n="team.stat1.label">da faturação total
+                            Commercial Group Portugal</p>
                     </div>
                     <div class="bg-card-dark border border-border-dark rounded-2xl p-6">
-                        <p class="text-4xl font-black text-primary font-display">7/17</p>
-                        <p class="text-sm text-text-secondary mt-1">CAPs do país sob liderança do grupo</p>
+                        <p class="text-4xl font-black text-primary font-display" data-i18n="team.stat2.value">7/17</p>
+                        <p class="text-sm text-text-secondary mt-1" data-i18n="team.stat2.label">CAPs do país sob
+                            liderança do grupo</p>
                     </div>
                     <div class="bg-card-dark border border-border-dark rounded-2xl p-6">
-                        <p class="text-4xl font-black text-primary font-display">3+</p>
-                        <p class="text-sm text-text-secondary mt-1">anos de metodologia estruturada e provada</p>
+                        <p class="text-4xl font-black text-primary font-display" data-i18n="team.stat3.value">3+</p>
+                        <p class="text-sm text-text-secondary mt-1" data-i18n="team.stat3.label">anos de metodologia
+                            estruturada e provada</p>
                     </div>
                     <div class="bg-primary/10 border border-primary/30 rounded-2xl p-6">
                         <p class="text-4xl font-black text-primary font-display">1M€</p>
@@ -269,7 +277,8 @@
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <p class="text-xs text-text-secondary uppercase tracking-widest mb-1">Agente Senior &
+                                <p class="text-xs text-text-secondary uppercase tracking-widest mb-1"
+                                    data-i18n="team.da.role">Agente Senior &
                                     Founder</p>
                                 <h3 class="text-2xl font-bold text-white font-display mb-3">David Almeida</h3>
                                 <div class="flex flex-wrap gap-2">
@@ -281,7 +290,7 @@
                                     </span>
                                     <span
                                         class="bg-border-dark text-text-secondary text-xs px-3 py-1 rounded-full border border-border-dark">
-                                        eXp Global Autorizado
+                                        Operador Internacional
                                     </span>
                                 </div>
                             </div>
@@ -291,7 +300,7 @@
                         <div class="grid grid-cols-2 gap-3 mb-8">
                             <div class="bg-background-dark rounded-xl p-4 border border-border-dark">
                                 <p class="text-2xl font-black text-primary font-display">+25%</p>
-                                <p class="text-xs text-text-secondary mt-1">Faturação eXp Portugal</p>
+                                <p class="text-xs text-text-secondary mt-1">Faturação Commercial Group Portugal</p>
                             </div>
                             <div class="bg-background-dark rounded-xl p-4 border border-border-dark">
                                 <p class="text-2xl font-black text-primary font-display">7 CAPs</p>
@@ -311,26 +320,22 @@
                         <div class="space-y-4 text-sm text-text-secondary leading-relaxed mb-8" data-i18n="team.da.bio"
                             data-i18n-html="true">
                             <p>
-                                David Almeida é o fundador e líder estratégico do <strong class="text-white">eXp
-                                    Portugal Commercial Group</strong>,
-                                com marca registada e autorizada pela eXp Global. Detentor de um contrato de
-                                exclusividade
-                                assinado com a eXp Portugal para a área Comercial — um passo que poucos profissionais
-                                tiveram a visão e disciplina de dar.
+                                David Almeida é o fundador e líder estratégico do <strong class="text-white">Commercial
+                                    Group Portugal</strong>, com marca registada e autorizada. Detentor de um contrato
+                                de exclusividade assinado com a sua companhia
+                                para a área Comercial — um passo que poucos profissionais tiveram a visão e
+                                disciplina de dar.
                             </p>
                             <p>
                                 Em 2025, foi nomeado <strong class="text-white">Agente do Ano em Portugal</strong>,
-                                liderando
-                                um grupo responsável por mais de 25% da faturação total da eXp Portugal, com 7 dos 17
-                                CAPs
-                                do país integrados na sua estrutura.
+                                liderando um grupo responsável por mais de 25% da faturação total da sua companhia,
+                                com 7 dos 17 CAPs do país integrados na sua estrutura.
                             </p>
                             <p>
                                 Defensor intransigente de uma metodologia baseada em estándares internacionais —
-                                alinhada
-                                com a eXp Commercial USA/Canadá — David posiciona-se como o <strong
-                                    class="text-white">guardião
-                                    do processo</strong>: o agente que serve o proprietário, não o mercado.
+                                alinhada com os padrões do sector — David posiciona-se como o <strong
+                                    class="text-white">guardião do processo</strong>: o agente que serve o proprietário,
+                                não o mercado.
                             </p>
                         </div>
 
@@ -378,7 +383,8 @@
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <p class="text-xs text-text-secondary uppercase tracking-widest mb-1">Senior Agent & CTO
+                                <p class="text-xs text-text-secondary uppercase tracking-widest mb-1"
+                                    data-i18n="team.cb.role">Senior Agent & CTO
                                 </p>
                                 <h3 class="text-2xl font-bold text-white font-display mb-3">Carlos Balboa</h3>
                                 <div class="flex flex-wrap gap-2">
@@ -484,8 +490,8 @@
                     Metodologia <span class="text-primary italic">Nuclear</span>
                 </h2>
                 <p class="text-lg text-text-secondary max-w-2xl mx-auto">
-                    O processo que diferencia o eXp Portugal Commercial Group de todos os outros.
-                    Alinhado com os padrões internacionais da eXp Commercial USA e KYC/AML.
+                    O processo que diferencia o Commercial Group Portugal de todos os outros.
+                    Alinhado com os padrões internacionais da Commercial Group Portugal e KYC/AML.
                 </p>
             </div>
 
@@ -530,7 +536,8 @@
                             <div class="pb-8">
                                 <p class="font-bold text-white mb-1">Declaração de Autorização de Venda</p>
                                 <p class="text-sm text-text-secondary leading-relaxed">Documento formal com
-                                    identificação do proprietário, eXp Portugal, agente Senior e especialista. Inclui
+                                    identificação do proprietário, Commercial Group Portugal, agente Senior e
+                                    especialista. Inclui
                                     condições de venda, valor, prazo e honorários.</p>
                             </div>
                         </div>
@@ -746,7 +753,7 @@
                     </div>
                     <h3 class="text-lg font-bold text-white mb-2 font-display">Marca & PI Registada</h3>
                     <p class="text-sm text-text-secondary leading-relaxed">
-                        eXp Portugal Commercial Group é marca registada e autorizada pela eXp Global.
+                        O Commercial Group Portugal é uma marca registada e autorizada a operar a nível internacional.
                         Infraestrutura digital alojada em domínios próprios para garantir controlo e
                         protecção da propriedade intelectual.
                     </p>
@@ -848,7 +855,7 @@
             </h2>
 
             <p class="text-lg text-text-secondary mb-4 max-w-2xl mx-auto">
-                O acesso ao eXp Portugal Commercial Group está condicionado ao cumprimento
+                O acesso ao Commercial Group Portugal está condicionado ao cumprimento
                 dos critérios de candidatura. Todas as candidaturas são analisadas individualmente.
             </p>
 
@@ -858,14 +865,14 @@
                 <div class="flex-1">
                     <p class="text-xs text-primary uppercase tracking-wider font-semibold mb-2">Agente Especialista
                         Senior</p>
-                    <p class="text-sm text-text-secondary">Membro eXp Global · 5+ anos · 75% negócios em área comercial
-                        · Domínio inglês</p>
+                    <p class="text-sm text-text-secondary">Membro da Companhia · 5+ anos · 75% negócios em área
+                        comercial · Domínio inglês</p>
                 </div>
                 <div class="w-px bg-border-dark hidden sm:block"></div>
                 <div class="flex-1">
                     <p class="text-xs text-teal-400 uppercase tracking-wider font-semibold mb-2">Agente Especialista</p>
-                    <p class="text-sm text-text-secondary">Membro eXp Global · 3+ anos · 50% negócios em área comercial
-                        · Inglês</p>
+                    <p class="text-sm text-text-secondary">Membro da Companhia · 3+ anos · 50% negócios em área
+                        comercial · Inglês</p>
                 </div>
             </div>
 
@@ -885,7 +892,7 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════ [SEC-09] FOOTER ══ -->
-    <footer class="border-t border-border-dark py-10 bg-background-dark">
+    <footer class="border-t border-border-dark py-10 bg-background-dark mt-auto">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div>
@@ -893,43 +900,38 @@
                         <span class="material-symbols-outlined text-primary text-2xl">apartment</span>
                         <span class="text-white text-lg font-bold font-display">CPII PORTUGAL</span>
                     </div>
-                    <p class="text-text-secondary text-sm">
-                        Clube Privado de Investimento Imobiliário. Construindo património sustentável desde 2024.
+                    <p class="text-text-secondary text-sm font-medium leading-relaxed" data-i18n="footer.about">
+                        O Private Banking do imobiliário. Estratégia, exclusividade e crescimento exponencial.
                     </p>
                 </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="simulator.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm">Simulador</a>
-                        </li>
-                        <li><a href="webinars.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm">Webinars</a>
-                        </li>
-                        <li><a href="referrals.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm">Minha Rede</a>
-                        </li>
-                    </ul>
+
+                <div class="flex flex-col items-start md:items-center justify-center">
+                    <h4 class="text-white font-bold mb-4 font-display" data-i18n="footer.cta.title">Pronto para começar?
+                    </h4>
+                    <a href="access-form.html"
+                        class="inline-flex items-center justify-center rounded-xl h-10 px-6 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.15)]"
+                        data-i18n="btn.solicitar">
+                        Solicitar Acesso
+                    </a>
                 </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Legal</h4>
+
+                <div class="md:text-right">
+                    <h4 class="text-white font-bold mb-4" data-i18n="footer.legal.title">Legal</h4>
                     <ul class="space-y-2">
                         <li><a href="privacy.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm">Privacidade</a>
-                        </li>
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.privacy">Privacidade</a></li>
                         <li><a href="terms.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm">Termos</a></li>
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.terms">Termos</a></li>
                         <li><a href="access-form.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm">Suporte</a>
-                        </li>
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="footer.legal.support">Suporte</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-border-dark pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-text-secondary text-sm">© 2026 CPII Portugal. Sistema Verdent.</p>
-                <div class="flex gap-4">
-                    <span class="text-text-secondary text-xs">Stack: HTML + Tailwind + Firebase</span>
-                </div>
+            <div class="border-t border-border-dark pt-6 flex justify-between items-center">
+                <p class="text-text-secondary text-sm" data-i18n="footer.copy">© 2026 CPII Portugal.</p>
             </div>
         </div>
     </footer>

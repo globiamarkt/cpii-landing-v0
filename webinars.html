@@ -178,6 +178,8 @@
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
                     href="simulator.html" data-i18n="nav.simulador">Simulador</a>
                 <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="referrals.html" data-i18n="nav.referrals">Minha Rede</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
                     href="index.html#como-funciona" data-i18n="nav.como_funciona">Como Funciona</a>
                 <a class="text-primary border-b border-primary pb-1 text-sm font-semibold" href="webinars.html"
                     data-i18n="nav.webinars">Webinars</a>
@@ -223,88 +225,8 @@
         </div>
     </section>
 
-    <!-- ══════════════════════════════════════ [SEC-04] MASTERCLASSES GRID ══ -->
-    <section class="py-20 bg-background-dark">
-        <div class="mx-auto max-w-7xl px-6 lg:px-10">
-
-            <div class="mb-12">
-                <h2 class="text-2xl font-bold text-white font-display" data-i18n="webinars.master.title">Modelos de
-                    Investimento</h2>
-                <div class="w-12 h-1 bg-primary mt-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                <!-- Tier A: Catapulta -->
-                <div
-                    class="group bg-card-dark rounded-2xl border border-border-dark overflow-hidden hover:border-primary/50 transition-colors">
-                    <div
-                        class="aspect-video relative bg-background-dark flex items-center justify-center border-b border-border-dark">
-                        <span
-                            class="material-symbols-outlined text-6xl text-primary/40 group-hover:text-primary transition-colors">rocket_launch</span>
-                        <div class="absolute inset-0 bg-gradient-to-t from-card-dark to-transparent opacity-50"></div>
-                        <div
-                            class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1 rounded text-xs font-bold text-primary tracking-widest border border-primary/20">
-                            TIER A</div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold text-white mb-3 font-display"
-                            data-i18n="webinars.master.tiera.title">Catapulta: Crescimento Exponencial</h3>
-                        <p class="text-sm text-text-secondary leading-relaxed mb-4"
-                            data-i18n="webinars.master.tiera.desc">
-                            Ciclos curtos (6 meses) com rentabilidade agressiva (até 20% APY). Desenhado para
-                            investidores que procuram escalar o seu capital rapidamente através de operações de
-                            arbitragem imobiliária.
-                        </p>
-                        <a href="access-form.html?tipo=inversor"
-                            class="text-primary text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all"
-                            data-i18n="webinars.btn.watch">
-                            Ver Masterclass <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Tier B: Refugio -->
-                <div
-                    class="group bg-card-dark rounded-2xl border border-border-dark overflow-hidden hover:border-teal-500/50 transition-colors">
-                    <div
-                        class="aspect-video relative bg-background-dark flex items-center justify-center border-b border-border-dark">
-                        <span
-                            class="material-symbols-outlined text-6xl text-teal-500/40 group-hover:text-teal-400 transition-colors">shield</span>
-                        <div class="absolute inset-0 bg-gradient-to-t from-card-dark to-transparent opacity-50"></div>
-                        <div
-                            class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1 rounded text-xs font-bold text-teal-400 tracking-widest border border-teal-500/20">
-                            TIER B</div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold text-white mb-3 font-display"
-                            data-i18n="webinars.master.tierb.title">Refúgio: Preservação de Património</h3>
-                        <p class="text-sm text-text-secondary leading-relaxed mb-4"
-                            data-i18n="webinars.master.tierb.desc">
-                            Ciclos anuais com rentabilidade estável (8% APY). Foco em ativos maduros e seguros,
-                            desenhado para investidores que procuram proteger o capital contra a inflação com risco
-                            mínimo.
-                        </p>
-                        <a href="access-form.html?tipo=inversor"
-                            class="text-teal-400 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all"
-                            data-i18n="webinars.btn.watch">
-                            Ver Masterclass <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
     <!-- ════════════════════════════════ [SEC-05] CALENDARIO + COUNTDOWN ══ -->
-    <!--
-  CHANGELOG v1.1.0:
-  · FIX: hora 18:00 → 19:00 WET (brief original)
-  · ADD: Countdown en tiempo real (JS, target: 2026-02-27T19:00:00Z)
-  · ADD: Sesiones Mar 12 + Abr 09 con i18n completo
--->
-    <section class="py-20 bg-card-dark border-t border-border-dark">
+    <section class="py-20 bg-card-dark border-b border-border-dark hero-pattern">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
 
             <div class="mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -399,7 +321,7 @@
                     <div class="flex-shrink-0 text-center min-w-[60px]">
                         <p class="text-primary text-xs font-bold uppercase tracking-widest"
                             data-i18n="webinars.cal.e2.month">MAR</p>
-                        <p class="text-3xl font-black text-white font-display">12</p>
+                        <p class="text-3xl font-black text-white font-display" data-i18n="webinars.cal.e2.day">13</p>
                     </div>
                     <div class="flex-1">
                         <h4 class="text-base font-bold text-white font-display mb-1" data-i18n="webinars.cal.e2.name">
@@ -419,8 +341,8 @@
                     class="bg-background-dark border border-border-dark rounded-xl p-5 flex items-center gap-5 hover:border-primary/30 transition-colors">
                     <div class="flex-shrink-0 text-center min-w-[60px]">
                         <p class="text-primary text-xs font-bold uppercase tracking-widest"
-                            data-i18n="webinars.cal.e3.month">ABR</p>
-                        <p class="text-3xl font-black text-white font-display">09</p>
+                            data-i18n="webinars.cal.e3.month">MAR</p>
+                        <p class="text-3xl font-black text-white font-display" data-i18n="webinars.cal.e3.day">27</p>
                     </div>
                     <div class="flex-1">
                         <h4 class="text-base font-bold text-white font-display mb-1" data-i18n="webinars.cal.e3.name">
@@ -432,6 +354,80 @@
                             data-i18n="webinars.btn.reserve">
                             Reservar Lugar <span class="material-symbols-outlined"
                                 style="font-size:13px">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ [SEC-04] MASTERCLASSES GRID ══ -->
+    <section class="py-20 bg-background-dark">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-white font-display" data-i18n="webinars.master.title">Modelos de
+                    Investimento</h2>
+                <div class="w-12 h-1 bg-primary mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- Tier A: Catapulta -->
+                <div
+                    class="group bg-card-dark rounded-2xl border border-border-dark overflow-hidden hover:border-primary/50 transition-colors">
+                    <div
+                        class="aspect-video relative bg-background-dark flex items-center justify-center border-b border-border-dark">
+                        <span
+                            class="material-symbols-outlined text-6xl text-primary/40 group-hover:text-primary transition-colors">rocket_launch</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-card-dark to-transparent opacity-50"></div>
+                        <div
+                            class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1 rounded text-xs font-bold text-primary tracking-widest border border-primary/20">
+                            TIER A</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold text-white mb-3 font-display"
+                            data-i18n="webinars.master.tiera.title">Catapulta: Crescimento Exponencial</h3>
+                        <p class="text-sm text-text-secondary leading-relaxed mb-4"
+                            data-i18n="webinars.master.tiera.desc">
+                            Ciclos curtos (6 meses) com rentabilidade agressiva (até 20% APY). Desenhado para
+                            investidores que procuram escalar o seu capital rapidamente através de operações de
+                            arbitragem imobiliária.
+                        </p>
+                        <a href="access-form.html?tipo=inversor"
+                            class="text-primary text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all"
+                            data-i18n="webinars.btn.watch">
+                            Ver Masterclass <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tier B: Refugio -->
+                <div
+                    class="group bg-card-dark rounded-2xl border border-border-dark overflow-hidden hover:border-teal-500/50 transition-colors">
+                    <div
+                        class="aspect-video relative bg-background-dark flex items-center justify-center border-b border-border-dark">
+                        <span
+                            class="material-symbols-outlined text-6xl text-teal-500/40 group-hover:text-teal-400 transition-colors">shield</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-card-dark to-transparent opacity-50"></div>
+                        <div
+                            class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1 rounded text-xs font-bold text-teal-400 tracking-widest border border-teal-500/20">
+                            TIER B</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold text-white mb-3 font-display"
+                            data-i18n="webinars.master.tierb.title">Refúgio: Preservação de Património</h3>
+                        <p class="text-sm text-text-secondary leading-relaxed mb-4"
+                            data-i18n="webinars.master.tierb.desc">
+                            Ciclos anuais com rentabilidade estável (8% APY). Foco em ativos maduros e seguros,
+                            desenhado para investidores que procuram proteger o capital contra a inflação com risco
+                            mínimo.
+                        </p>
+                        <a href="access-form.html?tipo=inversor"
+                            class="text-teal-400 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all"
+                            data-i18n="webinars.btn.watch">
+                            Ver Masterclass <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
                 </div>
@@ -469,10 +465,12 @@
                         <span class="material-symbols-outlined text-4xl text-primary"
                             style="font-variation-settings:'FILL' 1">lock</span>
                     </div>
-                    <h2 class="text-3xl font-bold text-white font-display mb-4" data-i18n="webinars.locked.title">+25
+                    <h2 class="text-3xl font-bold text-white font-display mb-4" data-i18n="webinars.locked.title">
+                        +25
                         Gravações Exclusivas</h2>
                     <p class="text-text-secondary text-sm max-w-md mx-auto mb-8" data-i18n="webinars.locked.desc">
-                        O acesso ao arquivo histórico de análises de mercado, operações fechadas e tutorias de captação
+                        O acesso ao arquivo histórico de análises de mercado, operações fechadas e tutorias de
+                        captação
                         é restrito a membros verificados do Clube.
                     </p>
                     <a href="access-form.html"
@@ -488,36 +486,33 @@
 
     <!-- ═══════════════════════════════════════════════════ [SEC-07] FOOTER ══ -->
     <!-- Idéntico a index.html v2.0.0 -->
-    <footer class="border-t border-border-dark py-10 bg-background-dark">
+    <footer class="border-t border-border-dark py-10 bg-background-dark mt-auto">
         <div class="mx-auto max-w-7xl px-6 lg:px-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-
                 <div>
                     <div class="flex items-center gap-3 mb-4">
                         <span class="material-symbols-outlined text-primary text-2xl">apartment</span>
                         <span class="text-white text-lg font-bold font-display">CPII PORTUGAL</span>
                     </div>
-                    <p class="text-text-secondary text-sm" data-i18n="footer.about">
-                        Clube Privado de Investimento Imobiliário. Construindo património sustentável desde 2024.
+                    <p class="text-text-secondary text-sm font-medium leading-relaxed" data-i18n="footer.about">
+                        Clube Privado de Investimento Imobiliário.
+                        Não vendemos imóveis, multiplicamos património.
+                        O clube exclusivo para investidores estratégicos.
                     </p>
                 </div>
 
-                <div>
-                    <h4 class="text-white font-bold mb-4" data-i18n="footer.links.title">Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="simulator.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm"
-                                data-i18n="nav.simulador">Simulador</a></li>
-                        <li><a href="webinars.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm"
-                                data-i18n="nav.webinars">Webinars</a></li>
-                        <li><a href="equipo-comercial.html"
-                                class="text-text-secondary hover:text-primary transition-colors text-sm"
-                                data-i18n="nav.grupo_comercial">Grupo Comercial</a></li>
-                    </ul>
+                <div class="flex flex-col items-start md:items-center justify-center">
+                    <h4 class="text-white font-bold mb-4 font-display" data-i18n="footer.cta.title">Pronto para
+                        começar?
+                    </h4>
+                    <a href="access-form.html"
+                        class="inline-flex items-center justify-center rounded-xl h-10 px-6 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.15)]"
+                        data-i18n="btn.solicitar">
+                        Solicitar Acesso
+                    </a>
                 </div>
 
-                <div>
+                <div class="md:text-right">
                     <h4 class="text-white font-bold mb-4" data-i18n="footer.legal.title">Legal</h4>
                     <ul class="space-y-2">
                         <li><a href="privacy.html"
@@ -531,12 +526,9 @@
                                 data-i18n="footer.legal.support">Suporte</a></li>
                     </ul>
                 </div>
-
             </div>
-            <div class="border-t border-border-dark pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-text-secondary text-sm" data-i18n="footer.copy">© 2026 CPII Portugal. Sistema Verdent.
-                </p>
-                <span class="text-text-secondary text-xs">Stack: HTML + Tailwind + Firebase</span>
+            <div class="border-t border-border-dark pt-6 flex justify-between items-center">
+                <p class="text-text-secondary text-sm" data-i18n="footer.copy">© 2026 CPII Portugal.</p>
             </div>
         </div>
     </footer>
