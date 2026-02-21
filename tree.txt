@@ -1,6 +1,7 @@
 .
 |   .gitignore
 |   access-form.html
+|   equipo-comercial.html
 |   i18n.js
 |   index.html
 |   privacy.html
@@ -8,11 +9,21 @@
 |   referrals.html
 |   simulator.html
 |   terms.html
+|   tree.txt
 |   webinars.html
 |   
 +---dogfood data
+|       BR-gemini-VIBE-CPII-01 prototipo.odt
+|       BR-gemini-VIBE-CPII-01 prototipo.pdf
 |       BR-gemini-VIBE-CPII-02 refactorizacion.odt
 |       BR-gemini-VIBE-CPII-02 refactorizacion.pdf
+|       BR-gemini-VIBE-CPII-03 access-form conexion.odt
+|       BR-gemini-VIBE-CPII-03 access-form conexion.pdf
+|       BR-gemini-VIBE-CPII-04 Grupo Comercial.odt
+|       BR-gemini-VIBE-CPII-04 Grupo Comercial.pdf
+|       
++---session_memory
+|       README.md
 |       
 \---stitch_cpii_exclusive_registration_form
     +---agent_dashboard_network_preview

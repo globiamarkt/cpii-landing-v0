@@ -1,31 +1,71 @@
 /**
  * ================================================================================
  * ARCHIVO:  i18n.js
- * VERSIÓN:  2.1.0
- * FECHA:    2026-02-18
+ * VERSIÓN:  2.4.0
+ * FECHA:    2026-02-21
  * PROPÓSITO: Motor de internacionalización CPII. Diccionario completo para
- * 4 idiomas (PT / ES / EN / FR). Compatible con todos los archivos
- * del proyecto que usen atributos data-i18n.
- * [v2.1.0]: Integración claves eXp Commercial Group + Parche de 
- * seguridad XSS (renderizado HTML controlado vía data-i18n-html).
- * AUTORES:  Claude Sonnet 4.6 (Base) / Gemini 3 Pro (Parche XSS & Transposición)
+ *            4 idiomas (PT / ES / EN / FR). Compatible con todos los archivos
+ *            del proyecto que usen atributos data-i18n.
+ *
+ * CHANGELOG v2.4.0 [INCISIÓN ÚNICA]:
+ * └── ADD: Bloque "ref.*" inyectado en los 4 idiomas (PT/ES/EN/FR)
+ *          para referrals.html v1.1.0 (Demo Dashboard)
+ *          Total claves nuevas: 25 × 4 idiomas = 100 entradas
+ *
+ * CHANGELOG v2.3.0 [INCISIÓN ÚNICA]:
+ * └── ADD: Bloque "sim.*" inyectado en los 4 idiomas (PT/ES/EN/FR)
+ *          para simulator.html v1.1.0 (Lux Lusitana)
+ *          Claves: sim.hero.* / sim.controls.* / sim.btn.* /
+ *          sim.kpi.* / sim.table.* / sim.js.*
+ *          Total claves nuevas: 21 × 4 idiomas = 84 entradas
+ *
+ * CHANGELOG v2.2.0 [INCISIÓN ÚNICA]:
+ * └── ADD: Bloque "webinars.*" inyectado en los 4 idiomas (PT/ES/EN/FR)
+ *          para webinars.html v1.1.0 (Breeder Hub)
+ *          Claves añadidas:
+ *          webinars.hero.badge / webinars.hero.title.main /
+ *          webinars.hero.title.highlight / webinars.hero.p /
+ *          webinars.master.title / webinars.master.tiera.title /
+ *          webinars.master.tiera.desc / webinars.master.tierb.title /
+ *          webinars.master.tierb.desc / webinars.btn.watch /
+ *          webinars.cal.title / webinars.cal.live /
+ *          webinars.cal.e1.month / webinars.cal.e1.time /
+ *          webinars.cal.e1.name / webinars.cal.e1.desc /
+ *          webinars.cal.e1.speakers / webinars.cal.e2.month /
+ *          webinars.cal.e2.name / webinars.cal.e2.time /
+ *          webinars.cal.e3.month / webinars.cal.e3.name /
+ *          webinars.cal.e3.time / webinars.btn.reserve /
+ *          webinars.countdown.label / webinars.countdown.days /
+ *          webinars.countdown.hours / webinars.countdown.mins /
+ *          webinars.locked.title / webinars.locked.desc /
+ *          webinars.locked.btn
+ *          Total claves nuevas: 31 × 4 idiomas = 124 entradas
+ *
+ * CHANGELOG v2.1.0:
+ * └── ADD: Integración claves eXp Commercial Group (team.*)
+ * └── SEC: Parche de seguridad XSS (renderizado HTML vía data-i18n-html)
+ *
+ * AUTORES:  Claude Sonnet 4.6 (Base + v2.2.0) / Gemini 3 Pro (Parche XSS & v2.1.0)
  *
  * ÍNDICE DE CLAVES [SEC-01]:
- * ├── nav.* Navegación principal
- * ├── btn.* Botones CTA globales
- * ├── hero.* Sección hero (badge, título 3 nodos, párrafo)
- * ├── preview.* Preview card patrimonio
- * ├── section.* Encabezados de secciones
- * ├── access.* Sección "Tres Vías de Acceso" (cards)
- * ├── team.* Sección "Equipo Comercial" (eXp Commercial Group)
- * ├── cta.* Sección CTA final
- * ├── footer.* Pie de página
+ * ├── nav.*        Navegación principal
+ * ├── btn.*        Botones CTA globales
+ * ├── hero.*       Sección hero (index.html)
+ * ├── preview.*    Preview card patrimonio
+ * ├── section.*    Encabezados de secciones
+ * ├── card.*       Cards de acceso (Inversor / Promotor / Gestor)
+ * ├── team.*       Sección Equipo Comercial (eXp Commercial Group)
+ * ├── cta.*        Sección CTA final
+ * ├── footer.*     Pie de página
+ * ├── webinars.*   Página webinars.html (Breeder Hub) ← NEW v2.2.0
+ * ├── sim.*        Página simulator.html (Lux Lusitana) ← NEW v2.3.0
+ * └── ref.*        Página referrals.html (My Network) ← NEW v2.4.0
  *
  * USO MOTOR [SEC-02]:
  * · Añadir <script src="i18n.js"></script> en el <head> de cada página
  * · El selector de idioma debe tener id="lang-selector"
  * · Nodos de texto: <elem data-i18n="clave">texto por defecto</elem>
- * · Nodos con HTML (Seguridad): <elem data-i18n="clave" data-i18n-html="true"></elem>
+ * · Nodos con HTML: <elem data-i18n="clave" data-i18n-html="true"></elem>
  * ================================================================================
  */
 
@@ -33,6 +73,7 @@ const translations = {
 
     // ══════════════════════════════════════════════════════════ PORTUGUÊS (PT) ══
     pt: {
+        // ── Claves v2.1.0 — íntegras, sin modificación ──────────────────────────
         "nav.inicio": "Início",
         "nav.grupo_comercial": "Grupo Comercial",
         "nav.simulador": "Simulador",
@@ -95,7 +136,6 @@ const translations = {
         "footer.legal.title": "Legal",
         "footer.legal.support": "Suporte",
         "footer.copy": "© 2026 CPII Portugal. Sistema Verdent.",
-        // Team Section
         "team.badge": "eXp Portugal Commercial Group",
         "team.title.main": "O Grupo Comercial mais",
         "team.title.highlight": "estruturado de Portugal",
@@ -125,11 +165,91 @@ const translations = {
         "team.cta.title.highlight": "e os elementos nucleares",
         "team.cta.subtitle": "Aceda aos perfis completos do grupo, à metodologia de captação estruturada e aos princípios de compliance internacional que diferenciam a eXp Portugal Commercial Group.",
         "team.cta.btn.primary": "Conhecer o Grupo Comercial",
-        "team.cta.btn.secondary": "Solicitar Acesso Agora"
+        "team.cta.btn.secondary": "Solicitar Acesso Agora",
+        // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
+        "webinars.hero.badge": "Breeder Hub",
+        "webinars.hero.title.main": "Masterclasses &",
+        "webinars.hero.title.highlight": "Sessões ao Vivo",
+        "webinars.hero.p": "Aprenda a metodologia do CPII, descubra as diferenças entre os ativos e junte-se às nossas análises de mercado em direto.",
+        "webinars.master.title": "Modelos de Investimento",
+        "webinars.master.tiera.title": "Catapulta: Crescimento Exponencial",
+        "webinars.master.tiera.desc": "Ciclos curtos (6 meses) com rentabilidade agressiva (até 20% APY). Desenhado para investidores que procuram escalar o seu capital rapidamente através de operações de arbitragem imobiliária.",
+        "webinars.master.tierb.title": "Refúgio: Preservação de Património",
+        "webinars.master.tierb.desc": "Ciclos anuais com rentabilidade estável (8% APY). Foco em ativos maduros e seguros, desenhado para investidores que procuram proteger o capital contra a inflação com risco mínimo.",
+        "webinars.btn.watch": "Ver Masterclass",
+        "webinars.cal.title": "Próximas Sessões",
+        "webinars.cal.live": "Ao Vivo",
+        "webinars.cal.e1.month": "FEV",
+        "webinars.cal.e1.time": "Sexta-feira · 19:00 WET",
+        "webinars.cal.e1.name": "Operação Fundadores CPII",
+        "webinars.cal.e1.desc": "Apresentação oficial do Clube para os 10 Fundadores selecionados. O caminho para o primeiro milhão e a estratégia de prescriptores antes do evento de Santa Maria da Feira.",
+        "webinars.cal.e1.speakers": "David Almeida & Carlos Balboa",
+        "webinars.cal.e2.month": "MAR",
+        "webinars.cal.e2.name": "Estratégias de Rede",
+        "webinars.cal.e2.time": "19:00 WET · Tier A",
+        "webinars.cal.e3.month": "ABR",
+        "webinars.cal.e3.name": "Due Diligence Avançada",
+        "webinars.cal.e3.time": "19:00 WET · Tier B",
+        "webinars.btn.reserve": "Reservar Lugar",
+        "webinars.countdown.label": "Evento em",
+        "webinars.countdown.days": "Dias",
+        "webinars.countdown.hours": "Horas",
+        "webinars.countdown.mins": "Min",
+        "webinars.locked.title": "+25 Gravações Exclusivas",
+        "webinars.locked.desc": "O acesso ao arquivo histórico de análises de mercado, operações fechadas e tutorias de captação é restrito a membros verificados do Clube.",
+        "webinars.locked.btn": "Solicitar Acesso para Desbloquear",
+        // ── Simulador (Lux Lusitana) — INCISIÓN v2.3.0 ────────────────────────
+        "sim.hero.badge": "Ferramenta Financeira",
+        "sim.hero.title.main": "Simulador de",
+        "sim.hero.title.highlight": "Riqueza Exponencial",
+        "sim.hero.p": "Descubra como o efeito composto da rede CPII pode acelerar a sua independência financeira.",
+        "sim.controls.title": "Parâmetros",
+        "sim.controls.savings": "Poupança Mensal",
+        "sim.controls.term": "Prazo",
+        "sim.controls.term.unit": "m",
+        "sim.controls.network": "Rede Direta (Nível 1)",
+        "sim.controls.network.unit": "pessoas",
+        "sim.btn.reset": "Reiniciar",
+        "sim.kpi.patrimony": "Património Final",
+        "sim.kpi.autofinance": "Autofinanciamento",
+        "sim.kpi.revenue": "Revenue Share",
+        "sim.table.title": "Projeção de Crescimento",
+        "sim.table.th.month": "Mês",
+        "sim.table.th.savings": "Poupança",
+        "sim.table.th.network": "Comissões Rede",
+        "sim.table.th.total": "Património Total",
+        "sim.js.month": "Mês",
+        // ── Referências (Minha Rede) — INCISIÓN v2.4.0 ───────────────────────
+        "ref.title": "A Sua Rede de Crescimento",
+        "ref.subtitle": "Visualização da sua estrutura de Revenue Share. Esta é uma demonstração do dashboard que terá assim que o seu acesso for aprovado.",
+        "ref.tree.title": "Estrutura Organizacional (Demo)",
+        "ref.tree.active": "Ativo",
+        "ref.tree.pending": "Pendente",
+        "ref.tree.you.initial": "TU",
+        "ref.tree.investor": "Investidor",
+        "ref.tree.ref1": "Referido 1",
+        "ref.tree.ref2": "Referido 2",
+        "ref.tree.level1": "Nível 1",
+        "ref.tree.level2": "Nível 2",
+        "ref.tree.level3": "Nível 3",
+        "ref.tree.vol": "Volume",
+        "ref.tree.com": "Com.",
+        "ref.stats.people": "pessoas",
+        "ref.summary.title": "Revenue Share Gerado",
+        "ref.summary.vs": "vs mês anterior",
+        "ref.summary.desc": "Este é um exemplo do dashboard completo disponível após aprovação do seu perfil.",
+        "ref.cta.title": "Pronto para Começar?",
+        "ref.cta.desc": "Solicite o seu acesso agora e comece a construir a sua rede de investimento.",
+        "ref.cta.btn": "Solicitar Acesso",
+        "ref.info.title": "Informação",
+        "ref.info.l1": "Revenue Share L1: 1%",
+        "ref.info.l2": "Revenue Share L2: 0.5%",
+        "ref.info.l3": "Revenue Share L3: 0.25%"
     },
 
     // ══════════════════════════════════════════════════════════════ ESPAÑOL (ES) ══
     es: {
+        // ── Claves v2.1.0 — íntegras, sin modificación ──────────────────────────
         "nav.inicio": "Inicio",
         "nav.grupo_comercial": "Grupo Comercial",
         "nav.simulador": "Simulador",
@@ -192,7 +312,6 @@ const translations = {
         "footer.legal.title": "Legal",
         "footer.legal.support": "Soporte",
         "footer.copy": "© 2026 CPII España. Sistema Verdent.",
-        // Team Section
         "team.badge": "eXp Portugal Commercial Group",
         "team.title.main": "El Grupo Comercial más",
         "team.title.highlight": "estructurado de Portugal",
@@ -222,11 +341,91 @@ const translations = {
         "team.cta.title.highlight": "y los elementos nucleares",
         "team.cta.subtitle": "Accede a los perfiles completos del grupo, la metodología de captación estructurada y los principios de compliance internacional que diferencian a eXp Portugal Commercial Group.",
         "team.cta.btn.primary": "Conocer el Grupo Comercial",
-        "team.cta.btn.secondary": "Solicitar Acceso Ahora"
+        "team.cta.btn.secondary": "Solicitar Acceso Ahora",
+        // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
+        "webinars.hero.badge": "Breeder Hub",
+        "webinars.hero.title.main": "Masterclasses &",
+        "webinars.hero.title.highlight": "Sesiones en Vivo",
+        "webinars.hero.p": "Aprende la metodología del CPII, descubre las diferencias entre los activos y únete a nuestros análisis de mercado en directo.",
+        "webinars.master.title": "Modelos de Inversión",
+        "webinars.master.tiera.title": "Catapulta: Crecimiento Exponencial",
+        "webinars.master.tiera.desc": "Ciclos cortos (6 meses) con rentabilidad agresiva (hasta 20% APY). Diseñado para inversores que buscan escalar su capital rápidamente a través de operaciones de arbitraje inmobiliario.",
+        "webinars.master.tierb.title": "Refugio: Preservación de Patrimonio",
+        "webinars.master.tierb.desc": "Ciclos anuales con rentabilidad estable (8% APY). Foco en activos maduros y seguros, diseñado para inversores que buscan proteger el capital contra la inflación con riesgo mínimo.",
+        "webinars.btn.watch": "Ver Masterclass",
+        "webinars.cal.title": "Próximas Sesiones",
+        "webinars.cal.live": "En Directo",
+        "webinars.cal.e1.month": "FEB",
+        "webinars.cal.e1.time": "Viernes · 19:00 WET",
+        "webinars.cal.e1.name": "Operación Fundadores CPII",
+        "webinars.cal.e1.desc": "Presentación oficial del Club para los 10 Fundadores seleccionados. El camino hacia el primer millón y la estrategia de prescriptores antes del evento de Santa Maria da Feira.",
+        "webinars.cal.e1.speakers": "David Almeida & Carlos Balboa",
+        "webinars.cal.e2.month": "MAR",
+        "webinars.cal.e2.name": "Estrategias de Red",
+        "webinars.cal.e2.time": "19:00 WET · Tier A",
+        "webinars.cal.e3.month": "ABR",
+        "webinars.cal.e3.name": "Due Diligence Avanzada",
+        "webinars.cal.e3.time": "19:00 WET · Tier B",
+        "webinars.btn.reserve": "Reservar Lugar",
+        "webinars.countdown.label": "Evento en",
+        "webinars.countdown.days": "Días",
+        "webinars.countdown.hours": "Horas",
+        "webinars.countdown.mins": "Min",
+        "webinars.locked.title": "+25 Grabaciones Exclusivas",
+        "webinars.locked.desc": "El acceso al archivo histórico de análisis de mercado, operaciones cerradas y tutorías de captación está restringido a miembros verificados del Club.",
+        "webinars.locked.btn": "Solicitar Acceso para Desbloquear",
+        // ── Simulador (Lux Lusitana) — INCISIÓN v2.3.0 ────────────────────────
+        "sim.hero.badge": "Herramienta Financiera",
+        "sim.hero.title.main": "Simulador de",
+        "sim.hero.title.highlight": "Riqueza Exponencial",
+        "sim.hero.p": "Descubre cómo el efecto compuesto de la red CPII puede acelerar tu independencia financiera.",
+        "sim.controls.title": "Parámetros",
+        "sim.controls.savings": "Ahorro Mensual",
+        "sim.controls.term": "Plazo",
+        "sim.controls.term.unit": "m",
+        "sim.controls.network": "Red Directa (Nivel 1)",
+        "sim.controls.network.unit": "personas",
+        "sim.btn.reset": "Reiniciar",
+        "sim.kpi.patrimony": "Patrimonio Final",
+        "sim.kpi.autofinance": "Autofinanciación",
+        "sim.kpi.revenue": "Revenue Share",
+        "sim.table.title": "Proyección de Crecimiento",
+        "sim.table.th.month": "Mes",
+        "sim.table.th.savings": "Ahorro",
+        "sim.table.th.network": "Comisiones Red",
+        "sim.table.th.total": "Patrimonio Total",
+        "sim.js.month": "Mes",
+        // ── Referencias (Tu Red) — INCISIÓN v2.4.0 ───────────────────────────
+        "ref.title": "Tu Red de Crecimiento",
+        "ref.subtitle": "Visualización de tu estructura de Revenue Share. Esta es una demostración del dashboard que tendrás una vez aprobado tu acceso.",
+        "ref.tree.title": "Estructura Organizacional (Demo)",
+        "ref.tree.active": "Activo",
+        "ref.tree.pending": "Pendiente",
+        "ref.tree.you.initial": "TÚ",
+        "ref.tree.investor": "Inversor",
+        "ref.tree.ref1": "Referido 1",
+        "ref.tree.ref2": "Referido 2",
+        "ref.tree.level1": "Nivel 1",
+        "ref.tree.level2": "Nivel 2",
+        "ref.tree.level3": "Nivel 3",
+        "ref.tree.vol": "Volumen",
+        "ref.tree.com": "Com.",
+        "ref.stats.people": "personas",
+        "ref.summary.title": "Revenue Share Generado",
+        "ref.summary.vs": "vs mes anterior",
+        "ref.summary.desc": "Este es un ejemplo del dashboard completo disponible tras la aprobación de tu perfil.",
+        "ref.cta.title": "¿Listo para Empezar?",
+        "ref.cta.desc": "Solicita tu acceso ahora y empieza a construir tu red de inversión.",
+        "ref.cta.btn": "Solicitar Acceso",
+        "ref.info.title": "Información",
+        "ref.info.l1": "Revenue Share L1: 1%",
+        "ref.info.l2": "Revenue Share L2: 0.5%",
+        "ref.info.l3": "Revenue Share L3: 0.25%"
     },
 
     // ══════════════════════════════════════════════════════════════ ENGLISH (EN) ══
     en: {
+        // ── Claves v2.1.0 — íntegras, sin modificación ──────────────────────────
         "nav.inicio": "Home",
         "nav.grupo_comercial": "Commercial Group",
         "nav.simulador": "Simulator",
@@ -269,7 +468,7 @@ const translations = {
         "card.promotor.f2": "Revenue Share in your network",
         "card.promotor.f3": "Prospecting tools",
         "card.promotor.f4": "Specialized training",
-        "card.promotor.cta": "Become a Promoter",
+        "card.promotor.cta": "Become an Investor",
         "card.gestor.badge": "Elite",
         "card.gestor.title": "Manager",
         "card.gestor.subtitle": "Strategic leadership",
@@ -289,7 +488,6 @@ const translations = {
         "footer.legal.title": "Legal",
         "footer.legal.support": "Support",
         "footer.copy": "© 2026 CPII Global. Verdent System.",
-        // Team Section
         "team.badge": "eXp Portugal Commercial Group",
         "team.title.main": "The most structured",
         "team.title.highlight": "Commercial Group in Portugal",
@@ -319,11 +517,91 @@ const translations = {
         "team.cta.title.highlight": "and the core elements",
         "team.cta.subtitle": "Access the complete team profiles, structured acquisition methodology and international compliance principles that set eXp Portugal Commercial Group apart.",
         "team.cta.btn.primary": "Meet the Commercial Group",
-        "team.cta.btn.secondary": "Request Access Now"
+        "team.cta.btn.secondary": "Request Access Now",
+        // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
+        "webinars.hero.badge": "Breeder Hub",
+        "webinars.hero.title.main": "Masterclasses &",
+        "webinars.hero.title.highlight": "Live Sessions",
+        "webinars.hero.p": "Learn the CPII methodology, discover the differences between assets, and join our live market analysis.",
+        "webinars.master.title": "Investment Models",
+        "webinars.master.tiera.title": "Catapult: Exponential Growth",
+        "webinars.master.tiera.desc": "Short cycles (6 months) with aggressive returns (up to 20% APY). Designed for investors looking to scale their capital rapidly through real estate arbitrage operations.",
+        "webinars.master.tierb.title": "Safe Haven: Wealth Preservation",
+        "webinars.master.tierb.desc": "Annual cycles with stable returns (8% APY). Focus on mature and secure assets, designed for investors looking to protect capital against inflation with minimal risk.",
+        "webinars.btn.watch": "Watch Masterclass",
+        "webinars.cal.title": "Upcoming Sessions",
+        "webinars.cal.live": "Live",
+        "webinars.cal.e1.month": "FEB",
+        "webinars.cal.e1.time": "Friday · 19:00 WET",
+        "webinars.cal.e1.name": "CPII Founders Operation",
+        "webinars.cal.e1.desc": "Official presentation of the Club for the 10 selected Founders. The path to the first million and the prescriber strategy before the Santa Maria da Feira event.",
+        "webinars.cal.e1.speakers": "David Almeida & Carlos Balboa",
+        "webinars.cal.e2.month": "MAR",
+        "webinars.cal.e2.name": "Network Strategies",
+        "webinars.cal.e2.time": "19:00 WET · Tier A",
+        "webinars.cal.e3.month": "APR",
+        "webinars.cal.e3.name": "Advanced Due Diligence",
+        "webinars.cal.e3.time": "19:00 WET · Tier B",
+        "webinars.btn.reserve": "Reserve Seat",
+        "webinars.countdown.label": "Event in",
+        "webinars.countdown.days": "Days",
+        "webinars.countdown.hours": "Hours",
+        "webinars.countdown.mins": "Min",
+        "webinars.locked.title": "+25 Exclusive Recordings",
+        "webinars.locked.desc": "Access to the historical archive of market analysis, closed deals, and acquisition tutorials is restricted to verified Club members.",
+        "webinars.locked.btn": "Request Access to Unlock",
+        // ── Simulator (Lux Lusitana) — INCISIÓN v2.3.0 ────────────────────────
+        "sim.hero.badge": "Financial Tool",
+        "sim.hero.title.main": "Exponential Wealth",
+        "sim.hero.title.highlight": "Simulator",
+        "sim.hero.p": "Discover how the compound effect of the CPII network can accelerate your financial independence.",
+        "sim.controls.title": "Parameters",
+        "sim.controls.savings": "Monthly Savings",
+        "sim.controls.term": "Term",
+        "sim.controls.term.unit": "m",
+        "sim.controls.network": "Direct Network (Level 1)",
+        "sim.controls.network.unit": "people",
+        "sim.btn.reset": "Reset",
+        "sim.kpi.patrimony": "Final Wealth",
+        "sim.kpi.autofinance": "Self-Funding",
+        "sim.kpi.revenue": "Revenue Share",
+        "sim.table.title": "Growth Projection",
+        "sim.table.th.month": "Month",
+        "sim.table.th.savings": "Savings",
+        "sim.table.th.network": "Network Commissions",
+        "sim.table.th.total": "Total Wealth",
+        "sim.js.month": "Month",
+        // ── Referrals (Your Network) — INCISIÓN v2.4.0 ───────────────────────
+        "ref.title": "Your Growth Network",
+        "ref.subtitle": "Visualization of your Revenue Share structure. This is a demo of the dashboard you will access once approved.",
+        "ref.tree.title": "Organizational Structure (Demo)",
+        "ref.tree.active": "Active",
+        "ref.tree.pending": "Pending",
+        "ref.tree.you.initial": "YOU",
+        "ref.tree.investor": "Investor",
+        "ref.tree.ref1": "Referral 1",
+        "ref.tree.ref2": "Referral 2",
+        "ref.tree.level1": "Level 1",
+        "ref.tree.level2": "Level 2",
+        "ref.tree.level3": "Level 3",
+        "ref.tree.vol": "Volume",
+        "ref.tree.com": "Com.",
+        "ref.stats.people": "people",
+        "ref.summary.title": "Generated Revenue Share",
+        "ref.summary.vs": "vs previous month",
+        "ref.summary.desc": "This is an example of the full dashboard available after profile approval.",
+        "ref.cta.title": "Ready to Start?",
+        "ref.cta.desc": "Request your access now and start building your investment network.",
+        "ref.cta.btn": "Request Access",
+        "ref.info.title": "Information",
+        "ref.info.l1": "Revenue Share L1: 1%",
+        "ref.info.l2": "Revenue Share L2: 0.5%",
+        "ref.info.l3": "Revenue Share L3: 0.25%"
     },
 
     // ══════════════════════════════════════════════════════════════ FRANÇAIS (FR) ══
     fr: {
+        // ── Claves v2.1.0 — íntegras, sin modificación ──────────────────────────
         "nav.inicio": "Accueil",
         "nav.grupo_comercial": "Groupe Commercial",
         "nav.simulador": "Simulateur",
@@ -386,7 +664,6 @@ const translations = {
         "footer.legal.title": "Légal",
         "footer.legal.support": "Support",
         "footer.copy": "© 2026 CPII France. Système Verdent.",
-        // Team Section
         "team.badge": "eXp Portugal Commercial Group",
         "team.title.main": "Le Groupe Commercial le plus",
         "team.title.highlight": "structuré du Portugal",
@@ -416,7 +693,86 @@ const translations = {
         "team.cta.title.highlight": "et les éléments nucléaires",
         "team.cta.subtitle": "Accédez aux profils complets du groupe, à la méthodologie de captation structurée et aux principes de compliance international.",
         "team.cta.btn.primary": "Découvrir le Groupe Commercial",
-        "team.cta.btn.secondary": "Demander l'Accès Maintenant"
+        "team.cta.btn.secondary": "Demander l'Accès Maintenant",
+        // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
+        "webinars.hero.badge": "Breeder Hub",
+        "webinars.hero.title.main": "Masterclasses &",
+        "webinars.hero.title.highlight": "Sessions en Direct",
+        "webinars.hero.p": "Apprenez la méthodologie CPII, découvrez les différences entre les actifs et rejoignez nos analyses de marché en direct.",
+        "webinars.master.title": "Modèles d'Investissement",
+        "webinars.master.tiera.title": "Catapulte : Croissance Exponentielle",
+        "webinars.master.tiera.desc": "Cycles courts (6 mois) avec des rendements agressifs (jusqu'à 20% APY). Conçu pour les investisseurs cherchant à développer rapidement leur capital via des opérations d'arbitrage immobilier.",
+        "webinars.master.tierb.title": "Refuge : Préservation du Patrimoine",
+        "webinars.master.tierb.desc": "Cycles annuels avec des rendements stables (8% APY). Focus sur des actifs matures et sécurisés, conçu pour les investisseurs cherchant à protéger leur capital contre l'inflation avec un risque minimal.",
+        "webinars.btn.watch": "Voir la Masterclass",
+        "webinars.cal.title": "Prochaines Sessions",
+        "webinars.cal.live": "En Direct",
+        "webinars.cal.e1.month": "FÉV",
+        "webinars.cal.e1.time": "Vendredi · 19:00 WET",
+        "webinars.cal.e1.name": "Opération Fondateurs CPII",
+        "webinars.cal.e1.desc": "Présentation officielle du Club pour les 10 Fondateurs sélectionnés. Le chemin vers le premier million et la stratégie des prescripteurs avant l'événement de Santa Maria da Feira.",
+        "webinars.cal.e1.speakers": "David Almeida & Carlos Balboa",
+        "webinars.cal.e2.month": "MAR",
+        "webinars.cal.e2.name": "Stratégies de Réseau",
+        "webinars.cal.e2.time": "19:00 WET · Tier A",
+        "webinars.cal.e3.month": "AVR",
+        "webinars.cal.e3.name": "Due Diligence Avancée",
+        "webinars.cal.e3.time": "19:00 WET · Tier B",
+        "webinars.btn.reserve": "Réserver une place",
+        "webinars.countdown.label": "Événement dans",
+        "webinars.countdown.days": "Jours",
+        "webinars.countdown.hours": "Heures",
+        "webinars.countdown.mins": "Min",
+        "webinars.locked.title": "+25 Enregistrements Exclusifs",
+        "webinars.locked.desc": "L'accès aux archives historiques d'analyses de marché, d'opérations clôturées et de tutoriels d'acquisition est strictement réservé aux membres vérifiés du Club.",
+        "webinars.locked.btn": "Demander l'accès pour débloquer",
+        // ── Simulateur (Lux Lusitana) — INCISIÓN v2.3.0 ────────────────────────
+        "sim.hero.badge": "Outil Financier",
+        "sim.hero.title.main": "Simulateur de",
+        "sim.hero.title.highlight": "Richesse Exponentielle",
+        "sim.hero.p": "Découvrez comment l'effet composé du réseau CPII peut accélérer votre indépendance financière.",
+        "sim.controls.title": "Paramètres",
+        "sim.controls.savings": "Épargne Mensuelle",
+        "sim.controls.term": "Durée",
+        "sim.controls.term.unit": "m",
+        "sim.controls.network": "Réseau Direct (Niveau 1)",
+        "sim.controls.network.unit": "personnes",
+        "sim.btn.reset": "Réinitialiser",
+        "sim.kpi.patrimony": "Patrimoine Final",
+        "sim.kpi.autofinance": "Auto-financement",
+        "sim.kpi.revenue": "Revenue Share",
+        "sim.table.title": "Projection de Croissance",
+        "sim.table.th.month": "Mois",
+        "sim.table.th.savings": "Épargne",
+        "sim.table.th.network": "Commissions Réseau",
+        "sim.table.th.total": "Patrimoine Total",
+        "sim.js.month": "Mois",
+        // ── Parrainage (Votre Réseau) — INCISIÓN v2.4.0 ──────────────────────
+        "ref.title": "Votre Réseau de Croissance",
+        "ref.subtitle": "Visualisation de votre structure de Revenue Share. Ceci est une démo du tableau de bord auquel vous aurez accès une fois approuvé.",
+        "ref.tree.title": "Structure Organisationnelle (Démo)",
+        "ref.tree.active": "Actif",
+        "ref.tree.pending": "En attente",
+        "ref.tree.you.initial": "VOUS",
+        "ref.tree.investor": "Investisseur",
+        "ref.tree.ref1": "Référence 1",
+        "ref.tree.ref2": "Référence 2",
+        "ref.tree.level1": "Niveau 1",
+        "ref.tree.level2": "Niveau 2",
+        "ref.tree.level3": "Niveau 3",
+        "ref.tree.vol": "Volume",
+        "ref.tree.com": "Com.",
+        "ref.stats.people": "personnes",
+        "ref.summary.title": "Revenue Share Généré",
+        "ref.summary.vs": "vs mois précédent",
+        "ref.summary.desc": "Ceci est un exemple du tableau de bord complet disponible après approbation du profil.",
+        "ref.cta.title": "Prêt à Commencer ?",
+        "ref.cta.desc": "Demandez votre accès maintenant et commencez à construire votre réseau d'investissement.",
+        "ref.cta.btn": "Demander l'Accès",
+        "ref.info.title": "Information",
+        "ref.info.l1": "Revenue Share L1: 1%",
+        "ref.info.l2": "Revenue Share L2: 0.5%",
+        "ref.info.l3": "Revenue Share L3: 0.25%"
     }
 
 };

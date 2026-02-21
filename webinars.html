@@ -1,284 +1,579 @@
+<!--
+================================================================================
+  ARCHIVO:  webinars.html
+  VERSIÓN:  1.1.0
+  FECHA:    2026-02-21
+  PROPÓSITO: Breeder Hub CPII — Masterclasses, Sesiones al Vivo y Archivo
+             de Grabaciones. Puerta de conversión audiovisual hacia access-form.
+  AUTOR:    Gemini 3 Pro (base v1.0.0) + Claude Sonnet 4.6 (correcciones v1.1.0)
+
+  CHANGELOG v1.1.0 vs base Gemini v1.0.0:
+  ├── FIX [SEC-05]: Hora del evento 27F corregida 18:00 → 19:00 WET
+  ├── ADD [SEC-05]: Countdown en tiempo real al 27F (JS nativo)
+  ├── ADD [SEC-05]: Sesiones futuras Mar + Abr 2026
+  └── STD [i18n]: Prefijo "webinars.*" unificado con i18n.js v2.2.0
+
+  ÍNDICE MAESTRO [SEC-XX]:
+  ├── [SEC-01] HEAD — metadatos, fuentes, i18n.js, Tailwind config
+  ├── [SEC-02] HEADER — nav + selector de idioma (≡ index.html v2.0.0)
+  ├── [SEC-03] HERO — badge + título i18n + subtítulo
+  ├── [SEC-04] MASTERCLASSES — Tier A (Catapulta) + Tier B (Refugio)
+  ├── [SEC-05] CALENDARIO — 27F destacado + countdown + próximas sesiones
+  ├── [SEC-06] GRABACIONES BLOQUEADAS — +25 sesiones · trampa de valor
+  └── [SEC-07] FOOTER — grid 3 columnas (≡ index.html v2.0.0)
+
+  i18n: prefijo "webinars.*" · Motor: i18n.js v2.2.0
+  Claves heredadas sin prefijo: nav.* · btn.* · footer.*
+  DEPENDENCIAS: Tailwind CDN v3, Google Fonts, Material Symbols, i18n.js
+================================================================================
+-->
 <!DOCTYPE html>
-<html class="dark" lang="pt">
+<html lang="pt" class="dark">
+
+<!-- ════════════════════════════════════════════════════════ [SEC-01] HEAD ══ -->
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>CPII Portugal - Webinars y Sesiones</title>
+    <meta name="description"
+        content="Breeder Hub CPII. Masterclasses, sesiones en vivo y archivo histórico de inversión inmobiliaria." />
+    <title>Webinars & Formação — CPII Portugal</title>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans:wght@400;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols_Outlined:wght,FILL@100..700,0..1&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         rel="stylesheet" />
+    <script src="i18n.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#eebd2b",
-                        "background-dark": "#181611",
-                        "surface-dark": "#232018",
-                        "surface-light": "#393528",
+                        "primary": "#C1A85D",
+                        "primary-hover": "#A8924D",
+                        "background-dark": "#161513",
+                        "card-dark": "#1e1b14",
+                        "border-dark": "#35332c",
+                        "text-secondary": "#b2afa3",
                     },
                     fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
-                        "body": ["Noto Sans", "sans-serif"],
+                        "display": ["Playfair Display", "Georgia", "serif"],
+                        "body": ["Manrope", "system-ui", "sans-serif"],
                     },
                 },
             },
-        }
+        };
     </script>
+
+    <style>
+        body {
+            font-family: "Manrope", system-ui, sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-display {
+            font-family: "Playfair Display", Georgia, serif;
+        }
+
+        /* Selector de idioma — idéntico a index.html v2.0.0 */
+        #lang-selector {
+            background: transparent;
+            border: 1px solid rgba(193, 168, 93, 0.25);
+            color: #b2afa3;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        #lang-selector:hover {
+            border-color: #C1A85D;
+            color: #C1A85D;
+        }
+
+        #lang-selector option {
+            background: #1e1b14;
+            color: #F5F0E8;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #161513;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #35332c;
+            border-radius: 2px;
+        }
+
+        /* Patrón sutil de fondo hero */
+        .hero-pattern {
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48ZyBmaWxsPSIjQzFBODVEIiBmaWxsLW9wYWNpdHk9IjAuMDMiPjxwYXRoIGQ9Ik0zNiAzNHYtNGgtMnY0aC00djJoNHY0aDJ2LTRoNHYtMmgtNHptMC0zMFYwaC0ydjRoLTR2Mmg0djRoMnYtNGg0VjRoLTR6bS0yMCAwdjRoMnY0aDJWMGgtMnY0aC0yeiIvPjwvZz48L2c+PC9zdmc+");
+        }
+
+        /* Countdown — ADD v1.1.0 */
+        .countdown-unit {
+            background: rgba(193, 168, 93, 0.08);
+            border: 1px solid rgba(193, 168, 93, 0.2);
+            border-radius: 8px;
+            padding: 8px 14px;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        @keyframes pulse-gold {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(193, 168, 93, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(193, 168, 93, 0);
+            }
+        }
+
+        .live-dot {
+            animation: pulse-gold 2s infinite;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
 </head>
 
-<body class="bg-background-dark text-white font-display min-h-screen flex flex-col">
-    <!-- Header -->
-    <header
-        class="flex items-center justify-between border-b border-surface-light bg-background-dark/95 backdrop-blur-md px-10 py-3 sticky top-0 z-50">
-        <div class="flex items-center gap-4 text-white">
-            <div class="size-8 text-primary">
-                <span class="material-symbols-outlined text-3xl">hub</span>
+<body class="bg-background-dark text-white font-body min-h-screen">
+
+    <!-- ════════════════════════════════════════════════ [SEC-02] HEADER / NAV ══ -->
+    <!-- Estructura y tokens idénticos a index.html v2.0.0. "Webinars" activo. -->
+    <header class="sticky top-0 z-50 w-full border-b border-border-dark bg-background-dark/95 backdrop-blur-md">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10 h-20 flex items-center justify-between">
+
+            <div class="flex items-center gap-4">
+                <div class="size-8 text-primary">
+                    <span class="material-symbols-outlined text-3xl">apartment</span>
+                </div>
+                <h2 class="text-white text-xl font-bold tracking-tight font-display">CPII <span
+                        class="text-primary font-normal">PORTUGAL</span></h2>
             </div>
-            <div>
-                <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">CPII PORTUGAL</h2>
-                <p class="text-xs text-gray-400 font-medium">WEBINARS & FORMACIÓN</p>
-            </div>
-        </div>
-        <div class="flex gap-8">
-            <nav class="flex items-center gap-1 bg-surface-dark p-1 rounded-full border border-surface-light">
-                <a class="text-gray-400 hover:text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
-                    href="index.html">Home</a>
-                <a class="text-gray-400 hover:text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
-                    href="simulator.html">Simulador</a>
-                <a class="text-gray-400 hover:text-white px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
-                    href="referrals.html">Red</a>
-                <a class="text-primary bg-surface-light/50 px-4 py-1.5 rounded-full text-sm font-bold transition-colors"
-                    href="webinars.html">Webinars</a>
+
+            <nav class="hidden md:flex gap-8">
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="index.html#inicio" data-i18n="nav.inicio">Início</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="equipo-comercial.html" data-i18n="nav.grupo_comercial">Grupo Comercial</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="simulator.html" data-i18n="nav.simulador">Simulador</a>
+                <a class="text-text-secondary hover:text-primary transition-colors text-sm font-medium"
+                    href="index.html#como-funciona" data-i18n="nav.como_funciona">Como Funciona</a>
+                <a class="text-primary border-b border-primary pb-1 text-sm font-semibold" href="webinars.html"
+                    data-i18n="nav.webinars">Webinars</a>
             </nav>
-            <a href="access-form.html"
-                class="flex items-center gap-2 rounded-xl h-10 px-4 bg-primary hover:bg-yellow-400 text-background-dark text-sm font-bold transition-colors">
-                <span class="material-symbols-outlined text-lg">login</span>
-                <span>Acceder</span>
-            </a>
+
+            <div class="flex items-center gap-4">
+                <select id="lang-selector" onchange="setLanguage(this.value)">
+                    <option value="pt">PT</option>
+                    <option value="es">ES</option>
+                    <option value="en">EN</option>
+                    <option value="fr">FR</option>
+                </select>
+                <a href="access-form.html"
+                    class="flex items-center justify-center rounded-xl h-10 px-6 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.15)]"
+                    data-i18n="btn.solicitar">
+                    Solicitar Acesso
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 px-10 py-12">
-        <div class="max-w-7xl mx-auto">
-            <!-- Page Header -->
-            <div class="mb-12">
-                <div class="flex items-center gap-2 text-primary text-sm font-bold uppercase tracking-wider mb-4">
-                    <span class="material-symbols-outlined">play_circle</span>
-                    <span>Formación Continua</span>
-                </div>
-                <h1 class="text-4xl lg:text-5xl font-black text-white mb-4">Webinars y Sesiones Exclusivas</h1>
-                <p class="text-lg text-gray-400 max-w-3xl">
-                    Accede a formación especializada sobre inversión inmobiliaria, estrategias de Revenue Share,
-                    y gestión de patrimonio. Sesiones en vivo con expertos del sector.
-                </p>
-            </div>
+    <!-- ══════════════════════════════════════════════════════ [SEC-03] HERO ══ -->
+    <section class="relative overflow-hidden border-b border-border-dark py-20 bg-card-dark hero-pattern">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10 relative z-10 text-center">
 
-            <!-- Upcoming Webinars -->
-            <div class="mb-16">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary">calendar_month</span>
-                    Próximas Sesiones
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Webinar Card 1 -->
-                    <div
-                        class="bg-surface-dark rounded-xl border border-surface-light overflow-hidden hover:border-primary/50 transition-all group">
-                        <div
-                            class="aspect-video bg-gradient-to-br from-primary/20 to-surface-light relative overflow-hidden">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-6xl text-primary/50">school</span>
-                            </div>
-                            <div
-                                class="absolute top-4 right-4   bg-primary text-background-dark px-3 py-1 rounded-full text-xs font-bold">
-                                PRÓXIMO
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center gap-2 text-xs text-primary mb-3">
-                                <span class="material-symbols-outlined text-sm">schedule</span>
-                                <span>25 Feb, 2024 - 19:00 CET</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-                                Introducción al Club: Cómo Empezar
-                            </h3>
-                            <p class="text-sm text-gray-400 mb-4">
-                                Aprende los fundamentos del CPII, estructura de Revenue Share y primeros pasos como
-                                inversor.
-                            </p>
-                            <div class="flex items-center justify-between pt-4 border-t border-surface-light">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-primary text-sm">person</span>
-                                    </div>
-                                    <span class="text-sm text-gray-400">Dr. Miguel Silva</span>
-                                </div>
-                                <button
-                                    class="text-primary hover:text-white font-bold text-sm flex items-center gap-1 transition-colors">
-                                    <span>Reservar</span>
-                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Webinar Card 2 -->
-                    <div
-                        class="bg-surface-dark rounded-xl border border-surface-light overflow-hidden hover:border-primary/50 transition-all group">
-                        <div
-                            class="aspect-video bg-gradient-to-br from-blue-900/20 to-surface-light relative overflow-hidden">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-6xl text-blue-500/50">analytics</span>
-                            </div>
-                            <div
-                                class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                2 MAR
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center gap-2 text-xs text-blue-400 mb-3">
-                                <span class="material-symbols-outlined text-sm">schedule</span>
-                                <span>2 Mar, 2024 - 18:30 CET</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-                                Estrategias de Red: Maximiza tu Revenue Share
-                            </h3>
-                            <p class="text-sm text-gray-400 mb-4">
-                                Técnicas avanzadas para construir y gestionar tu red de inversión eficientemente.
-                            </p>
-                            <div class="flex items-center justify-between pt-4 border-t border-surface-light">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-blue-500 text-sm">person</span>
-                                    </div>
-                                    <span class="text-sm text-gray-400">Ana Rodrigues</span>
-                                </div>
-                                <button
-                                    class="text-primary hover:text-white font-bold text-sm flex items-center gap-1 transition-colors">
-                                    <span>Reservar</span>
-                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Webinar Card 3 -->
-                    <div
-                        class="bg-surface-dark rounded-xl border border-surface-light overflow-hidden hover:border-primary/50 transition-all group">
-                        <div
-                            class="aspect-video bg-gradient-to-br from-purple-900/20 to-surface-light relative overflow-hidden">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span
-                                    class="material-symbols-outlined text-6xl text-purple-500/50">real_estate_agent</span>
-                            </div>
-                            <div
-                                class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                                10 MAR
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center gap-2 text-xs text-purple-400 mb-3">
-                                <span class="material-symbols-outlined text-sm">schedule</span>
-                                <span>10 Mar, 2024 - 19:00 CET</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary transition-colors">
-                                Ventanas de Inversión: Tier A vs Tier B
-                            </h3>
-                            <p class="text-sm text-gray-400 mb-4">
-                                Comprende las diferencias entre Catapulta (20% APY) y Refugio (8% APY) y cuándo usar
-                                cada una.
-                            </p>
-                            <div class="flex items-center justify-between pt-4 border-t border-surface-light">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-purple-500 text-sm">person</span>
-                                    </div>
-                                    <span class="text-sm text-gray-400">Carlos Mendes</span>
-                                </div>
-                                <button
-                                    class="text-primary hover:text-white font-bold text-sm flex items-center gap-1 transition-colors">
-                                    <span>Reservar</span>
-                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recorded Sessions -->
-            <div class="mb-16">
-                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary">video_library</span>
-                    Sesiones Grabadas
-                </h2>
-                <div class="bg-surface-dark rounded-xl border border-surface-light p-8">
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-3xl">lock</span>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-white mb-1">Contenido Exclusivo para Miembros</h3>
-                                <p class="text-gray-400 text-sm">
-                                    Accede a más de 25 sesiones grabadas una vez aprobado tu acceso al club
-                                </p>
-                            </div>
-                        </div>
-                        <a href="access-form.html"
-                            class="px-8 py-3 bg-primary hover:bg-yellow-400 text-background-dark font-bold rounded-xl transition-colors whitespace-nowrap">
-                            Solicitar Acceso
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CTA Section -->
             <div
-                class="bg-gradient-to-r from-surface-dark to-background-dark rounded-xl border border-surface-light p-12 text-center">
-                <div class="max-w-2xl mx-auto">
-                    <span class="material-symbols-outlined text-5xl text-primary mb-4">workspace_premium</span>
-                    <h2 class="text-3xl font-bold text-white mb-4">¿Quieres Formar Parte?</h2>
-                    <p class="text-lg text-gray-400 mb-8">
-                        Solicita tu acceso ahora y recibe invitaciones automáticas a todas las sesiones en vivo
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="access-form.html"
-                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary hover:bg-yellow-400 text-background-dark font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(238,189,43,0.2)]">
-                            <span>Solicitar Acceso Ahora</span>
-                            <span class="material-symbols-outlined">arrow_forward</span>
-                        </a>
-                        <a href="simulator.html"
-                            class="inline-flex items-center justify-center gap-2 px-8 py-4 border border-surface-light hover:border-primary text-white font-bold rounded-xl transition-all">
-                            <span class="material-symbols-outlined">monitoring</span>
-                            <span>Ver Simulador</span>
+                class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-medium uppercase tracking-widest text-primary mb-6">
+                <span class="material-symbols-outlined text-sm">play_circle</span>
+                <span data-i18n="webinars.hero.badge">Breeder Hub</span>
+            </div>
+
+            <h1
+                class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight font-display text-white mb-6">
+                <span data-i18n="webinars.hero.title.main">Masterclasses &</span><br />
+                <span class="text-primary italic" data-i18n="webinars.hero.title.highlight">Sessões ao Vivo</span>
+            </h1>
+
+            <p class="text-lg text-text-secondary max-w-2xl mx-auto" data-i18n="webinars.hero.p">
+                Aprenda a metodologia do CPII, descubra as diferenças entre os ativos e junte-se às nossas análises de
+                mercado em direto.
+            </p>
+
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ [SEC-04] MASTERCLASSES GRID ══ -->
+    <section class="py-20 bg-background-dark">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-white font-display" data-i18n="webinars.master.title">Modelos de
+                    Investimento</h2>
+                <div class="w-12 h-1 bg-primary mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- Tier A: Catapulta -->
+                <div
+                    class="group bg-card-dark rounded-2xl border border-border-dark overflow-hidden hover:border-primary/50 transition-colors">
+                    <div
+                        class="aspect-video relative bg-background-dark flex items-center justify-center border-b border-border-dark">
+                        <span
+                            class="material-symbols-outlined text-6xl text-primary/40 group-hover:text-primary transition-colors">rocket_launch</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-card-dark to-transparent opacity-50"></div>
+                        <div
+                            class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1 rounded text-xs font-bold text-primary tracking-widest border border-primary/20">
+                            TIER A</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold text-white mb-3 font-display"
+                            data-i18n="webinars.master.tiera.title">Catapulta: Crescimento Exponencial</h3>
+                        <p class="text-sm text-text-secondary leading-relaxed mb-4"
+                            data-i18n="webinars.master.tiera.desc">
+                            Ciclos curtos (6 meses) com rentabilidade agressiva (até 20% APY). Desenhado para
+                            investidores que procuram escalar o seu capital rapidamente através de operações de
+                            arbitragem imobiliária.
+                        </p>
+                        <a href="access-form.html?tipo=inversor"
+                            class="text-primary text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all"
+                            data-i18n="webinars.btn.watch">
+                            Ver Masterclass <span class="material-symbols-outlined text-sm">arrow_forward</span>
                         </a>
                     </div>
                 </div>
+
+                <!-- Tier B: Refugio -->
+                <div
+                    class="group bg-card-dark rounded-2xl border border-border-dark overflow-hidden hover:border-teal-500/50 transition-colors">
+                    <div
+                        class="aspect-video relative bg-background-dark flex items-center justify-center border-b border-border-dark">
+                        <span
+                            class="material-symbols-outlined text-6xl text-teal-500/40 group-hover:text-teal-400 transition-colors">shield</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-card-dark to-transparent opacity-50"></div>
+                        <div
+                            class="absolute bottom-4 left-4 bg-background-dark/80 backdrop-blur px-3 py-1 rounded text-xs font-bold text-teal-400 tracking-widest border border-teal-500/20">
+                            TIER B</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold text-white mb-3 font-display"
+                            data-i18n="webinars.master.tierb.title">Refúgio: Preservação de Património</h3>
+                        <p class="text-sm text-text-secondary leading-relaxed mb-4"
+                            data-i18n="webinars.master.tierb.desc">
+                            Ciclos anuais com rentabilidade estável (8% APY). Foco em ativos maduros e seguros,
+                            desenhado para investidores que procuram proteger o capital contra a inflação com risco
+                            mínimo.
+                        </p>
+                        <a href="access-form.html?tipo=inversor"
+                            class="text-teal-400 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all"
+                            data-i18n="webinars.btn.watch">
+                            Ver Masterclass <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </main>
+    </section>
 
-    <!-- Footer -->
-    <footer class="border-t border-surface-light py-8 bg-background-dark mt-12">
-        <div class="max-w-7xl mx-auto px-10">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-                <p>© 2024 CPII Portugal. Todos los derechos reservados.</p>
-                <div class="flex gap-6">
-                    <a class="hover:text-primary transition-colors" href="#">Privacidad</a>
-                    <a class="hover:text-primary transition-colors" href="#">Términos</a>
-                    <a class="hover:text-primary transition-colors" href="index.html">Inicio</a>
+    <!-- ════════════════════════════════ [SEC-05] CALENDARIO + COUNTDOWN ══ -->
+    <!--
+  CHANGELOG v1.1.0:
+  · FIX: hora 18:00 → 19:00 WET (brief original)
+  · ADD: Countdown en tiempo real (JS, target: 2026-02-27T19:00:00Z)
+  · ADD: Sesiones Mar 12 + Abr 09 con i18n completo
+-->
+    <section class="py-20 bg-card-dark border-t border-border-dark">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+
+            <div class="mb-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+
+                <div class="flex items-center gap-4">
+                    <span class="material-symbols-outlined text-3xl text-primary">calendar_month</span>
+                    <h2 class="text-2xl font-bold text-white font-display" data-i18n="webinars.cal.title">Próximas
+                        Sessões</h2>
                 </div>
+
+                <!-- Countdown widget -->
+                <div class="bg-background-dark border border-primary/20 rounded-xl px-5 py-4 flex items-center gap-4">
+                    <div class="flex items-center gap-1.5">
+                        <span class="live-dot w-2 h-2 bg-primary"></span>
+                        <span class="text-[10px] text-primary font-bold uppercase tracking-wider"
+                            data-i18n="webinars.countdown.label">Evento em</span>
+                    </div>
+                    <div class="flex gap-2" id="countdown-wrap">
+                        <div class="countdown-unit">
+                            <p class="text-xl font-black text-white font-display" id="cd-days">--</p>
+                            <p class="text-[9px] text-text-secondary uppercase tracking-wider"
+                                data-i18n="webinars.countdown.days">Dias</p>
+                        </div>
+                        <div class="countdown-unit">
+                            <p class="text-xl font-black text-white font-display" id="cd-hours">--</p>
+                            <p class="text-[9px] text-text-secondary uppercase tracking-wider"
+                                data-i18n="webinars.countdown.hours">Horas</p>
+                        </div>
+                        <div class="countdown-unit">
+                            <p class="text-xl font-black text-white font-display" id="cd-mins">--</p>
+                            <p class="text-[9px] text-text-secondary uppercase tracking-wider"
+                                data-i18n="webinars.countdown.mins">Min</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Evento 27F — DESTACADO -->
+            <div
+                class="bg-background-dark border border-primary/30 rounded-xl p-6 lg:p-8 flex flex-col md:flex-row items-start md:items-center gap-8 relative overflow-hidden shadow-[0_0_20px_rgba(193,168,92,0.05)] mb-6">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+
+                <div class="flex-shrink-0 text-center md:border-r md:border-border-dark md:pr-8 min-w-[150px]">
+                    <p class="text-primary text-sm font-bold uppercase tracking-widest mb-1"
+                        data-i18n="webinars.cal.e1.month">FEV</p>
+                    <p class="text-5xl font-black text-white font-display mb-1">27</p>
+                    <!-- FIX v1.1.0: 18:00 → 19:00 WET -->
+                    <p class="text-text-secondary text-xs" data-i18n="webinars.cal.e1.time">Sexta-feira · 19:00 WET</p>
+                </div>
+
+                <div class="flex-1">
+                    <div
+                        class="inline-flex items-center gap-1 bg-red-500/10 text-red-400 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider mb-3">
+                        <span class="material-symbols-outlined text-[12px]">sensors</span>
+                        <span data-i18n="webinars.cal.live">Ao Vivo</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 font-display" data-i18n="webinars.cal.e1.name">Operação
+                        Fundadores CPII</h3>
+                    <p class="text-sm text-text-secondary mb-4" data-i18n="webinars.cal.e1.desc">
+                        Apresentação oficial do Clube para os 10 Fundadores selecionados. O caminho para o primeiro
+                        milhão e a estratégia de prescriptores antes do evento de Santa Maria da Feira.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="flex -space-x-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary/20 border-2 border-background-dark flex items-center justify-center text-[10px] font-bold text-primary">
+                                DA</div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-teal-500/20 border-2 border-background-dark flex items-center justify-center text-[10px] font-bold text-teal-400">
+                                CB</div>
+                        </div>
+                        <span class="text-xs text-text-secondary" data-i18n="webinars.cal.e1.speakers">David Almeida &
+                            Carlos Balboa</span>
+                    </div>
+                </div>
+
+                <div class="flex-shrink-0 w-full md:w-auto">
+                    <a href="access-form.html"
+                        class="block w-full text-center bg-primary hover:bg-primary-hover text-background-dark px-6 py-3 rounded-lg text-sm font-bold transition-colors"
+                        data-i18n="webinars.btn.reserve">
+                        Reservar Lugar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sesiones futuras — ADD v1.1.0 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <div
+                    class="bg-background-dark border border-border-dark rounded-xl p-5 flex items-center gap-5 hover:border-primary/30 transition-colors">
+                    <div class="flex-shrink-0 text-center min-w-[60px]">
+                        <p class="text-primary text-xs font-bold uppercase tracking-widest"
+                            data-i18n="webinars.cal.e2.month">MAR</p>
+                        <p class="text-3xl font-black text-white font-display">12</p>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-base font-bold text-white font-display mb-1" data-i18n="webinars.cal.e2.name">
+                            Estratégias de Rede</h4>
+                        <p class="text-xs text-text-secondary mb-2" data-i18n="webinars.cal.e2.time">19:00 WET · Tier A
+                        </p>
+                        <a href="access-form.html"
+                            class="text-xs text-primary font-bold flex items-center gap-1 hover:gap-2 transition-all"
+                            data-i18n="webinars.btn.reserve">
+                            Reservar Lugar <span class="material-symbols-outlined"
+                                style="font-size:13px">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-background-dark border border-border-dark rounded-xl p-5 flex items-center gap-5 hover:border-primary/30 transition-colors">
+                    <div class="flex-shrink-0 text-center min-w-[60px]">
+                        <p class="text-primary text-xs font-bold uppercase tracking-widest"
+                            data-i18n="webinars.cal.e3.month">ABR</p>
+                        <p class="text-3xl font-black text-white font-display">09</p>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-base font-bold text-white font-display mb-1" data-i18n="webinars.cal.e3.name">
+                            Due Diligence Avançada</h4>
+                        <p class="text-xs text-text-secondary mb-2" data-i18n="webinars.cal.e3.time">19:00 WET · Tier B
+                        </p>
+                        <a href="access-form.html"
+                            class="text-xs text-primary font-bold flex items-center gap-1 hover:gap-2 transition-all"
+                            data-i18n="webinars.btn.reserve">
+                            Reservar Lugar <span class="material-symbols-outlined"
+                                style="font-size:13px">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════ [SEC-06] GRABACIONES BLOQUEADAS ══ -->
+    <!--
+  TRAMPA DE VALOR: Diseño Gemini conservado íntegro.
+  El candado centralizado + blur máximo impacta visualmente,
+  forzando al usuario al access-form para acceder al archivo.
+-->
+    <section class="py-24 bg-background-dark relative">
+        <div class="mx-auto max-w-5xl px-6 text-center">
+
+            <div class="relative rounded-2xl border border-border-dark bg-card-dark p-12 overflow-hidden">
+
+                <!-- Grid borroso de grabaciones (ilusión de contenido bloqueado) -->
+                <div
+                    class="absolute inset-0 opacity-20 grid grid-cols-3 gap-4 p-8 filter blur-[3px] pointer-events-none select-none">
+                    <div class="bg-border-dark rounded-lg aspect-video"></div>
+                    <div class="bg-border-dark rounded-lg aspect-video"></div>
+                    <div class="bg-border-dark rounded-lg aspect-video"></div>
+                    <div class="bg-border-dark rounded-lg aspect-video"></div>
+                    <div class="bg-border-dark rounded-lg aspect-video"></div>
+                    <div class="bg-border-dark rounded-lg aspect-video"></div>
+                </div>
+
+                <!-- Contenido del bloqueo -->
+                <div class="relative z-10 flex flex-col items-center">
+                    <div
+                        class="w-20 h-20 rounded-full bg-background-dark border border-border-dark flex items-center justify-center mb-6 shadow-2xl">
+                        <span class="material-symbols-outlined text-4xl text-primary"
+                            style="font-variation-settings:'FILL' 1">lock</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white font-display mb-4" data-i18n="webinars.locked.title">+25
+                        Gravações Exclusivas</h2>
+                    <p class="text-text-secondary text-sm max-w-md mx-auto mb-8" data-i18n="webinars.locked.desc">
+                        O acesso ao arquivo histórico de análises de mercado, operações fechadas e tutorias de captação
+                        é restrito a membros verificados do Clube.
+                    </p>
+                    <a href="access-form.html"
+                        class="inline-flex items-center gap-2 rounded-xl bg-transparent border-2 border-primary hover:bg-primary hover:text-background-dark text-primary px-8 py-4 text-sm font-bold transition-all shadow-[0_0_15px_rgba(193,168,92,0.1)]">
+                        <span class="material-symbols-outlined text-lg">key</span>
+                        <span data-i18n="webinars.locked.btn">Solicitar Acesso para Desbloquear</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ [SEC-07] FOOTER ══ -->
+    <!-- Idéntico a index.html v2.0.0 -->
+    <footer class="border-t border-border-dark py-10 bg-background-dark">
+        <div class="mx-auto max-w-7xl px-6 lg:px-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined text-primary text-2xl">apartment</span>
+                        <span class="text-white text-lg font-bold font-display">CPII PORTUGAL</span>
+                    </div>
+                    <p class="text-text-secondary text-sm" data-i18n="footer.about">
+                        Clube Privado de Investimento Imobiliário. Construindo património sustentável desde 2024.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4" data-i18n="footer.links.title">Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="simulator.html"
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.simulador">Simulador</a></li>
+                        <li><a href="webinars.html"
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.webinars">Webinars</a></li>
+                        <li><a href="equipo-comercial.html"
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.grupo_comercial">Grupo Comercial</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-4" data-i18n="footer.legal.title">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="privacy.html"
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.privacy">Privacidade</a></li>
+                        <li><a href="terms.html"
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="nav.terms">Termos</a></li>
+                        <li><a href="access-form.html"
+                                class="text-text-secondary hover:text-primary transition-colors text-sm"
+                                data-i18n="footer.legal.support">Suporte</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="border-t border-border-dark pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-text-secondary text-sm" data-i18n="footer.copy">© 2026 CPII Portugal. Sistema Verdent.
+                </p>
+                <span class="text-text-secondary text-xs">Stack: HTML + Tailwind + Firebase</span>
             </div>
         </div>
     </footer>
+
+    <!-- ════════════════════════════════════════════════════════ SCRIPTS ══ -->
+    <script>
+        // ── Countdown al 27F · 19:00 WET (UTC+0) — ADD v1.1.0 ──────────────────
+        (function initCountdown() {
+            const target = new Date("2026-02-27T19:00:00Z").getTime();
+
+            function update() {
+                const diff = target - Date.now();
+                if (diff <= 0) {
+                    const wrap = document.getElementById("countdown-wrap");
+                    if (wrap) wrap.innerHTML = '<span class="text-primary font-bold text-sm">🔴 AO VIVO</span>';
+                    return;
+                }
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                document.getElementById("cd-days").textContent = String(d).padStart(2, "0");
+                document.getElementById("cd-hours").textContent = String(h).padStart(2, "0");
+                document.getElementById("cd-mins").textContent = String(m).padStart(2, "0");
+            }
+            update();
+            setInterval(update, 60000);
+        })();
+
+        // ── Referral capture (≡ index.html) ─────────────────────────────────────
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get("ref");
+        if (ref) {
+            sessionStorage.setItem("cpii_ref", ref);
+            console.log("[CPII] Referral captured:", ref);
+        }
+    </script>
+
 </body>
 
 </html>
