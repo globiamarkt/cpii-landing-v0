@@ -251,6 +251,7 @@
             }
         }
     </style>
+    <script src="i18n.js"></script>
 </head>
 
 <body class="bg-carbon text-text-main min-h-screen flex flex-col overflow-x-hidden antialiased dark">
@@ -271,12 +272,23 @@
             </div>
         </div>
 
-        <a href="index.html"
-            class="flex items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-gold">
-            <span class="material-symbols-outlined"
-                style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 300">arrow_back</span>
-            Volver al inicio
-        </a>
+        <div class="flex items-center gap-4">
+            <!-- Selector de idioma — id requerido por i18n.js para sincronización -->
+            <select id="lang-selector" onchange="setLanguage(this.value)"
+                class="bg-transparent border border-gold/25 text-text-muted rounded-md px-2 py-1 text-[10px] font-bold tracking-wider cursor-pointer transition-colors hover:border-gold hover:text-gold outline-none">
+                <option value="pt">PT</option>
+                <option value="es">ES</option>
+                <option value="en">EN</option>
+                <option value="fr">FR</option>
+            </select>
+
+            <a href="index.html"
+                class="flex items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-gold">
+                <span class="material-symbols-outlined"
+                    style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 300">arrow_back</span>
+                <span data-i18n="nav.inicio">Volver al inicio</span>
+            </a>
+        </div>
     </header>
 
     <!-- ══════════════════════════════════════════ [SEC-04/05] MAIN CONTENT ══ -->
@@ -301,18 +313,19 @@
                     class="anim-1 inline-flex w-fit items-center gap-2 rounded-full border border-gold/25 bg-gold-dim px-4 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-gold">
                     <span class="material-symbols-outlined"
                         style="font-size:13px;font-variation-settings:'FILL' 1,'wght' 400">workspace_premium</span>
-                    Acceso Exclusivo
+                    <span data-i18n="hero.badge">Acceso Exclusivo</span>
                 </div>
 
                 <!-- Titular -->
                 <div class="anim-2 space-y-5">
-                    <h1
-                        class="font-display text-5xl font-light leading-[1.05] tracking-tight text-text-main sm:text-6xl lg:text-7xl">
+                    <h1 class="font-display text-5xl font-light leading-[1.05] tracking-tight text-text-main sm:text-6xl lg:text-7xl"
+                        data-i18n="form.hero.title" data-i18n-html="true">
                         El poder<br />de la
                         <span class="italic text-gold"> Red</span><br />
                         a tu alcance
                     </h1>
-                    <p class="max-w-sm text-sm leading-relaxed text-text-muted font-light">
+                    <p class="max-w-sm text-sm leading-relaxed text-text-muted font-light" data-i18n="hero.p"
+                        data-i18n-html="true">
                         Tu acceso es validado individualmente. Se te asignará un
                         <strong class="font-medium text-text-main/80">Responsable de Club</strong> según
                         tu país de residencia para garantizar atención personalizada.
@@ -327,37 +340,70 @@
                             <span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
                                 style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85">Rentabilidad verificada y auditada</span>
+                            <span class="text-sm font-light text-text-main/85" data-i18n="form.benefit.1">Rentabilidad
+                                verificada y auditada</span>
                         </li>
                         <li class="flex items-start gap-3 group">
                             <span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
                                 style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85">Revenue Share multinivel hasta Nivel
-                                3</span>
+                            <span class="text-sm font-light text-text-main/85" data-i18n="form.benefit.2">Revenue Share
+                                multinivel hasta Nivel 3</span>
                         </li>
                         <li class="flex items-start gap-3 group">
                             <span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
                                 style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85">Autofinanciación garantizada</span>
+                            <span class="text-sm font-light text-text-main/85"
+                                data-i18n="form.benefit.3">Autofinanciación garantizada</span>
                         </li>
                         <li class="flex items-start gap-3 group">
                             <span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
                                 style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85">Networking con líderes del sector</span>
+                            <span class="text-sm font-light text-text-main/85" data-i18n="form.benefit.4">Networking con
+                                líderes del sector</span>
                         </li>
                     </ul>
                 </div>
 
+                <div class="anim-4 mt-8 border-t border-white/10 pt-8">
+                    <p class="mb-6 text-[10px] uppercase tracking-[0.15em] text-text-muted/70"
+                        data-i18n="hero.contact.label">Contactar Gestión</p>
+                    <div class="flex items-center gap-6">
+                        <a href="https://wa.me/351912536077" target="_blank" rel="noopener noreferrer"
+                            class="group text-text-muted transition-colors hover:text-gold" aria-label="WhatsApp">
+                            <svg class="h-10 w-10 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                            </svg>
+                        </a>
+                        <a href="https://t.me/+351912536077" target="_blank" rel="noopener noreferrer"
+                            class="group text-text-muted transition-colors hover:text-gold" aria-label="Telegram">
+                            <svg class="h-10 w-10 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0011.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.385 4.025-1.627 4.476-1.635z" />
+                            </svg>
+                        </a>
+                        <a href="mailto:admin@breederhub.store"
+                            class="group text-text-muted transition-colors hover:text-gold" aria-label="Email">
+                            <svg class="h-10 w-10 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Número decorativo fondo -->
-            <div
-                class="pointer-events-none absolute bottom-10 right-6 font-display text-[10rem] font-light leading-none text-white/[0.02] select-none lg:right-10">
-                II
-            </div>
+        </div>
+
+        <!-- Número decorativo fondo -->
+        <div
+            class="pointer-events-none absolute bottom-10 right-6 font-display text-[10rem] font-light leading-none text-white/[0.02] select-none lg:right-10">
+            II
+        </div>
         </div>
 
         <!-- ─────────────────────────────────────── [SEC-05] PANEL DERECHO: FORMULARIO ── -->
@@ -375,9 +421,10 @@
 
                 <!-- Cabecera tarjeta -->
                 <div class="mb-7 border-b border-border-sub pb-5">
-                    <h2 class="font-display text-2xl font-medium italic text-text-main">Solicitar Acceso</h2>
-                    <p class="mt-1.5 text-xs text-text-muted font-light">Completa tus datos · Se te asignará un gestor
-                        en tu zona</p>
+                    <h2 class="font-display text-2xl font-medium italic text-text-main" data-i18n="form.title">Solicitar
+                        Acceso</h2>
+                    <p class="mt-1.5 text-xs text-text-muted font-light" data-i18n="form.subtitle">Completa tus datos ·
+                        Se te asignará un gestor en tu zona</p>
                 </div>
 
                 <!-- ── [SEC-05e] Mensaje de ÉXITO (oculto por defecto) ── -->
@@ -386,11 +433,11 @@
                         <span class="material-symbols-outlined text-gold"
                             style="font-size:22px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
                         <div>
-                            <h3 class="font-display text-lg italic text-gold">¡Solicitud recibida!</h3>
-                            <p class="mt-1 text-xs text-text-muted leading-relaxed">
-                                Tu Responsable de Club te contactará en <strong class="text-text-main/80">24–48
-                                    horas</strong>.
-                                Revisa también tu bandeja de spam.
+                            <h3 class="font-display text-lg italic text-gold" data-i18n="form.success.title">Solicitação
+                                recebida!</h3>
+                            <p class="mt-1 text-xs text-text-muted leading-relaxed" data-i18n="form.success.desc">
+                                O seu Responsável de Club irá contactá-lo em 24–48 horas. Verifique também a sua pasta
+                                de spam.
                             </p>
                         </div>
                     </div>
@@ -401,8 +448,8 @@
 
                     <!-- ── [SEC-05a] Selector de perfil ── -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-[10px] uppercase tracking-[0.15em] font-medium text-gold">Perfil de
-                            acceso</label>
+                        <label class="text-[10px] uppercase tracking-[0.15em] font-medium text-gold"
+                            data-i18n="form.profile.label">Perfil de acceso</label>
                         <div class="grid grid-cols-2 rounded-lg bg-carbon p-1 border border-border-sub">
                             <label class="cursor-pointer">
                                 <input id="profile-inversor" class="peer sr-only" name="profile_type" type="radio"
@@ -411,7 +458,7 @@
                                     class="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-carbon peer-checked:font-semibold peer-checked:shadow-sm">
                                     <span class="material-symbols-outlined"
                                         style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">trending_up</span>
-                                    Inversor
+                                    <span data-i18n="form.profile.inv">Inversor</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
@@ -421,7 +468,7 @@
                                     class="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-carbon peer-checked:font-semibold peer-checked:shadow-sm">
                                     <span class="material-symbols-outlined"
                                         style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">storefront</span>
-                                    Promotor/Gestor
+                                    <span data-i18n="form.profile.pro">Promotor/Gestor</span>
                                 </div>
                             </label>
                         </div>
@@ -434,39 +481,46 @@
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
                                 for="fullname">
-                                Nombre completo <span class="text-gold">*</span>
+                                <span data-i18n="form.name.label">Nombre completo</span> <span
+                                    class="text-gold">*</span>
                             </label>
                             <div class="relative group">
                                 <span
                                     class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
                                     style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person</span>
                                 <input required id="fullname" name="fullname" type="text" placeholder="Ej. João Silva"
+                                    data-i18n-placeholder="form.name.ph"
                                     class="w-full rounded-lg border border-border-sub bg-input-bg py-3 pl-9 pr-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
-                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-fullname">Campo obligatorio</p>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-fullname" data-i18n="form.err.name">
+                                Campo obligatorio</p>
                         </div>
 
                         <!-- Correo electrónico -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
                                 for="email">
-                                Correo electrónico <span class="text-gold">*</span>
+                                <span data-i18n="form.email.label">Correo electrónico</span> <span
+                                    class="text-gold">*</span>
                             </label>
                             <div class="relative group">
                                 <span
                                     class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
                                     style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">mail</span>
                                 <input required id="email" name="email" type="email" placeholder="nombre@empresa.com"
+                                    data-i18n-placeholder="form.email.ph"
                                     class="w-full rounded-lg border border-border-sub bg-input-bg py-3 pl-9 pr-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
-                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-email">Email inválido</p>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-email" data-i18n="form.err.email">
+                                Email inválido</p>
                         </div>
 
                         <!-- Teléfono -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
                                 for="phone">
-                                Teléfono de contacto <span class="text-gold">*</span>
+                                <span data-i18n="form.phone.label">Teléfono de contacto</span> <span
+                                    class="text-gold">*</span>
                             </label>
                             <div class="flex gap-2">
                                 <!-- Prefijo -->
@@ -485,18 +539,21 @@
                                 </select>
                                 <!-- Número -->
                                 <input required id="phone" name="phone" type="tel" placeholder="000 000 000"
+                                    data-i18n-placeholder="form.phone.ph"
                                     class="flex-1 rounded-lg border border-border-sub bg-input-bg py-3 px-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
-                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-phone">Campo obligatorio</p>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-phone" data-i18n="form.err.phone">
+                                Campo obligatorio</p>
                         </div>
 
                         <!-- País de residencia -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
                                 for="country">
-                                País de residencia <span class="text-gold">*</span>
+                                <span data-i18n="form.country.label">País de residencia</span> <span
+                                    class="text-gold">*</span>
                             </label>
-                            <select required id="country" name="country"
+                            <select required id="country" name="country" data-i18n-placeholder="form.country.ph"
                                 class="w-full rounded-lg border border-border-sub bg-input-bg py-3 px-4 text-sm text-text-main focus:border-gold focus:outline-none">
                                 <option value="">Selecciona tu país…</option>
                                 <option value="PT">Portugal</option>
@@ -515,10 +572,11 @@
                             <p class="mt-1.5 text-[10px] text-gold/50 italic">
                                 <span class="material-symbols-outlined align-middle"
                                     style="font-size:11px">location_on</span>
-                                Este dato determina tu Responsable de Club asignado — independiente de tu
-                                Padrino/Referido
+                                <span data-i18n="form.country.note">Este dato determina tu Responsable de Club
+                                    asignado — independiente de tu Padrino/Referido</span>
                             </p>
-                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-country">Selecciona un país</p>
+                            <p class="hidden mt-1 text-[10px] text-red-400" id="err-country"
+                                data-i18n="form.err.country">Selecciona un país</p>
                         </div>
                     </div>
                     <!-- /[SEC-05b] -->
@@ -537,8 +595,8 @@
                             <div class="w-full border-t border-border-sub"></div>
                         </div>
                         <div class="relative flex justify-center">
-                            <span
-                                class="bg-dark-grey px-3 text-[9px] uppercase tracking-[0.2em] text-gold/50">Prescriptor</span>
+                            <span class="bg-dark-grey px-3 text-[9px] uppercase tracking-[0.2em] text-gold/50"
+                                data-i18n="form.ref.divider">Prescriptor</span>
                         </div>
                     </div>
 
@@ -546,14 +604,15 @@
                         <label
                             class="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.12em] text-text-muted"
                             for="referral">
-                            <span>¿Quién te invitó?</span>
-                            <span id="ref-status" class="font-normal text-text-dim">Opcional</span>
+                            <span data-i18n="form.ref.label">¿Quién te invitó?</span>
+                            <span id="ref-status" class="font-normal text-text-dim"
+                                data-i18n="form.ref.optional">Opcional</span>
                         </label>
                         <div class="relative group">
                             <span
                                 class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
                                 style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person_search</span>
-                            <select id="referral" name="referral"
+                            <select id="referral" name="referral" data-i18n-placeholder="form.ref.ph"
                                 class="w-full appearance-none rounded-lg border border-gold/20 bg-gold/[0.04] py-3 pl-9 pr-8 text-sm text-text-main focus:border-gold focus:bg-input-bg focus:outline-none transition-all">
                                 <option value="">— Selecciona tu Prescriptor —</option>
                                 <!-- ╔══════════════════════════════════════════════════════════╗
@@ -567,9 +626,9 @@
                                 class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-text-dim material-symbols-outlined"
                                 style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">expand_more</span>
                         </div>
-                        <p class="mt-1.5 text-[10px] text-text-dim">
-                            Solo aparecen Prescriptores autorizados por CPII.
-                            El Prescriptor <strong class="text-text-muted/80">no</strong> es tu Responsable de Club.
+                        <p class="mt-1.5 text-[10px] text-text-dim" data-i18n="form.ref.note">
+                            Solo aparecen Prescriptores autorizados por CPII. El Prescriptor no es tu Responsable de
+                            Club.
                         </p>
                     </div>
                     <!-- /[SEC-05c] -->
@@ -580,34 +639,32 @@
                             <input required id="terms" name="terms" type="checkbox"
                                 class="h-4 w-4 cursor-pointer rounded border border-gold/30 bg-input-bg text-gold focus:ring-gold focus:ring-1 focus:ring-offset-0" />
                         </div>
-                        <label class="text-[11px] leading-relaxed text-text-muted font-light cursor-pointer"
-                            for="terms">
-                            Acepto la
-                            <a class="text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors"
-                                href="privacy.html">Política de Privacidad</a>
-                            y los
-                            <a class="text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors"
-                                href="terms.html">Términos de Servicio</a>.
-                            Entiendo que mis datos serán tratados conforme al
-                            <strong class="text-text-main/80">RGPD</strong>
-                            y que mi solicitud está sujeta a aprobación.
+                        <label class="text-[11px] leading-relaxed text-text-muted font-light cursor-pointer" for="terms"
+                            data-i18n="form.rgpd" data-i18n-html="true">
+                            Acepto la <a
+                                class="text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors"
+                                href="privacy.html">Política de Privacidad</a> y los <a
+                                class="text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors"
+                                href="terms.html">Términos de Servicio</a>. Entiendo que mis datos serán tratados
+                            conforme al <strong class="text-text-main/80">RGPD</strong> y que mi solicitud está sujeta a
+                            aprobación.
                         </label>
                     </div>
-                    <p class="hidden -mt-3 text-[10px] text-red-400" id="err-terms">Debes aceptar los términos para
-                        continuar</p>
+                    <p class="hidden -mt-3 text-[10px] text-red-400" id="err-terms" data-i18n="form.err.terms">Debes
+                        aceptar los términos para continuar</p>Validar solicitud
                     <!-- /[SEC-05d] -->
 
                     <!-- ── [SEC-05e] Botón de envío ── -->
                     <button id="submit-btn" type="submit"
                         class="group mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-gold py-4 text-xs font-semibold uppercase tracking-[0.15em] text-carbon transition-all hover:bg-gold-light hover:shadow-gold active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
                         <span class="btn-text flex items-center gap-2">
-                            Validar solicitud
+                            <span data-i18n="form.btn.submit">Validar solicitud</span>
                             <span class="material-symbols-outlined transition-transform group-hover:translate-x-1"
                                 style="font-size:15px;font-variation-settings:'FILL' 0,'wght' 400">arrow_forward</span>
                         </span>
                         <span class="btn-loader">
                             <span class="spinner"></span>
-                            Enviando…
+                            <span data-i18n="form.btn.sending">Enviando…</span>
                         </span>
                     </button>
                     <!-- /[SEC-05e] -->
@@ -624,12 +681,16 @@
 
     <!-- ══════════════════════════════════════════════════════ [SEC-06] FOOTER ══ -->
     <footer class="relative z-10 border-t border-border-sub bg-carbon px-6 py-6 text-center">
-        <p class="text-[9px] uppercase tracking-[0.25em] text-white/15">Confidencial — Solo para miembros autorizados ·
+        <p class="text-[9px] uppercase tracking-[0.25em] text-white/15" data-i18n="footer.copy">Confidencial — Apenas
+            para membros autorizados ·
             CPII © 2026</p>
         <div class="mt-3 flex justify-center gap-6">
-            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="privacy.html">Privacidad</a>
-            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="terms.html">Términos</a>
-            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="index.html">Ayuda</a>
+            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="privacy.html"
+                data-i18n="nav.privacy">Privacidad</a>
+            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="terms.html"
+                data-i18n="nav.terms">Términos</a>
+            <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="index.html"
+                data-i18n="footer.legal.support">Ayuda</a>
         </div>
     </footer>
 
@@ -669,6 +730,8 @@
         function getClubManager(countryCode) {
             return CLUB_MANAGER_MAP[countryCode] || CLUB_MANAGER_MAP._DEFAULT;
         }
+        // --- INCISIÓN LAPAROSCÓPICA: Exponer al scope global ---
+        window.getClubManager = getClubManager;
     </script>
 
     <!-- ════════════════════════════════════ [SEC-08] CAPTURA DE PRESCRIPTOR ══ -->
@@ -696,7 +759,8 @@
                 const refNorm = refParam.toLowerCase().replace(/\s+/g, "_");
                 if (PRESCRIPTORES_AUTORIZADOS.includes(refNorm)) {
                     select.value = refNorm;
-                    refStatus.textContent = "✓ Prescriptor detectado";
+                    const lang = localStorage.getItem("cpii_lang") || "pt";
+                    refStatus.textContent = (typeof translations !== 'undefined' && translations[lang] && translations[lang]["form.ref.detected"]) ? translations[lang]["form.ref.detected"] : "✓ Prescriptor detectado";
                     refStatus.className = "font-medium text-emerald-400";
                 }
                 // Si el valor de la URL no está en la lista autorizada, se ignora silenciosamente
