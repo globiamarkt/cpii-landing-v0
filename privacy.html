@@ -8,6 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
+    <script src="i18n.js"></script>
     <style>
         :root {
             --bg-color: #0a0a0a;
@@ -86,7 +87,7 @@
 <body>
 
     <div class="container">
-        <h1>Política de Privacidade</h1>
+        <h1 data-i18n="privacy.title">Política de Privacidade</h1>
 
         <p>A presente Política de Privacidade descreve como a <strong>CPII (BreederHub)</strong> recolhe, utiliza e
             protege as suas informações pessoais ao utilizar o nosso formulário de acesso.</p>
@@ -115,8 +116,10 @@
             nosso contacto de suporte.</p>
 
         <div class="contact-box">
-            <p><strong>Contacto de Suporte:</strong> legal@cpii-project.com</p>
-            <a href="index.html" class="back-link">← Voltar ao Início</a>
+            <p><strong data-i18n="footer.legal.support">Contacto de Suporte:</strong> <a
+                    href="mailto:admin@breederhub.store"
+                    style="color: #C1A85D; text-decoration: none;">admin@breederhub.store</a></p>
+            <a href="index.html" class="back-link" data-i18n="nav.inicio">← Voltar ao Início</a>
         </div>
     </div>
 

@@ -8,6 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
+    <script src="i18n.js"></script>
     <style>
         :root {
             --bg-color: #0a0a0a;
@@ -91,7 +92,7 @@
 <body>
 
     <div class="container">
-        <h1>Termos e Condições</h1>
+        <h1 data-i18n="terms.title">Termos e Condições</h1>
 
         <p>Bem-vindo ao ecossistema <strong>CPII</strong>. Ao submeter o formulário de acesso, você concorda com as
             seguintes condições de utilização da plataforma e gestão de leads.</p>
@@ -122,8 +123,11 @@
             operacionais. Recomendamos a consulta periódica desta página.</p>
 
         <div class="contact-box">
-            <p><strong>Última atualização:</strong> Fevereiro 2026</p>
-            <a href="index.html" class="back-link">← Voltar ao Início</a>
+            <p><strong data-i18n="footer.legal.support">Contacto de Suporte:</strong> <a
+                    href="mailto:admin@breederhub.store"
+                    style="color: #C1A85D; text-decoration: none;">admin@breederhub.store</a></p>
+            <p><strong data-i18n="footer.legal.last_update">Última atualização:</strong> Fevereiro 2026</p>
+            <a href="index.html" class="back-link" data-i18n="nav.inicio">← Voltar ao Início</a>
         </div>
     </div>
 

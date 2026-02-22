@@ -1,11 +1,28 @@
 /**
  * ================================================================================
  * ARCHIVO:  i18n.js
- * VERSIÓN:  2.4.0
- * FECHA:    2026-02-21
+ * VERSIÓN:  2.6.0
+ * FECHA:    2026-02-22
  * PROPÓSITO: Motor de internacionalización CPII. Diccionario completo para
  *            4 idiomas (PT / ES / EN / FR). Compatible con todos los archivos
  *            del proyecto que usen atributos data-i18n.
+ *
+ * CHANGELOG v2.6.0 [INCISIÓN ÚNICA]:
+ * └── ADD: Claves privacy.* y terms.* en PT/ES/EN/FR
+ *          para privacy.html y terms.html
+ *
+ * CHANGELOG v2.5.0 [INCISIÓN ÚNICA]:
+ * └── ADD: Bloque "form.*" en PT/ES/EN/FR para access-form.html
+ *          Claves: form.hero.title / form.title / form.subtitle /
+ *          form.profile.* / form.name.* / form.email.* /
+ *          form.phone.* / form.country.* / form.ref.* /
+ *          form.rgpd / form.btn.* / form.success.* / form.err.*
+ *          form.benefit.* / form.ref.divider / form.ref.optional
+ *          Total claves nuevas: 28 × 4 idiomas = 112 entradas
+ * └── UPD: Motor applyTranslations() — soporte data-i18n-placeholder
+ *          para inputs y primer option vacío de selects
+ * └── ADD: Bloque "team.areas.*" (Sección 7) en PT/ES/EN/FR
+ * └── ADD: Bloque "team.cta.final.*" (Sección 8) en PT/ES/EN/FR
  *
  * CHANGELOG v2.4.0 [INCISIÓN ÚNICA]:
  * └── ADD: Bloque "ref.*" inyectado en los 4 idiomas (PT/ES/EN/FR)
@@ -15,37 +32,16 @@
  * CHANGELOG v2.3.0 [INCISIÓN ÚNICA]:
  * └── ADD: Bloque "sim.*" inyectado en los 4 idiomas (PT/ES/EN/FR)
  *          para simulator.html v1.1.0 (Lux Lusitana)
- *          Claves: sim.hero.* / sim.controls.* / sim.btn.* /
- *          sim.kpi.* / sim.table.* / sim.js.*
- *          Total claves nuevas: 21 × 4 idiomas = 84 entradas
  *
  * CHANGELOG v2.2.0 [INCISIÓN ÚNICA]:
  * └── ADD: Bloque "webinars.*" inyectado en los 4 idiomas (PT/ES/EN/FR)
  *          para webinars.html v1.1.0 (Breeder Hub)
- *          Claves añadidas:
- *          webinars.hero.badge / webinars.hero.title.main /
- *          webinars.hero.title.highlight / webinars.hero.p /
- *          webinars.master.title / webinars.master.tiera.title /
- *          webinars.master.tiera.desc / webinars.master.tierb.title /
- *          webinars.master.tierb.desc / webinars.btn.watch /
- *          webinars.cal.title / webinars.cal.live /
- *          webinars.cal.e1.month / webinars.cal.e1.time /
- *          webinars.cal.e1.name / webinars.cal.e1.desc /
- *          webinars.cal.e1.speakers / webinars.cal.e2.month /
- *          webinars.cal.e2.name / webinars.cal.e2.time /
- *          webinars.cal.e3.month / webinars.cal.e3.name /
- *          webinars.cal.e3.time / webinars.btn.reserve /
- *          webinars.countdown.label / webinars.countdown.days /
- *          webinars.countdown.hours / webinars.countdown.mins /
- *          webinars.locked.title / webinars.locked.desc /
- *          webinars.locked.btn
- *          Total claves nuevas: 31 × 4 idiomas = 124 entradas
  *
  * CHANGELOG v2.1.0:
  * └── ADD: Integración claves Commercial Group Portugal (team.*)
  * └── SEC: Parche de seguridad XSS (renderizado HTML vía data-i18n-html)
  *
- * AUTORES:  Claude Sonnet 4.6 (Base + v2.2.0) / Gemini 3 Pro (Parche XSS & v2.1.0)
+ * AUTORES:  Claude Sonnet 4.6 / Gemini / Antigravity
  *
  * ÍNDICE DE CLAVES [SEC-01]:
  * ├── nav.*        Navegación principal
@@ -57,15 +53,19 @@
  * ├── team.*       Sección Equipo Comercial (Commercial Group Portugal)
  * ├── cta.*        Sección CTA final
  * ├── footer.*     Pie de página
- * ├── webinars.*   Página webinars.html (Breeder Hub) ← NEW v2.2.0
- * ├── sim.*        Página simulator.html (Lux Lusitana) ← NEW v2.3.0
- * └── ref.*        Página referrals.html (My Network) ← NEW v2.4.0
+ * ├── webinars.*   Página webinars.html (Breeder Hub) ← v2.2.0
+ * ├── sim.*        Página simulator.html (Lux Lusitana) ← v2.3.0
+ * ├── ref.*        Página referrals.html (My Network) ← v2.4.0
+ * ├── form.*       Página access-form.html (Solicitar Acceso) ← v2.5.0
+ * ├── privacy.*    Página privacy.html ← v2.6.0
+ * └── terms.*      Página terms.html ← v2.6.0
  *
  * USO MOTOR [SEC-02]:
  * · Añadir <script src="i18n.js"></script> en el <head> de cada página
  * · El selector de idioma debe tener id="lang-selector"
- * · Nodos de texto: <elem data-i18n="clave">texto por defecto</elem>
- * · Nodos con HTML: <elem data-i18n="clave" data-i18n-html="true"></elem>
+ * · Nodos de texto:    <elem data-i18n="clave">fallback</elem>
+ * · Nodos con HTML:    <elem data-i18n="clave" data-i18n-html="true"></elem>
+ * · Placeholders:      <input data-i18n-placeholder="clave">
  * ================================================================================
  */
 
@@ -91,6 +91,7 @@ const translations = {
         "hero.title.highlight": "Património",
         "hero.title.suffix": "com Investimento Inteligente",
         "hero.p": "Aceda a oportunidades exclusivas de investimento imobiliário de alto rendimento. Una-se a uma rede de investidores seletos e aproveite o poder do Revenue Share para acelerar o seu caminho para a Autofinanciação.",
+        "hero.contact.label": "Contactar Gestão",
         "preview.label": "Património Projetado",
         "preview.subtitle": "Com 50€/mês + Rede Nível 1",
         "preview.row1": "Poupança Pessoal",
@@ -132,12 +133,13 @@ const translations = {
         "cta.subtitle": "Complete o seu pedido de acesso e a nossa equipa entrará em contacto em 24-48 horas para validar o seu perfil",
         "cta.btn.primary": "Solicitar Acesso Agora",
         "cta.btn.secondary": "Simular o meu Património",
-        "footer.about": "O Private Banking do imobiliário. Estratégia, exclusividade e crescimento exponencial.",
+        "footer.about": "Clube Privado de Investimento Imobiliário. Não vendemos imóveis, multiplicamos património. O Clube exclusivo para investidores estratégicos.",
         "footer.cta.title": "Pronto para começar?",
         "footer.links.title": "Links",
         "footer.links.red": "Minha Rede",
         "footer.legal.title": "Legal",
-        "footer.legal.support": "Suporte",
+        "footer.legal.support": "Contacto de Suporte",
+        "footer.legal.last_update": "Última atualização",
         "footer.copy": "© 2026 CPII Portugal.",
         "team.badge": "Commercial Group Portugal",
         "team.title.main": "O Grupo Comercial mais",
@@ -169,6 +171,125 @@ const translations = {
         "team.cta.subtitle": "Aceda aos perfis completos do grupo, à metodologia de captação estruturada e aos princípios de compliance internacional que diferenciam o Commercial Group Portugal.",
         "team.cta.btn.primary": "Conhecer o Grupo Comercial",
         "team.cta.btn.secondary": "Solicitar Acesso Agora",
+        // ── Equipo Comercia (Breeder Hub) — INCISIÓN v2.5.0 ────────────────────────────
+        "nav.grupo_comercial": "Grupo Comercial",
+        "team.hero.badge": "OPERAÇÃO INTERNACIONAL AUTORIZADA",
+        "team.hero.title": "Commercial Group<br /><span class=\"text-primary italic font-serif font-medium\">Portugal</span>",
+        "team.hero.desc": "O grupo comercial mais estruturado da Península Ibérica. Metodologia alinhada com os padrões internacionais do sector e normas KYC/AML do comércio internacional. <strong class=\"text-white font-medium\">Não vendemos propriedades — atraímos investimento estratégico.</strong>",
+        "team.hero.btn.profiles": "Ver Perfis da Equipa",
+        "team.hero.btn.method": "Metodologia Nuclear",
+        "team.stat1.value": "+25%",
+        "team.stat1.label": "da faturação total Commercial Group Portugal",
+        "team.stat2.value": "7/17",
+        "team.stat2.label": "CAPs do país sob liderança do grupo",
+        "team.stat3.value": "3+",
+        "team.stat3.label": "anos de metodologia estruturada e provada",
+        "team.stat4.label": "hito de produção para Agente Gestor",
+        "team.profiles.title": "A Equipa de Liderança",
+        "team.profiles.desc": "Dois perfis complementares que garantem a excelência metodológica e tecnológica do grupo",
+        "team.da.role": "Agente Senior & Founder",
+        "team.da.badge1": "Agente do Ano 2025",
+        "team.da.badge2": "Operador Internacional",
+        "team.da.bio": "<p>David Almeida é o fundador e líder estratégico do <strong class=\"text-white\">Commercial Group Portugal</strong>, com marca registada e autorizada. Detentor de um contrato de exclusividade assinado com a sua companhia para a área Comercial — um passo que poucos profissionais tiveram a visão e disciplina de dar.</p><p>Em 2025, foi nomeado <strong class=\"text-white\">Agente do Ano em Portugal</strong>, liderando um grupo responsável por mais de 25% da faturação total da sua companhia, com 7 dos 17 CAPs do país integrados na sua estrutura.</p><p>Defensor intransigente de uma metodologia baseada em estándares internacionais — alinhada com os padrões do sector — David posiciona-se como o <strong class=\"text-white\">guardião do processo</strong>: o agente que serve o proprietário, não o mercado.</p>",
+        "team.profiles.skills": "Áreas de Competência",
+        "team.cb.role": "Senior Agent & CTO",
+        "team.cb.badge1": "Chief Technology Officer",
+        "team.cb.badge2": "KYC/AML Specialist",
+        "team.cb.bio": "<p>Carlos Balboa é o arquitecto digital e estratégico da atração de investidores do grupo. Combina uma vasta experiência em <strong class=\"text-white\">mercados internacionais de commodities</strong> com o desenvolvimento das ferramentas digitais que sustentam toda a operação: CRM proprietário, plataforma CPII e sistemas de qualificação de investidores.</p><p>Especialista nas normativas internacionais <strong class=\"text-white\">KYC (Know Your Customer) e AML (Anti-Money Laundering)</strong>, aplica os padrões do comércio internacional para criar uma barreira metodológica e legal que diferencia o grupo de todos os concorrentes.</p><p>Co-fundador do <strong class=\"text-white\">Club Privado de Inversores Inmobiliarios (CPII)</strong>, responsável pela landing page, CRM e pela estratégia de captação global de leads em 4 idiomas.</p>",
+        "team.da.metric1.val": "+25%",
+        "team.da.metric1.lab": "Faturação Commercial Group Portugal",
+        "team.da.metric2.val": "7 CAPs",
+        "team.da.metric2.lab": "do país no grupo",
+        "team.da.metric3.val": "3+ anos",
+        "team.da.metric3.lab": "metodologia provada",
+        "team.da.metric4.val": "Exclusivo",
+        "team.da.metric4.lab": "Área Comercial PT",
+        "team.cb.metric1.val": "CRM",
+        "team.cb.metric1.lab": "Proprietário em construção",
+        "team.cb.metric2.val": "CPII",
+        "team.cb.metric2.lab": "Co-fundador da plataforma",
+        "team.cb.metric3.val": "KYC",
+        "team.cb.metric3.lab": "Compliance internacional",
+        "team.cb.metric4.val": "CTO",
+        "team.cb.metric4.lab": "Chief Technology Officer",
+        "team.da.skill1": "Captação Comercial",
+        "team.da.skill2": "Estudo de Mercado",
+        "team.da.skill3": "Avaliação de Empresas",
+        "team.da.skill4": "Liderança de Equipa",
+        "team.da.skill5": "Negociação Senior",
+        "team.da.skill6": "Hotéis & Turismo",
+        "team.da.skill7": "Plano de Negócios",
+        "team.cb.skill1": "Atração de Investidores",
+        "team.cb.skill2": "KYC / AML",
+        "team.cb.skill3": "CRM & Automação",
+        "team.cb.skill4": "Commodities",
+        "team.cb.skill5": "Lead Generation",
+        "team.cb.skill6": "Estratégia Digital",
+        "team.cb.skill7": "Compliance Internacional",
+        "team.method.badge": "Processo Estruturado",
+        "team.method.title": "Metodologia <span class=\"text-primary italic\">Nuclear</span>",
+        "team.method.desc": "O processo que diferencia o Commercial Group Portugal de todos os outros. Alinhado com os padrões internacionais e KYC/AML.",
+        "team.method.cap.title": "Processo de Captação",
+        "team.method.cap.s1.title": "Qualificação do Proprietário",
+        "team.method.cap.s1.desc": "Recolha de necessidades: tempo de realização, valor objetivo, condições de venda e objetivos do negócio. Critérios do cliente — não do mercado.",
+        "team.method.cap.s2.title": "Declaração de Autorização de Venda",
+        "team.method.cap.s2.desc": "Documento formal com identificação do proprietário, grupo e agente. Inclui condições de venda, valor, prazo e honorários.",
+        "team.method.cap.s3.title": "Estudo de Mercado & Viabilidade",
+        "team.method.cap.s3.desc": "Análise comparativa de mercado (Oferta vs. Procura), estudo de viabilidade económica e financeira do ativo. Plano de Negócio a 5 anos.",
+        "team.method.cap.s4.title": "Ficha de Produto Sumária",
+        "team.method.cap.s4.desc": "Localização, 2-3 fotografias, condições e valor de venda. Apenas o suficiente para despertar interesse — sem exposição de informação sensível.",
+        "team.method.sale.title": "Processo de Venda",
+        "team.method.sale.sa.title": "Carta de Intenção (LOI)",
+        "team.method.sale.sa.desc": "O cliente investidor envia por escrito: identificação do agente, cliente comprador e documentação a verificar. Protege todas as partes.",
+        "team.method.sale.sb.title": "Prova de Fundos",
+        "team.method.sale.sb.desc": "Carta bancária que confirma a capacidade financeira. Barreira KYC/AML innegociável antes de partilhar informação confidencial.",
+        "team.method.sale.sc.title": "Mandato de Representação",
+        "team.method.sale.sc.desc": "Define quem faz o quê e até que ponto. Regista o cliente comprador perante o vendedor. Estrutura a negociação com clareza.",
+        "team.method.sale.sd.title": "Proposta & CPCV",
+        "team.method.sale.sd.desc": "Proposta escrita com identificação do imóvel, cliente, valor e condições. Fecho com Contrato de Promessa de Compra e Venda.",
+        "team.elements.title": "Elementos <span class=\"text-primary italic\">Nucleares</span>",
+        "team.elements.desc": "Os pilares que tornam a metodologia do grupo incontestável e diferenciada",
+        "team.elements.1.title": "KYC / AML",
+        "team.elements.1.desc": "Know Your Customer e Anti-Money Laundering. Normas internacionais do comércio que criam uma barreira legal incontornável. Obrigatório antes da partilha de informação.",
+        "team.elements.2.title": "Letter of Intent (LOI)",
+        "team.elements.2.desc": "Carta de Intenção em três partes: identificação do agente apresentador, do comprador e documentos a verificar. Protege o agente e identifica o cliente.",
+        "team.elements.3.title": "Prova de Fundos",
+        "team.elements.3.desc": "Confirmação bancária da capacidade financeira do investidor. Elimina testaferros e clientes não qualificados. Condição sine qua non para o ativo.",
+        "team.elements.4.title": "Rácios de Gestão",
+        "team.elements.4.desc": "Custos fixos &lt;10%, operacionais 10-12%, pessoal &lt;17%. Métricas objetivas para qualificar a rentabilidade de qualquer empresa ou hotel.",
+        "team.elements.5.title": "Modelo de Partilha",
+        "team.elements.5.desc": "Referência não qualificada: 10% do honorário. Referência qualificada: 25%. Partilha apenas se o parceiro cumpre o processo. Transparente e verificável.",
+        "team.elements.6.title": "Marca & PI Registada",
+        "team.elements.6.desc": "Commercial Group Portugal é uma marca registada e autorizada internacionalmente. Infraestrutura em domínios próprios para garantir protecção da propriedade intelectual.",
+        // ── Áreas de Intervenção (Sección 7) ────────────────────────────
+        "team.areas.title": "Áreas de <span class=\"text-primary italic\">Intervenção</span>",
+        "team.areas.desc": "Tipologia de ativos onde o grupo opera com metodologia estruturada",
+        "team.areas.1.title": "Comercial",
+        "team.areas.1.desc": "Escritórios · Retalho · Logística",
+        "team.areas.2.title": "Turismo",
+        "team.areas.2.desc": "Hotéis · Residenciais · Projetos",
+        "team.areas.3.title": "Industrial",
+        "team.areas.3.desc": "Logística · Armazéns · Produção",
+        "team.areas.4.title": "Promoção",
+        "team.areas.4.desc": "Residencial · Reabilitação",
+        "team.areas.5.title": "Empresas",
+        "team.areas.5.desc": "Aquisições · Posições societárias",
+        "team.areas.examples.title": "Exemplos de Ativos em Carteira",
+        "team.areas.ex1": "Urban / Nobre (pequenos empreendimentos)",
+        "team.areas.ex2": "Centro Comercial Matosinhos",
+        "team.areas.ex3": "Centro Comercial Leiria",
+        "team.areas.ex4": "Empresa Valorização Resíduos Elétricos",
+        "team.areas.ex5": "Bombas de Gasolina (Hidrocarbonetes)",
+        // ── CTA Final (Sección 8) ──────────────────────────────
+        "team.cta.final.badge": "Acesso por Candidatura",
+        "team.cta.final.title": "Pronto para integrar<br><span class=\"text-primary italic\">o grupo comercial?</span>",
+        "team.cta.final.desc": "O acesso ao Commercial Group Portugal está condicionado ao cumprimento dos critérios de candidatura. Todas as candidaturas são analisadas individualmente.",
+        "team.cta.final.p1.title": "Agente Especialista Senior",
+        "team.cta.final.p1.desc": "Membro da Companhia · 5+ anos · 75% negócios em área comercial · Domínio inglês",
+        "team.cta.final.p2.title": "Agente Especialista",
+        "team.cta.final.p2.desc": "Membro da Companhia · 3+ anos · 50% negócios em área comercial · Inglês",
+        "team.cta.final.btn.submit": "Submeter Candidatura",
+        "team.cta.final.btn.back": "Voltar ao CPII",
         // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
         "webinars.hero.badge": "Breeder Hub",
         "webinars.hero.title.main": "Masterclasses &",
@@ -249,7 +370,46 @@ const translations = {
         "ref.info.title": "Informação",
         "ref.info.l1": "Revenue Share L1: 1%",
         "ref.info.l2": "Revenue Share L2: 0.5%",
-        "ref.info.l3": "Revenue Share L3: 0.25%"
+        "ref.info.l3": "Revenue Share L3: 0.25%",
+        // ── Formulário de Acesso (access-form.html) — INCISÃO v2.5.0 ──────────────
+        "form.hero.title": "O poder da <span class=\"italic text-gold\">Rede</span><br />ao seu alcance",
+        "form.title": "Solicitar Acesso",
+        "form.subtitle": "Complete os seus dados · Ser-lhe-á atribuído um gestor na sua zona",
+        "form.profile.label": "Perfil de acesso",
+        "form.profile.inv": "Investidor",
+        "form.profile.pro": "Promotor/Gestor",
+        "form.name.label": "Nome completo",
+        "form.name.ph": "Ex. João Silva",
+        "form.email.label": "Correio eletrónico",
+        "form.email.ph": "nome@empresa.com",
+        "form.phone.label": "Telefone de contacto",
+        "form.phone.ph": "000 000 000",
+        "form.country.label": "País de residência",
+        "form.country.ph": "Selecione o seu país…",
+        "form.country.note": "Este dado determina o seu Responsável de Clube — independente do seu Padrinho",
+        "form.ref.label": "Quem o convidou?",
+        "form.ref.ph": "— Selecione o seu Prescritor —",
+        "form.ref.note": "Apenas Prescritores autorizados. O Prescritor não é o seu Responsável de Clube.",
+        "form.ref.detected": "✓ Prescritor detetado",
+        "form.rgpd": "Aceito a <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"privacy.html\">Política de Privacidade</a> e os <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"terms.html\">Termos de Serviço</a>. Entendo que os meus dados serão tratados conforme o <strong class=\"text-text-main/80\">RGPD</strong> e que o meu pedido está sujeito a aprovação.",
+        "form.btn.submit": "Validar pedido",
+        "form.btn.sending": "A enviar…",
+        "form.success.title": "Pedido recebido!",
+        "form.success.desc": "O seu Responsável de Clube entrará em contacto em 24–48 horas. Verifique o seu spam.",
+        "form.err.name": "Campo obrigatório",
+        "form.err.email": "Email inválido",
+        "form.err.phone": "Campo obrigatório",
+        "form.err.country": "Selecione um país",
+        "form.err.terms": "Deve aceitar os termos para continuar",
+        "form.benefit.1": "Rentabilidade verificada e auditada",
+        "form.benefit.2": "Revenue Share multinivel até Nível 3",
+        "form.benefit.3": "Autofinanciação garantida",
+        "form.benefit.4": "Networking com líderes do sector",
+        "form.ref.divider": "Prescritor",
+        "form.ref.optional": "Opcional",
+        // ── Privacidade e Termos — INCISÃO v2.6.0 ────────────────────────────
+        "privacy.title": "Política de Privacidade",
+        "terms.title": "Termos e Condições"
     },
 
     // ══════════════════════════════════════════════════════════════ ESPAÑOL (ES) ══
@@ -272,6 +432,7 @@ const translations = {
         "hero.title.highlight": "Patrimonio",
         "hero.title.suffix": "con Inversión Inteligente",
         "hero.p": "Accede a oportunidades exclusivas de inversión inmobiliaria de alto rendimiento. Únete a una red de inversores selectos y aprovecha el poder del Revenue Share para acelerar tu camino hacia la Autofinanciación.",
+        "hero.contact.label": "Contactar Gestión",
         "preview.label": "Patrimonio Proyectado",
         "preview.subtitle": "Con 50€/mes + Red Nivel 1",
         "preview.row1": "Ahorro Personal",
@@ -313,12 +474,13 @@ const translations = {
         "cta.subtitle": "Completa tu solicitud de acceso y nuestro equipo te contactará en 24-48 horas para validar tu perfil",
         "cta.btn.primary": "Solicitar Acceso Ahora",
         "cta.btn.secondary": "Simular mi Patrimonio",
-        "footer.about": "El Private Banking del sector inmobiliario. Estrategia, exclusividad y crecimiento exponencial.",
+        "footer.about": "Club Privado de Inversión Inmobiliaria. No vendemos inmuebles, multiplicamos patrimonio. El Club exclusivo para inversores estratégicos.",
         "footer.cta.title": "¿Listo para empezar?",
         "footer.links.title": "Enlaces",
         "footer.links.red": "Mi Red",
         "footer.legal.title": "Legal",
-        "footer.legal.support": "Soporte",
+        "footer.legal.support": "Contacto de Soporte",
+        "footer.legal.last_update": "Última actualización",
         "footer.copy": "© 2026 CPII Portugal.",
         "team.badge": "Commercial Group Portugal",
         "team.title.main": "El Grupo Comercial más",
@@ -350,6 +512,125 @@ const translations = {
         "team.cta.subtitle": "Accede a los perfiles completos del grupo, la metodología de captación estructurada y los principios de compliance internacional que diferencian a Commercial Group Portugal.",
         "team.cta.btn.primary": "Conocer el Grupo Comercial",
         "team.cta.btn.secondary": "Solicitar Acceso Ahora",
+        // ── Equipo Comercia (Breeder Hub) — INCISIÓN v2.5.0 ────────────────────────────
+        "nav.grupo_comercial": "Grupo Comercial",
+        "team.hero.badge": "OPERACIÓN INTERNACIONAL AUTORIZADA",
+        "team.hero.title": "Commercial Group<br /><span class=\"text-primary italic font-serif font-medium\">Portugal</span>",
+        "team.hero.desc": "El grupo comercial más estructurado de la Península Ibérica. Metodología alineada con los estándares internacionales del sector y normas KYC/AML del comercio internacional. <strong class=\"text-white font-medium\">No vendemos propiedades — atraemos inversión estratégica.</strong>",
+        "team.hero.btn.profiles": "Ver Perfiles del Equipo",
+        "team.hero.btn.method": "Metodología Nuclear",
+        "team.stat1.value": "+25%",
+        "team.stat1.label": "de la facturación total Commercial Group Portugal",
+        "team.stat2.value": "7/17",
+        "team.stat2.label": "CAPs del país bajo liderazgo del grupo",
+        "team.stat3.value": "3+",
+        "team.stat3.label": "años de metodología estructurada y probada",
+        "team.stat4.label": "hito de producción para Agente Gestor",
+        "team.profiles.title": "El Equipo de Liderazgo",
+        "team.profiles.desc": "Dos perfiles complementarios que garantizan la excelencia metodológica y tecnológica del grupo",
+        "team.da.role": "Agente Senior & Founder",
+        "team.da.badge1": "Agente del Año 2025",
+        "team.da.badge2": "Operador Internacional",
+        "team.da.bio": "<p>David Almeida es el fundador y líder estratégico de <strong class=\"text-white\">Commercial Group Portugal</strong>, con marca registrada y autorizada. Titular de un contrato de exclusividad firmado con su compañía para el área Comercial — un paso que pocos profesionales han tenido la visión y disciplina de dar.</p><p>En 2025, fue nombrado <strong class=\"text-white\">Agente del Año en Portugal</strong>, liderando un grupo responsable de más del 25% de la facturación total de su compañía, con 7 de los 17 CAPs del país integrados en su estructura.</p><p>Defensor intransigente de una metodología basada en estándares internacionales, David se posiciona como el <strong class=\"text-white\">guardián del proceso</strong>: el agente que sirve al propietario, no al mercado.</p>",
+        "team.profiles.skills": "Áreas de Competencia",
+        "team.cb.role": "Senior Agent & CTO",
+        "team.cb.badge1": "Chief Technology Officer",
+        "team.cb.badge2": "Especialista KYC/AML",
+        "team.cb.bio": "<p>Carlos Balboa es el arquitecto digital y estratégico en la atracción de inversores. Combina una vasta experiencia en <strong class=\"text-white\">mercados internacionales de commodities</strong> con el desarrollo de las herramientas digitales que sustentan toda la operación: CRM propietario, plataforma CPII y sistemas de cualificación.</p><p>Especialista en las normativas internacionales <strong class=\"text-white\">KYC (Know Your Customer) y AML (Anti-Money Laundering)</strong>, aplica los estándares del comercio internacional para crear una barrera metodológica y legal que diferencia al grupo de sus competidores.</p><p>Co-fundador del <strong class=\"text-white\">Club Privado de Inversores Inmobiliarios (CPII)</strong>, responsable de la landing page, CRM y de la estrategia global de captación de leads en 4 idiomas.</p>",
+        "team.da.metric1.val": "+25%",
+        "team.da.metric1.lab": "Facturación Commercial Group Portugal",
+        "team.da.metric2.val": "7 CAPs",
+        "team.da.metric2.lab": "del país en el grupo",
+        "team.da.metric3.val": "3+ años",
+        "team.da.metric3.lab": "metodología probada",
+        "team.da.metric4.val": "Exclusivo",
+        "team.da.metric4.lab": "Área Comercial PT",
+        "team.cb.metric1.val": "CRM",
+        "team.cb.metric1.lab": "Propietario en construcción",
+        "team.cb.metric2.val": "CPII",
+        "team.cb.metric2.lab": "Co-fundador de la plataforma",
+        "team.cb.metric3.val": "KYC",
+        "team.cb.metric3.lab": "Compliance internacional",
+        "team.cb.metric4.val": "CTO",
+        "team.cb.metric4.lab": "Chief Technology Officer",
+        "team.da.skill1": "Captación Comercial",
+        "team.da.skill2": "Estudio de Mercado",
+        "team.da.skill3": "Valoración de Empresas",
+        "team.da.skill4": "Liderazgo de Equipo",
+        "team.da.skill5": "Negociación Senior",
+        "team.da.skill6": "Hoteles y Turismo",
+        "team.da.skill7": "Plan de Negocios",
+        "team.cb.skill1": "Atracción de Inversores",
+        "team.cb.skill2": "KYC / AML",
+        "team.cb.skill3": "CRM y Automatización",
+        "team.cb.skill4": "Commodities",
+        "team.cb.skill5": "Lead Generation",
+        "team.cb.skill6": "Estrategia Digital",
+        "team.cb.skill7": "Compliance Internacional",
+        "team.method.badge": "Proceso Estructurado",
+        "team.method.title": "Metodología <span class=\"text-primary italic\">Nuclear</span>",
+        "team.method.desc": "El proceso que diferencia al Commercial Group Portugal de todos los demás. Alineado con estándares internacionales y KYC/AML.",
+        "team.method.cap.title": "Proceso de Captación",
+        "team.method.cap.s1.title": "Cualificación del Propietario",
+        "team.method.cap.s1.desc": "Recogida de necesidades: tiempo, valor objetivo, condiciones de venta y objetivos del negocio. Criterios del cliente — no del mercado.",
+        "team.method.cap.s2.title": "Declaración de Autorización de Venta",
+        "team.method.cap.s2.desc": "Documento formal con identificación del propietario, grupo y agente. Incluye condiciones de venta, valor, plazo y honorarios.",
+        "team.method.cap.s3.title": "Estudio de Mercado y Viabilidad",
+        "team.method.cap.s3.desc": "Análisis comparativo de mercado (Oferta vs. Demanda), estudio de viabilidad económica del activo. Plan de Negocio a 5 años.",
+        "team.method.cap.s4.title": "Ficha de Producto Sumaria",
+        "team.method.cap.s4.desc": "Ubicación, 2-3 fotografías, condiciones y valor. Lo justo para despertar interés — sin exponer información sensible.",
+        "team.method.sale.title": "Proceso de Venta",
+        "team.method.sale.sa.title": "Carta de Intención (LOI)",
+        "team.method.sale.sa.desc": "El inversor envía por escrito: identificación del agente, comprador y documentación a verificar. Protege a todas las partes.",
+        "team.method.sale.sb.title": "Prueba de Fondos",
+        "team.method.sale.sb.desc": "Carta bancaria que confirma la capacidad financiera. Barrera KYC/AML innegociable antes de compartir información confidencial.",
+        "team.method.sale.sc.title": "Mandato de Representación",
+        "team.method.sale.sc.desc": "Define quién hace qué y hasta qué punto. Registra al comprador ante el vendedor. Estructura la negociación con claridad legal.",
+        "team.method.sale.sd.title": "Propuesta y CPCV",
+        "team.method.sale.sd.desc": "Propuesta escrita con identificación del inmueble, cliente, valor y condiciones. Cierre con Contrato de Promesa de Compraventa.",
+        "team.elements.title": "Elementos <span class=\"text-primary italic\">Nucleares</span>",
+        "team.elements.desc": "Los pilares que hacen incontestable y diferenciada la metodología del grupo",
+        "team.elements.1.title": "KYC / AML",
+        "team.elements.1.desc": "Know Your Customer y Anti-Money Laundering. Normas internacionales que crean una barrera legal innegociable antes de compartir información.",
+        "team.elements.2.title": "Letter of Intent (LOI)",
+        "team.elements.2.desc": "Carta de Intención: identificación del agente presentador, del comprador y documentos. Protege al agente e identifica al cliente.",
+        "team.elements.3.title": "Prueba de Fondos",
+        "team.elements.3.desc": "Confirmación bancaria de la capacidad financiera del inversor. Elimina testaferros. Condición sine qua non para acceder al activo.",
+        "team.elements.4.title": "Ratios de Gestión",
+        "team.elements.4.desc": "Costes fijos &lt;10%, operativos 10-12%, personal &lt;17%. Métricas objetivas para cualificar la rentabilidad de cualquier empresa u hotel.",
+        "team.elements.5.title": "Modelo de Reparto",
+        "team.elements.5.desc": "Referencia no cualificada: 10% del honorario. Referencia cualificada: 25%. Se comparte solo si se cumple el proceso. Transparente.",
+        "team.elements.6.title": "Marca y PI Registrada",
+        "team.elements.6.desc": "Commercial Group Portugal es una marca registrada internacionalmente. Infraestructura propia para garantizar la protección de propiedad intelectual.",
+        // ── Áreas de Intervención (Sección 7) ───────────────────────────
+        "team.areas.title": "Áreas de <span class=\"text-primary italic\">Intervención</span>",
+        "team.areas.desc": "Tipología de activos donde el grupo opera con metodología estructurada",
+        "team.areas.1.title": "Comercial",
+        "team.areas.1.desc": "Oficinas · Retail · Logística",
+        "team.areas.2.title": "Turismo",
+        "team.areas.2.desc": "Hoteles · Residenciales · Proyectos",
+        "team.areas.3.title": "Industrial",
+        "team.areas.3.desc": "Logística · Almacenes · Producción",
+        "team.areas.4.title": "Promoción",
+        "team.areas.4.desc": "Residencial · Rehabilitación",
+        "team.areas.5.title": "Empresas",
+        "team.areas.5.desc": "Adquisiciones · Posiciones societarias",
+        "team.areas.examples.title": "Ejemplos de Activos en Cartera",
+        "team.areas.ex1": "Urban / Nobre (pequeños desarrollos)",
+        "team.areas.ex2": "Centro Comercial Matosinhos",
+        "team.areas.ex3": "Centro Comercial Leiria",
+        "team.areas.ex4": "Empresa Valorización Residuos Eléctricos",
+        "team.areas.ex5": "Gasolineras (Hidrocarburos)",
+        // ── CTA Final (Sección 8) ──────────────────────────────
+        "team.cta.final.badge": "Acceso por Candidatura",
+        "team.cta.final.title": "¿Listo para integrar<br><span class=\"text-primary italic\">el grupo comercial?</span>",
+        "team.cta.final.desc": "El acceso a Commercial Group Portugal está condicionado al cumplimiento de los criterios de candidatura. Todas las solicitudes se analizan individualmente.",
+        "team.cta.final.p1.title": "Agente Especialista Senior",
+        "team.cta.final.p1.desc": "Miembro de la Compañía · 5+ años · 75% negocios en área comercial · Dominio del inglés",
+        "team.cta.final.p2.title": "Agente Especialista",
+        "team.cta.final.p2.desc": "Miembro de la Compañía · 3+ años · 50% negocios en área comercial · Inglés",
+        "team.cta.final.btn.submit": "Enviar Candidatura",
+        "team.cta.final.btn.back": "Volver al CPII",
         // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
         "webinars.hero.badge": "Breeder Hub",
         "webinars.hero.title.main": "Masterclasses &",
@@ -430,7 +711,46 @@ const translations = {
         "ref.info.title": "Información",
         "ref.info.l1": "Revenue Share L1: 1%",
         "ref.info.l2": "Revenue Share L2: 0.5%",
-        "ref.info.l3": "Revenue Share L3: 0.25%"
+        "ref.info.l3": "Revenue Share L3: 0.25%",
+        // ── Formulario de Acceso (access-form.html) — INCISIÓN v2.5.0 ──────────────
+        "form.hero.title": "El poder de la <span class=\"italic text-gold\">Red</span><br />a tu alcance",
+        "form.title": "Solicitar Acceso",
+        "form.subtitle": "Completa tus datos · Se te asignará un gestor en tu zona",
+        "form.profile.label": "Perfil de acceso",
+        "form.profile.inv": "Inversor",
+        "form.profile.pro": "Promotor/Gestor",
+        "form.name.label": "Nombre completo",
+        "form.name.ph": "Ej. João Silva",
+        "form.email.label": "Correo electrónico",
+        "form.email.ph": "nombre@empresa.com",
+        "form.phone.label": "Teléfono de contacto",
+        "form.phone.ph": "000 000 000",
+        "form.country.label": "País de residencia",
+        "form.country.ph": "Selecciona tu país…",
+        "form.country.note": "Este dato determina tu Responsable de Club — independiente de tu Padrino",
+        "form.ref.label": "¿Quién te invitó?",
+        "form.ref.ph": "— Selecciona tu Prescriptor —",
+        "form.ref.note": "Solo Prescriptores autorizados. El Prescriptor no es tu Responsable de Club.",
+        "form.ref.detected": "✓ Prescriptor detectado",
+        "form.rgpd": "Acepto la <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"privacy.html\">Política de Privacidad</a> y los <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"terms.html\">Términos de Servicio</a>. Entiendo que mis datos serán tratados conforme al <strong class=\"text-text-main/80\">RGPD</strong> y que mi solicitud está sujeta a aprobación.",
+        "form.btn.submit": "Validar solicitud",
+        "form.btn.sending": "Enviando…",
+        "form.success.title": "¡Solicitud recibida!",
+        "form.success.desc": "Tu Responsable de Club te contactará en 24–48 horas. Revisa tu carpeta de spam.",
+        "form.err.name": "Campo obligatorio",
+        "form.err.email": "Email inválido",
+        "form.err.phone": "Campo obligatorio",
+        "form.err.country": "Selecciona un país",
+        "form.err.terms": "Debes aceptar los términos para continuar",
+        "form.benefit.1": "Rentabilidad verificada y auditada",
+        "form.benefit.2": "Revenue Share multinivel hasta Nivel 3",
+        "form.benefit.3": "Autofinanciación garantizada",
+        "form.benefit.4": "Networking con líderes del sector",
+        "form.ref.divider": "Prescriptor",
+        "form.ref.optional": "Opcional",
+        // ── Privacidad y Términos — INCISIÓN v2.6.0 ────────────────────────────
+        "privacy.title": "Política de Privacidad",
+        "terms.title": "Términos y Condiciones"
     },
 
     // ══════════════════════════════════════════════════════════════ ENGLISH (EN) ══
@@ -453,6 +773,7 @@ const translations = {
         "hero.title.highlight": "Wealth",
         "hero.title.suffix": "with Smart Investment",
         "hero.p": "Access exclusive high-yield real estate investment opportunities. Join a network of elite investors and leverage Revenue Share to accelerate your path to financial freedom.",
+        "hero.contact.label": "Contact Management",
         "preview.label": "Projected Wealth",
         "preview.subtitle": "With €50/month + Level 1 Network",
         "preview.row1": "Personal Savings",
@@ -494,12 +815,13 @@ const translations = {
         "cta.subtitle": "Complete your access request and our team will contact you within 24-48 hours to validate your profile",
         "cta.btn.primary": "Request Access Now",
         "cta.btn.secondary": "Simulate my Wealth",
-        "footer.about": "The Private Banking of real estate. Strategy, exclusivity and exponential growth.",
+        "footer.about": "Private Real Estate Investment Club. We don't sell properties, we multiply wealth. The exclusive Club for strategic investors.",
         "footer.cta.title": "Ready to start?",
         "footer.links.title": "Links",
         "footer.links.red": "My Network",
         "footer.legal.title": "Legal",
-        "footer.legal.support": "Support",
+        "footer.legal.support": "Support Contact",
+        "footer.legal.last_update": "Last update",
         "footer.copy": "© 2026 CPII Portugal.",
         "team.badge": "Commercial Group Portugal",
         "team.title.main": "The most structured",
@@ -531,6 +853,125 @@ const translations = {
         "team.cta.subtitle": "Access the complete team profiles, structured acquisition methodology and international compliance principles that set Commercial Group Portugal apart.",
         "team.cta.btn.primary": "Meet the Commercial Group",
         "team.cta.btn.secondary": "Request Access Now",
+        // ── Equipo Comercia (Breeder Hub) — INCISIÓN v2.5.0 ────────────────────────────
+        "nav.grupo_comercial": "Commercial Group",
+        "team.hero.badge": "AUTHORIZED INTERNATIONAL OPERATION",
+        "team.hero.title": "Commercial Group<br /><span class=\"text-primary italic font-serif font-medium\">Portugal</span>",
+        "team.hero.desc": "The most structured commercial group in the Iberian Peninsula. Methodology aligned with international industry standards and KYC/AML rules for international trade. <strong class=\"text-white font-medium\">We don't sell properties — we attract strategic investment.</strong>",
+        "team.hero.btn.profiles": "View Team Profiles",
+        "team.hero.btn.method": "Nuclear Methodology",
+        "team.stat1.value": "+25%",
+        "team.stat1.label": "of total Commercial Group Portugal revenue",
+        "team.stat2.value": "7/17",
+        "team.stat2.label": "CAPs in the country under group leadership",
+        "team.stat3.value": "3+",
+        "team.stat3.label": "years of structured and proven methodology",
+        "team.stat4.label": "production milestone for Managing Agent",
+        "team.profiles.title": "The Leadership Team",
+        "team.profiles.desc": "Two complementary profiles that guarantee the methodological and technological excellence of the group",
+        "team.da.role": "Senior Agent & Founder",
+        "team.da.badge1": "Agent of the Year 2025",
+        "team.da.badge2": "International Operator",
+        "team.da.bio": "<p>David Almeida is the founder and strategic leader of <strong class=\"text-white\">Commercial Group Portugal</strong>, a registered and authorized brand. He holds an exclusivity contract signed with his company for the Commercial area — a step that few professionals have had the vision and discipline to take.</p><p>In 2025, he was named <strong class=\"text-white\">Agent of the Year in Portugal</strong>, leading a group responsible for over 25% of his company's total revenue, with 7 out of 17 CAPs in the country integrated into his structure.</p><p>An uncompromising defender of a methodology based on international standards, David positions himself as the <strong class=\"text-white\">guardian of the process</strong>: the agent who serves the owner, not the market.</p>",
+        "team.profiles.skills": "Areas of Expertise",
+        "team.cb.role": "Senior Agent & CTO",
+        "team.cb.badge1": "Chief Technology Officer",
+        "team.cb.badge2": "KYC/AML Specialist",
+        "team.cb.bio": "<p>Carlos Balboa is the digital and strategic architect for investor attraction. He combines vast experience in <strong class=\"text-white\">international commodities markets</strong> with the development of the digital tools that sustain the entire operation: proprietary CRM, CPII platform, and qualification systems.</p><p>A specialist in international <strong class=\"text-white\">KYC (Know Your Customer) and AML (Anti-Money Laundering)</strong> regulations, he applies international trade standards to create a methodological and legal barrier that sets the group apart from competitors.</p><p>Co-founder of the <strong class=\"text-white\">Private Club of Real Estate Investors (CPII)</strong>, he is responsible for the landing page, CRM, and global lead generation strategy across 4 languages.</p>",
+        "team.da.metric1.val": "+25%",
+        "team.da.metric1.lab": "Commercial Group Portugal revenue",
+        "team.da.metric2.val": "7 CAPs",
+        "team.da.metric2.lab": "of the country in the group",
+        "team.da.metric3.val": "3+ years",
+        "team.da.metric3.lab": "proven methodology",
+        "team.da.metric4.val": "Exclusive",
+        "team.da.metric4.lab": "Commercial Area PT",
+        "team.cb.metric1.val": "CRM",
+        "team.cb.metric1.lab": "Proprietary under construction",
+        "team.cb.metric2.val": "CPII",
+        "team.cb.metric2.lab": "Platform Co-founder",
+        "team.cb.metric3.val": "KYC",
+        "team.cb.metric3.lab": "International Compliance",
+        "team.cb.metric4.val": "CTO",
+        "team.cb.metric4.lab": "Chief Technology Officer",
+        "team.da.skill1": "Commercial Acquisition",
+        "team.da.skill2": "Market Research",
+        "team.da.skill3": "Company Valuation",
+        "team.da.skill4": "Team Leadership",
+        "team.da.skill5": "Senior Negotiation",
+        "team.da.skill6": "Hotels & Tourism",
+        "team.da.skill7": "Business Plan",
+        "team.cb.skill1": "Investor Attraction",
+        "team.cb.skill2": "KYC / AML",
+        "team.cb.skill3": "CRM & Automation",
+        "team.cb.skill4": "Commodities",
+        "team.cb.skill5": "Lead Generation",
+        "team.cb.skill6": "Digital Strategy",
+        "team.cb.skill7": "International Compliance",
+        "team.method.badge": "Structured Process",
+        "team.method.title": "Nuclear <span class=\"text-primary italic\">Methodology</span>",
+        "team.method.desc": "The process that differentiates Commercial Group Portugal from all others. Aligned with international standards and KYC/AML.",
+        "team.method.cap.title": "Acquisition Process",
+        "team.method.cap.s1.title": "Owner Qualification",
+        "team.method.cap.s1.desc": "Needs assessment: timeframe, target value, sales conditions, and business goals. Client criteria — not market criteria.",
+        "team.method.cap.s2.title": "Sales Authorization Declaration",
+        "team.method.cap.s2.desc": "Formal document identifying the owner, group, and agent. Includes conditions of sale, value, timeframe, and fees.",
+        "team.method.cap.s3.title": "Market Study & Feasibility",
+        "team.method.cap.s3.desc": "Comparative market analysis (Supply vs. Demand), economic feasibility study of the asset. 5-year Business Plan.",
+        "team.method.cap.s4.title": "Summary Product Sheet",
+        "team.method.cap.s4.desc": "Location, 2-3 photographs, conditions, and value. Just enough to generate interest — without exposing sensitive information.",
+        "team.method.sale.title": "Sales Process",
+        "team.method.sale.sa.title": "Letter of Intent (LOI)",
+        "team.method.sale.sa.desc": "The investor sends in writing: identification of the agent, buyer, and requested documents. Protects all parties involved.",
+        "team.method.sale.sb.title": "Proof of Funds (POF)",
+        "team.method.sale.sb.desc": "Bank letter confirming financial capacity. Non-negotiable KYC/AML barrier before sharing any confidential information.",
+        "team.method.sale.sc.title": "Representation Mandate",
+        "team.method.sale.sc.desc": "Defines who does what and to what extent. Registers the buyer with the seller. Structures the negotiation with legal clarity.",
+        "team.method.sale.sd.title": "Proposal & Promissory Contract",
+        "team.method.sale.sd.desc": "Written proposal identifying the property, client, value, and conditions. Closure with a Promissory Purchase and Sale Contract.",
+        "team.elements.title": "Nuclear <span class=\"text-primary italic\">Elements</span>",
+        "team.elements.desc": "The pillars that make the group's methodology indisputable and differentiated",
+        "team.elements.1.title": "KYC / AML",
+        "team.elements.1.desc": "Know Your Customer and Anti-Money Laundering. International trade standards that create a non-negotiable legal barrier before sharing information.",
+        "team.elements.2.title": "Letter of Intent (LOI)",
+        "team.elements.2.desc": "Three-part Letter of Intent: identification of the presenting agent, the buyer, and the documents. Protects the agent and identifies the client.",
+        "team.elements.3.title": "Proof of Funds",
+        "team.elements.3.desc": "Bank confirmation of the investor's financial capacity. Eliminates frontmen. Sine qua non condition for accessing the asset's data.",
+        "team.elements.4.title": "Management Ratios",
+        "team.elements.4.desc": "Fixed costs &lt;10%, operational 10-12%, personnel &lt;17%. Objective metrics to qualify the profitability of any company or hotel.",
+        "team.elements.5.title": "Revenue Share Model",
+        "team.elements.5.desc": "Unqualified referral: 10% of the fee. Qualified referral: 25%. Sharing only occurs if the partner follows the process. Transparent and verifiable.",
+        "team.elements.6.title": "Registered Trademark & IP",
+        "team.elements.6.desc": "Commercial Group Portugal is an internationally registered and authorized brand. Proprietary infrastructure to guarantee intellectual property protection.",
+        // ── Intervention Areas (Sección 7) ──────────────────────────────
+        "team.areas.title": "Areas of <span class=\"text-primary italic\">Intervention</span>",
+        "team.areas.desc": "Asset typologies where the group operates with a structured methodology",
+        "team.areas.1.title": "Commercial",
+        "team.areas.1.desc": "Offices · Retail · Logistics",
+        "team.areas.2.title": "Tourism",
+        "team.areas.2.desc": "Hotels · Residential · Projects",
+        "team.areas.3.title": "Industrial",
+        "team.areas.3.desc": "Logistics · Warehouses · Production",
+        "team.areas.4.title": "Development",
+        "team.areas.4.desc": "Residential · Rehabilitation",
+        "team.areas.5.title": "Corporate",
+        "team.areas.5.desc": "Acquisitions · Corporate positions",
+        "team.areas.examples.title": "Portfolio Asset Examples",
+        "team.areas.ex1": "Urban / Nobre (small developments)",
+        "team.areas.ex2": "Matosinhos Shopping Center",
+        "team.areas.ex3": "Leiria Shopping Center",
+        "team.areas.ex4": "Electrical Waste Valorization Company",
+        "team.areas.ex5": "Gas Stations (Hydrocarbons)",
+        // ── CTA Final (Sección 8) ──────────────────────────────
+        "team.cta.final.badge": "Access by Application",
+        "team.cta.final.title": "Ready to join<br><span class=\"text-primary italic\">the commercial group?</span>",
+        "team.cta.final.desc": "Access to Commercial Group Portugal is conditional upon meeting the application criteria. All applications are reviewed individually.",
+        "team.cta.final.p1.title": "Senior Specialist Agent",
+        "team.cta.final.p1.desc": "Company Member · 5+ years · 75% commercial real estate business · Fluent English",
+        "team.cta.final.p2.title": "Specialist Agent",
+        "team.cta.final.p2.desc": "Company Member · 3+ years · 50% commercial real estate business · English",
+        "team.cta.final.btn.submit": "Submit Application",
+        "team.cta.final.btn.back": "Back to CPII",
         // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
         "webinars.hero.badge": "Breeder Hub",
         "webinars.hero.title.main": "Masterclasses &",
@@ -611,7 +1052,46 @@ const translations = {
         "ref.info.title": "Information",
         "ref.info.l1": "Revenue Share L1: 1%",
         "ref.info.l2": "Revenue Share L2: 0.5%",
-        "ref.info.l3": "Revenue Share L3: 0.25%"
+        "ref.info.l3": "Revenue Share L3: 0.25%",
+        // ── Access Form (access-form.html) — INCISION v2.5.0 ────────────────────────
+        "form.hero.title": "The power of the <span class=\"italic text-gold\">Network</span><br />at your fingertips",
+        "form.title": "Request Access",
+        "form.subtitle": "Fill in your details · You will be assigned a local manager",
+        "form.profile.label": "Access Profile",
+        "form.profile.inv": "Investor",
+        "form.profile.pro": "Promoter/Manager",
+        "form.name.label": "Full Name",
+        "form.name.ph": "E.g. João Silva",
+        "form.email.label": "Email Address",
+        "form.email.ph": "name@company.com",
+        "form.phone.label": "Phone Number",
+        "form.phone.ph": "000 000 000",
+        "form.country.label": "Country of Residence",
+        "form.country.ph": "Select your country…",
+        "form.country.note": "This determines your Club Manager — independent of your Referrer",
+        "form.ref.label": "Who invited you?",
+        "form.ref.ph": "— Select your Prescriber —",
+        "form.ref.note": "Only authorized Prescribers. The Prescriber is not your Club Manager.",
+        "form.ref.detected": "✓ Prescriber detected",
+        "form.rgpd": "I accept the <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"privacy.html\">Privacy Policy</a> and <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"terms.html\">Terms of Service</a>. I understand my data will be processed according to <strong class=\"text-text-main/80\">GDPR</strong> and my request is subject to approval.",
+        "form.btn.submit": "Submit Request",
+        "form.btn.sending": "Sending…",
+        "form.success.title": "Request Received!",
+        "form.success.desc": "Your Club Manager will contact you in 24-48 hours. Please check your spam folder.",
+        "form.err.name": "Required field",
+        "form.err.email": "Invalid email",
+        "form.err.phone": "Required field",
+        "form.err.country": "Select a country",
+        "form.err.terms": "You must accept the terms to continue",
+        "form.benefit.1": "Verified and audited profitability",
+        "form.benefit.2": "Multilevel Revenue Share up to Level 3",
+        "form.benefit.3": "Guaranteed self-funding",
+        "form.benefit.4": "Networking with sector leaders",
+        "form.ref.divider": "Referrer",
+        "form.ref.optional": "Optional",
+        // ── Privacy and Terms — INCISION v2.6.0 ─────────────────────────────
+        "privacy.title": "Privacy Policy",
+        "terms.title": "Terms and Conditions"
     },
 
     // ══════════════════════════════════════════════════════════════ FRANÇAIS (FR) ══
@@ -633,6 +1113,7 @@ const translations = {
         "hero.title.highlight": "Patrimoine",
         "hero.title.suffix": "avec l'Investissement Intelligent",
         "hero.p": "Accédez à des opportunités exclusives d'investissement immobilier à haut rendement. Rejoignez un réseau d'investisseurs d'élite et tirez parti du Revenue Share pour accélérer votre indépendance financière.",
+        "hero.contact.label": "Contacter la Gestion",
         "preview.label": "Patrimoine Projeté",
         "preview.subtitle": "Avec 50€/mois + Réseau Niveau 1",
         "preview.row1": "Épargne Personnelle",
@@ -674,12 +1155,13 @@ const translations = {
         "cta.subtitle": "Complétez votre demande d'accès et notre équipe vous contactera dans 24-48 heures pour valider votre profil",
         "cta.btn.primary": "Demander l'accès maintenant",
         "cta.btn.secondary": "Simuler mon Patrimoine",
-        "footer.about": "Le Private Banking de l'immobilier. Stratégie, exclusivité et croissance exponentielle.",
+        "footer.about": "Club Privé d'Investissement Immobilier. Nous ne vendons pas de biens, nous multiplions le patrimoine. Le Club exclusif pour les investisseurs stratégiques.",
         "footer.cta.title": "Prêt à commencer ?",
         "footer.links.title": "Liens",
         "footer.links.red": "Mon Réseau",
         "footer.legal.title": "Légal",
-        "footer.legal.support": "Support",
+        "footer.legal.support": "Contact Support",
+        "footer.legal.last_update": "Dernière mise à jour",
         "footer.copy": "© 2026 CPII Portugal.",
         "team.badge": "Commercial Group Portugal",
         "team.title.main": "Le Groupe Commercial le plus",
@@ -711,6 +1193,125 @@ const translations = {
         "team.cta.subtitle": "Accédez aux profils complets du groupe, à la méthodologie de captation structurée et aux principes de compliance international qui distinguent Commercial Group Portugal.",
         "team.cta.btn.primary": "Découvrir le Groupe Commercial",
         "team.cta.btn.secondary": "Demander l'Accès Maintenant",
+        // ── Equipo Comercia (Breeder Hub) — INCISIÓN v2.5.0 ────────────────────────────
+        "nav.grupo_comercial": "Groupe Commercial",
+        "team.hero.badge": "OPÉRATION INTERNATIONALE AUTORISÉE",
+        "team.hero.title": "Commercial Group<br /><span class=\"text-primary italic font-serif font-medium\">Portugal</span>",
+        "team.hero.desc": "Le groupe commercial le plus structuré de la péninsule ibérique. Une méthodologie alignée sur les normes internationales du secteur et les règles KYC/AML du commerce international. <strong class=\"text-white font-medium\">Nous ne vendons pas de propriétés — nous attirons des investissements stratégiques.</strong>",
+        "team.hero.btn.profiles": "Voir les Profils de l'Équipe",
+        "team.hero.btn.method": "Méthodologie Nucléaire",
+        "team.stat1.value": "+25%",
+        "team.stat1.label": "du chiffre d'affaires total de Commercial Group Portugal",
+        "team.stat2.value": "7/17",
+        "team.stat2.label": "CAPs du pays sous la direction du groupe",
+        "team.stat3.value": "3+",
+        "team.stat3.label": "ans de méthodologie structurée et éprouvée",
+        "team.stat4.label": "étape de production pour l'Agent Gestionnaire",
+        "team.profiles.title": "L'Équipe de Direction",
+        "team.profiles.desc": "Deux profils complémentaires qui garantissent l'excellence méthodologique et technologique du groupe",
+        "team.da.role": "Agent Senior & Fondateur",
+        "team.da.badge1": "Agent de l'Année 2025",
+        "team.da.badge2": "Opérateur International",
+        "team.da.bio": "<p>David Almeida est le fondateur et leader stratégique de <strong class=\"text-white\">Commercial Group Portugal</strong>, une marque déposée et autorisée. Il détient un contrat d'exclusivité signé avec sa société pour le secteur Commercial — une étape que peu de professionnels ont eu la vision et la discipline de franchir.</p><p>En 2025, il a été nommé <strong class=\"text-white\">Agent de l'Année au Portugal</strong>, dirigeant un groupe responsable de plus de 25 % du chiffre d'affaires total de son entreprise, avec 7 des 17 CAPs du pays intégrés à sa structure.</p><p>Défenseur intransigeant d'une méthodologie basée sur des normes internationales, David se positionne comme le <strong class=\"text-white\">gardien du processus</strong> : l'agent qui sert le propriétaire, et non le marché.</p>",
+        "team.profiles.skills": "Domaines de Compétence",
+        "team.cb.role": "Agent Senior & CTO",
+        "team.cb.badge1": "Directeur de la Technologie",
+        "team.cb.badge2": "Spécialiste KYC/AML",
+        "team.cb.bio": "<p>Carlos Balboa est l'architecte numérique et stratégique de l'attraction des investisseurs. Il combine une vaste expérience sur les <strong class=\"text-white\">marchés internationaux des matières premières</strong> avec le développement des outils numériques qui soutiennent l'ensemble de l'opération : CRM propriétaire, plateforme CPII et systèmes de qualification.</p><p>Spécialiste des réglementations internationales <strong class=\"text-white\">KYC (Know Your Customer) et AML (Anti-Money Laundering)</strong>, il applique les normes du commerce international pour créer une barrière méthodologique et légale qui différencie le groupe de ses concurrents.</p><p>Co-fondateur du <strong class=\"text-white\">Club Privé d'Investisseurs Immobiliers (CPII)</strong>, il est responsable de la page de destination, du CRM et de la stratégie globale de génération de leads en 4 langues.</p>",
+        "team.da.metric1.val": "+25%",
+        "team.da.metric1.lab": "Chiffre d'affaires Commercial Group Portugal",
+        "team.da.metric2.val": "7 CAPs",
+        "team.da.metric2.lab": "du pays dans le groupe",
+        "team.da.metric3.val": "3+ ans",
+        "team.da.metric3.lab": "méthodologie éprouvée",
+        "team.da.metric4.val": "Exclusif",
+        "team.da.metric4.lab": "Zone Commerciale PT",
+        "team.cb.metric1.val": "CRM",
+        "team.cb.metric1.lab": "Propriétaire en construction",
+        "team.cb.metric2.val": "CPII",
+        "team.cb.metric2.lab": "Co-fondateur de la plateforme",
+        "team.cb.metric3.val": "KYC",
+        "team.cb.metric3.lab": "Conformité internationale",
+        "team.cb.metric4.val": "CTO",
+        "team.cb.metric4.lab": "Directeur de la Technologie",
+        "team.da.skill1": "Acquisition Commerciale",
+        "team.da.skill2": "Étude de Marché",
+        "team.da.skill3": "Évaluation d'Entreprises",
+        "team.da.skill4": "Leadership d'Équipe",
+        "team.da.skill5": "Négociation Senior",
+        "team.da.skill6": "Hôtels et Tourisme",
+        "team.da.skill7": "Plan d'Affaires",
+        "team.cb.skill1": "Attraction d'Investisseurs",
+        "team.cb.skill2": "KYC / AML",
+        "team.cb.skill3": "CRM & Automatisation",
+        "team.cb.skill4": "Matières Premières",
+        "team.cb.skill5": "Génération de Leads",
+        "team.cb.skill6": "Stratégie Numérique",
+        "team.cb.skill7": "Conformité Internationale",
+        "team.method.badge": "Processus Structuré",
+        "team.method.title": "Méthodologie <span class=\"text-primary italic\">Nucléaire</span>",
+        "team.method.desc": "Le processus qui différencie Commercial Group Portugal de tous les autres. Aligné sur les normes internationales et KYC/AML.",
+        "team.method.cap.title": "Processus d'Acquisition",
+        "team.method.cap.s1.title": "Qualification du Propriétaire",
+        "team.method.cap.s1.desc": "Évaluation des besoins : délais, valeur cible, conditions de vente et objectifs. Critères du client — et non du marché.",
+        "team.method.cap.s2.title": "Déclaration d'Autorisation de Vente",
+        "team.method.cap.s2.desc": "Document formel identifiant le propriétaire, le groupe et l'agent. Comprend les conditions de vente, la valeur, les délais et les honoraires.",
+        "team.method.cap.s3.title": "Étude de Marché & Faisabilité",
+        "team.method.cap.s3.desc": "Analyse comparative de marché (Offre vs Demande), étude de faisabilité économique de l'actif. Plan d'Affaires sur 5 ans.",
+        "team.method.cap.s4.title": "Fiche Produit Sommaire",
+        "team.method.cap.s4.desc": "Emplacement, 2-3 photos, conditions et valeur. Juste assez pour susciter l'intérêt — sans exposer d'informations sensibles.",
+        "team.method.sale.title": "Processus de Vente",
+        "team.method.sale.sa.title": "Lettre d'Intention (LOI)",
+        "team.method.sale.sa.desc": "L'investisseur envoie par écrit : identification de l'agent, de l'acheteur et documents à vérifier. Protège toutes les parties.",
+        "team.method.sale.sb.title": "Preuve de Fonds",
+        "team.method.sale.sb.desc": "Lettre bancaire confirmant la capacité financière. Barrière KYC/AML non négociable avant de partager des informations confidentielles.",
+        "team.method.sale.sc.title": "Mandat de Représentation",
+        "team.method.sale.sc.desc": "Définit qui fait quoi et dans quelle mesure. Enregistre l'acheteur auprès du vendeur. Structure la négociation avec clarté juridique.",
+        "team.method.sale.sd.title": "Proposition & Compromis",
+        "team.method.sale.sd.desc": "Proposition écrite identifiant le bien, le client, la valeur et les conditions. Clôture avec un Compromis de Vente.",
+        "team.elements.title": "Éléments <span class=\"text-primary italic\">Nucléaires</span>",
+        "team.elements.desc": "Les piliers qui rendent la méthodologie du groupe incontestable et différenciée",
+        "team.elements.1.title": "KYC / AML",
+        "team.elements.1.desc": "Know Your Customer et Anti-Money Laundering. Normes internationales créant une barrière légale non négociable avant tout partage.",
+        "team.elements.2.title": "Letter of Intent (LOI)",
+        "team.elements.2.desc": "Lettre d'Intention : identification de l'agent présentateur, de l'acheteur et des documents. Protège l'agent et identifie le client.",
+        "team.elements.3.title": "Preuve de Fonds",
+        "team.elements.3.desc": "Confirmation bancaire de la capacité financière. Élimine les prête-noms. Condition sine qua non pour accéder aux données de l'actif.",
+        "team.elements.4.title": "Ratios de Gestion",
+        "team.elements.4.desc": "Frais fixes &lt;10%, opérationnels 10-12%, personnel &lt;17%. Métriques objectives pour qualifier la rentabilité d'une entreprise ou d'un hôtel.",
+        "team.elements.5.title": "Modèle de Partage",
+        "team.elements.5.desc": "Référence non qualifiée : 10% des honoraires. Qualifiée : 25%. Partage uniquement si le partenaire suit le processus. Transparent.",
+        "team.elements.6.title": "Marque & PI Déposée",
+        "team.elements.6.desc": "Commercial Group Portugal est une marque déposée à l'international. Infrastructure propre pour garantir la protection de la propriété intellectuelle.",
+        // ── Domaines d'Intervention (Sección 7) ─────────────────────────
+        "team.areas.title": "Domaines d'<span class=\"text-primary italic\">Intervention</span>",
+        "team.areas.desc": "Typologie d'actifs où le groupe opère avec une méthodologie structurée",
+        "team.areas.1.title": "Commercial",
+        "team.areas.1.desc": "Bureaux · Retail · Logistique",
+        "team.areas.2.title": "Tourisme",
+        "team.areas.2.desc": "Hôtels · Résidentiel · Projets",
+        "team.areas.3.title": "Industriel",
+        "team.areas.3.desc": "Logistique · Entrepôts · Production",
+        "team.areas.4.title": "Promotion",
+        "team.areas.4.desc": "Résidentiel · Réhabilitation",
+        "team.areas.5.title": "Entreprises",
+        "team.areas.5.desc": "Acquisitions · Positions sociétaires",
+        "team.areas.examples.title": "Exemples d'Actifs en Portefeuille",
+        "team.areas.ex1": "Urban / Nobre (petits développements)",
+        "team.areas.ex2": "Centre Commercial Matosinhos",
+        "team.areas.ex3": "Centre Commercial Leiria",
+        "team.areas.ex4": "Entreprise de Valorisation de Déchets Électriques",
+        "team.areas.ex5": "Stations-service (Hydrocarbures)",
+        // ── CTA Final (Sección 8) ──────────────────────────────
+        "team.cta.final.badge": "Accès sur Candidature",
+        "team.cta.final.title": "Prêt à intégrer<br><span class=\"text-primary italic\">le groupe commercial ?</span>",
+        "team.cta.final.desc": "L'accès au Commercial Group Portugal est conditionné au respect des critères de candidature. Toutes les demandes sont analysées individuellement.",
+        "team.cta.final.p1.title": "Agent Spécialiste Senior",
+        "team.cta.final.p1.desc": "Membre de la Compagnie · 5+ ans · 75% affaires en immobilier commercial · Maîtrise de l'anglais",
+        "team.cta.final.p2.title": "Agent Spécialiste",
+        "team.cta.final.p2.desc": "Membre de la Compagnie · 3+ ans · 50% affaires en immobilier commercial · Anglais",
+        "team.cta.final.btn.submit": "Soumettre la Candidature",
+        "team.cta.final.btn.back": "Retour au CPII",
         // ── Webinars (Breeder Hub) — INCISIÓN v2.2.0 ────────────────────────────
         "webinars.hero.badge": "Breeder Hub",
         "webinars.hero.title.main": "Masterclasses &",
@@ -791,7 +1392,46 @@ const translations = {
         "ref.info.title": "Information",
         "ref.info.l1": "Revenue Share L1: 1%",
         "ref.info.l2": "Revenue Share L2: 0.5%",
-        "ref.info.l3": "Revenue Share L3: 0.25%"
+        "ref.info.l3": "Revenue Share L3: 0.25%",
+        // ── Formulaire d'Accès (access-form.html) — INCISION v2.5.0 ────────────────
+        "form.hero.title": "Le pouvoir du <span class=\"italic text-gold\">Réseau</span><br />à votre portée",
+        "form.title": "Demander l'accès",
+        "form.subtitle": "Remplissez vos coordonnées · Un gestionnaire local vous sera attribué",
+        "form.profile.label": "Profil d'accès",
+        "form.profile.inv": "Investisseur",
+        "form.profile.pro": "Promoteur/Gestionnaire",
+        "form.name.label": "Nom complet",
+        "form.name.ph": "Ex. João Silva",
+        "form.email.label": "Adresse e-mail",
+        "form.email.ph": "nom@entreprise.com",
+        "form.phone.label": "Numéro de téléphone",
+        "form.phone.ph": "000 000 000",
+        "form.country.label": "Pays de résidence",
+        "form.country.ph": "Sélectionnez votre pays…",
+        "form.country.note": "Ceci détermine votre Gestionnaire de Club — indépendant de votre Parrain",
+        "form.ref.label": "Qui vous a invité ?",
+        "form.ref.ph": "— Sélectionnez votre Prescripteur —",
+        "form.ref.note": "Uniquement les Prescripteurs autorisés. Le Prescripteur n'est pas votre Gestionnaire.",
+        "form.ref.detected": "✓ Prescripteur détecté",
+        "form.rgpd": "J'accepte la <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"privacy.html\">Politique de Confidentialité</a> et les <a class=\"text-text-main/70 hover:text-gold underline underline-offset-2 decoration-white/20 transition-colors\" href=\"terms.html\">Conditions d'Utilisation</a>. Je comprends que mes données seront traitées selon le <strong class=\"text-text-main/80\">RGPD</strong> et que ma demande est soumise à approbation.",
+        "form.btn.submit": "Valider la demande",
+        "form.btn.sending": "Envoi en cours…",
+        "form.success.title": "Demande reçue !",
+        "form.success.desc": "Votre Gestionnaire vous contactera sous 24-48h. Vérifiez vos courriers indésirables.",
+        "form.err.name": "Champ requis",
+        "form.err.email": "E-mail invalide",
+        "form.err.phone": "Champ requis",
+        "form.err.country": "Sélectionnez un pays",
+        "form.err.terms": "Vous devez accepter les conditions pour continuer",
+        "form.benefit.1": "Rentabilité vérifiée et auditée",
+        "form.benefit.2": "Revenue Share multi-niveaux jusqu'au Niveau 3",
+        "form.benefit.3": "Auto-financement garanti",
+        "form.benefit.4": "Networking avec les leaders du secteur",
+        "form.ref.divider": "Prescripteur",
+        "form.ref.optional": "Optionnel",
+        // ── Confidentialité et Termos — INCISION v2.6.0 ──────────────────────
+        "privacy.title": "Politique de Confidentialité",
+        "terms.title": "Conditions Générales"
     }
 
 };
@@ -799,15 +1439,16 @@ const translations = {
 // ══════════════════════════════════════════════════════ MOTOR DE TRADUCCIÓN ══
 
 /**
- * Aplica las traducciones gestionando seguridad HTML.
- * Usa innerHTML solo si data-i18n-html="true" está presente.
+ * Aplica las traducciones gestionando seguridad HTML y placeholders.
+ * v2.5.0: Añade soporte para data-i18n-placeholder (inputs y selects)
  */
 function applyTranslations(lang) {
     const dict = translations[lang] || translations["pt"];
+
+    // 1. Traducir textos e innerHTML
     document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
         if (dict[key] !== undefined) {
-            // Parche de seguridad para renderizado HTML vs Texto plano
             const useHTML = el.getAttribute("data-i18n-html") === "true";
             if (useHTML) {
                 el.innerHTML = dict[key];
@@ -816,6 +1457,21 @@ function applyTranslations(lang) {
             }
         }
     });
+
+    // 2. Traducir placeholders — inputs y primer option vacío de selects
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        if (dict[key] !== undefined) {
+            el.setAttribute("placeholder", dict[key]);
+            // Si es <select>, actualizar también el texto del primer option vacío
+            if (el.tagName.toLowerCase() === "select" &&
+                el.options.length > 0 &&
+                el.options[0].value === "") {
+                el.options[0].text = dict[key];
+            }
+        }
+    });
+
     document.documentElement.lang = lang;
 }
 

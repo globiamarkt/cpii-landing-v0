@@ -339,13 +339,17 @@
     </footer>
 
     <script>
-        // ── LÓGICA DEL SIMULADOR (Intacta) ──
+        // ── LÓGICA DEL SIMULADOR (Corregida v2.0.2) ──
         const baseData = [
             { month: 6, commissions: 25, investment: 67 },
             { month: 12, commissions: 50, investment: 143.68 },
+            { month: 18, commissions: 135, investment: 400 },   // Nodo interpolado
             { month: 24, commissions: 334, investment: 1041 },
+            { month: 30, commissions: 500, investment: 1800 },  // Nodo interpolado
             { month: 36, commissions: 750, investment: 2800 },
+            { month: 42, commissions: 1100, investment: 4100 }, // Nodo interpolado
             { month: 48, commissions: 1600, investment: 5900 },
+            { month: 54, commissions: 2400, investment: 8500 }, // Nodo interpolado
             { month: 60, commissions: 3500, investment: 12000 }
         ];
 
@@ -357,33 +361,40 @@
             });
         });
 
-        // Helper para obtener traducciones de JS
+        // [BUGFIX 1] Helper con micro-diccionario local
         function getTranslation(key, defaultText) {
             const lang = localStorage.getItem("cpii_lang") || "pt";
-            if (window.translations && window.translations[lang] && window.translations[lang][key]) {
-                return window.translations[lang][key];
-            }
-            return defaultText;
+            const localDict = {
+                "pt": { "sim.js.month": "Mês" },
+                "es": { "sim.js.month": "Mes" },
+                "en": { "sim.js.month": "Month" },
+                "fr": { "sim.js.month": "Mois" }
+            };
+            return localDict[lang]?.[key] || defaultText;
         }
 
         function updateSimulation() {
             const savings = parseFloat(document.getElementById('savings').value);
             const term = parseInt(document.getElementById('term').value);
             const referrals = parseInt(document.getElementById('referrals').value);
-            const networkFactor = referrals * 1.5 || 0.1;
+
+            // [BUGFIX 2] Eliminado el "|| 0.1" que causaba las comisiones fantasma
+            const networkFactor = referrals * 1.5;
             const ratio = savings / 50;
 
             const results = baseData.filter(d => d.month <= term);
             let tableHtml = '';
             let foundAutofinance = false;
 
-            // Textos dinámicos
+            // Textos dinámicos traducidos correctamente
             const mesTxt = getTranslation("sim.js.month", "Mês");
 
             results.forEach(r => {
                 const comms = r.commissions * networkFactor * ratio;
                 const total = (r.month * savings) + comms + (r.investment * ratio);
-                const isAutofinanced = comms >= savings;
+
+                // Si comms es 0, isAutofinanced será falso automáticamente
+                const isAutofinanced = comms > 0 && comms >= savings;
 
                 if (isAutofinanced && !foundAutofinance) {
                     document.getElementById('autofinance-month').textContent = `${mesTxt} ${r.month}`;
@@ -400,9 +411,10 @@
                 `;
             });
 
-            if (!foundAutofinance) document.getElementById('autofinance-month').textContent = `${mesTxt} --`;
+            if (!foundAutofinance) document.getElementById('autofinance-month').textContent = `--`;
 
             document.getElementById('results-table').innerHTML = tableHtml;
+
             const final = results[results.length - 1];
             const finalComms = final.commissions * networkFactor * ratio;
             const finalTotal = (final.month * savings) + finalComms + (final.investment * ratio);
