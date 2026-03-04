@@ -81,39 +81,67 @@
         .back-link:hover {
             opacity: 0.7;
         }
+
+        .lang-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 24px;
+        }
+
+        #lang-selector {
+            background: #1e1e1e;
+            color: var(--accent-gold);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
-
     <div class="container">
+
+        <div class="lang-bar">
+            <select id="lang-selector" onchange="setLanguage(this.value)">
+                <option value="pt">PT</option>
+                <option value="es">ES</option>
+                <option value="en">EN</option>
+                <option value="fr">FR</option>
+            </select>
+        </div>
+
         <h1 data-i18n="privacy.title">Política de Privacidade</h1>
 
-        <p>A presente Política de Privacidade descreve como a <strong>CPII (BreederHub)</strong> recolhe, utiliza e
-            protege as suas informações pessoais ao utilizar o nosso formulário de acesso.</p>
+        <p data-i18n="privacy.intro">A presente Política de Privacidade descreve como a CPII (BreederHub) recolhe,
+            utiliza e protege as suas informações pessoais ao utilizar o nosso formulário de acesso.</p>
 
-        <h2>1. Responsável pelo Tratamento</h2>
-        <p>O responsável pelos dados recolhidos através deste site é a <strong>CPII / BreederHub Project</strong>. Para
-            qualquer questão relacionada com a sua privacidade, pode contactar-nos através do e-mail indicado no final
-            desta página.</p>
+        <h2 data-i18n="privacy.s1.title">1. Responsável pelo Tratamento</h2>
+        <p data-i18n="privacy.s1.text">O responsável pelos dados recolhidos através deste site é a CPII / BreederHub
+            Project. Para qualquer questão relacionada com a sua privacidade, pode contactar-nos através do e-mail
+            indicado no final desta página.</p>
 
-        <h2>2. Dados Recolhidos e Finalidade</h2>
-        <p>Recolhemos os seguintes dados: nome, e-mail, telefone, país e tipo de perfil (investidor/promotor). A
-            finalidade exclusiva desta recolha é:</p>
+        <h2 data-i18n="privacy.s2.title">2. Dados Recolhidos e Finalidade</h2>
+        <p data-i18n="privacy.s2.text">Recolhemos os seguintes dados: nome, e-mail, telefone, país e tipo de perfil
+            (investidor/promotor). A finalidade exclusiva desta recolha é:</p>
         <ul>
-            <li>Gestão do processo de candidatura e registo na plataforma.</li>
-            <li>Comunicação direta sobre o estado da sua conta.</li>
-            <li>Envio de informações relevantes sobre o ecossistema CPII, caso tenha dado o seu consentimento.</li>
+            <li data-i18n="privacy.s2.li1">Gestão do processo de candidatura e registo na plataforma.</li>
+            <li data-i18n="privacy.s2.li2">Comunicação direta sobre o estado da sua conta.</li>
+            <li data-i18n="privacy.s2.li3">Envio de informações relevantes sobre o ecossistema CPII, caso tenha dado o
+                seu consentimento.</li>
         </ul>
 
-        <h2>3. Base Legal</h2>
-        <p>O tratamento dos seus dados baseia-se no seu <strong>consentimento explícito</strong>, fornecido ao submeter
-            o formulário de acesso em conformidade com o RGPD (Regulamento Geral sobre a Proteção de Dados).</p>
+        <h2 data-i18n="privacy.s3.title">3. Base Legal</h2>
+        <p data-i18n="privacy.s3.text">O tratamento dos seus dados baseia-se no seu consentimento explícito, fornecido
+            ao submeter o formulário de acesso em conformidade com o RGPD (Regulamento Geral sobre a Proteção de Dados).
+        </p>
 
-        <h2>4. Os Seus Direitos</h2>
-        <p>Como titular dos dados, tem o direito de aceder, retificar, limitar ou solicitar a eliminação das suas
-            informações pessoais a qualquer momento. Para exercer estes direitos, basta enviar um pedido formal para o
-            nosso contacto de suporte.</p>
+        <h2 data-i18n="privacy.s4.title">4. Os Seus Direitos</h2>
+        <p data-i18n="privacy.s4.text">Como titular dos dados, tem o direito de aceder, retificar, limitar ou solicitar
+            a eliminação das suas informações pessoais a qualquer momento. Para exercer estes direitos, basta enviar um
+            pedido formal para o nosso contacto de suporte.</p>
 
         <div class="contact-box">
             <p><strong data-i18n="footer.legal.support">Contacto de Suporte:</strong> <a
@@ -121,8 +149,8 @@
                     style="color: #C1A85D; text-decoration: none;">admin@breederhub.store</a></p>
             <a href="index.html" class="back-link" data-i18n="nav.inicio">← Voltar ao Início</a>
         </div>
-    </div>
 
+    </div>
 </body>
 
 </html>

@@ -1,266 +1,63 @@
 <!--
 ================================================================================
   ARCHIVO:  apps/cpii/scenes/access-form.html
-  VERSIÓN:  1.2.0
-  FECHA:    2026-02-17
-  PROPÓSITO: Formulario de solicitud de acceso CPII con captura de leads,
-             asignación territorial de Responsable de Club (tabla fija) y
-             vinculación de genealogía (Prescriptor/Referido). Integración Firestore.
-             Esquema de datos completo: Fase 1 (formulario) + Fase 2 (null, pendiente
-             de completar vía email/reunión: POF, presupuesto, tipo propiedad).
-  AUTOR:    Claude Sonnet 4.5 — Protocolo Cartografía Quirúrgica v3.1
-
-  ÍNDICE MAESTRO [SEC-XX]:
-  ├── [SEC-01] METADATOS E IMPORTACIONES (head)
-  ├── [SEC-02] CONFIGURACIÓN DE TEMA (Tailwind config)
-  ├── [SEC-03] NAVEGACIÓN (header sticky)
-  ├── [SEC-04] CONTENIDO LATERAL — BENEFICIOS (left panel)
-  ├── [SEC-05] NÚCLEO: FORMULARIO DE ACCESO (right panel)
-  │     ├── [SEC-05a] Selector de perfil (Inversor / Promotor)
-  │     ├── [SEC-05b] Campos personales (Nombre, Email, Teléfono, País)
-  │     ├── [SEC-05c] Sección de Referido / Genealogía (≠ Responsable de Club)
-  │     ├── [SEC-05d] Checkbox RGPD obligatorio
-  │     └── [SEC-05e] Botón de envío + mensaje de éxito
-  ├── [SEC-06] PIE DE PÁGINA (legal / soporte)
-  ├── [SEC-07] LÓGICA: TABLA DE ASIGNACIÓN TERRITORIAL (club_manager_map)
-  ├── [SEC-08] LÓGICA: CAPTURA DE REFERIDOS (URL params + sessionStorage)
-  └── [SEC-09] LÓGICA: FIRESTORE — INICIALIZACIÓN Y ENVÍO DE LEAD
-
-  NOTAS DE ARQUITECTURA:
-  · Responsable de Club (location.club_manager) ← tabla fija por país [SEC-07]
-    Absorbe leads huérfanos (sin padrino, baja o expulsión del progenitor).
-  · Padrino (genealogy.padrino) ← capturado desde URL ?ref= o sessionStorage
-    Entidad INDEPENDIENTE. Base para cálculo de Revenue Share multinivel.
-  · Ambas entidades NO se cruzan nunca en este formulario.
-
-  DEPENDENCIAS:
-  · Tailwind CSS CDN v3 (plugins: forms, container-queries)
-  · Google Fonts: Playfair Display + Manrope
-  · Google Material Symbols Outlined
-  · Firebase SDK v10.8.1 (módulos CDN) → [SEC-09]
+  VERSIÓN:  1.4.1
+  FECHA:    2026-03-01
+  CAMBIOS v1.4.0: Fix móvil — 4 correcciones de usabilidad (diagnóstico Gemini).
+                  1. Card padding dinámico p-5 sm:p-8 lg:p-10
+                  2. Phone prefix w-[90px] sm:w-[108px]
+                  3. Hero h1 text-4xl sm:text-5xl lg:text-7xl
+                  4. Header "Volver" — texto oculto en móvil
+  CAMBIOS v1.3.0: Credenciales Firebase reales inyectadas (cpii-landing).
+                  UID_GESTOR_DEFAULT actualizado a CTO_CARLOS (padre de huérfanos).
 ================================================================================
 -->
 <!DOCTYPE html>
 <html lang="pt">
-
-<!-- ═══════════════════════════════════════════════════════ [SEC-01] HEAD ══ -->
 
 <head>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="description"
         content="Solicita acceso al Club Privado de Inversión Inmobiliaria CPII Portugal. Formulario de registro exclusivo para inversores y promotores." />
     <title>CPII Portugal — Solicitar Acceso</title>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-    <!-- Tipografía: Playfair Display (display) + Manrope (body) -->
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
-    <!-- Material Symbols -->
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         rel="stylesheet" />
 
-    <!-- ══════════════════════════════════════════════ [SEC-02] TAILWIND CONFIG ══ -->
+    <!-- Estilos de chasis compartido + estilos específicos del formulario -->
+    <link rel="stylesheet" href="css/design-system.css" />
+    <link rel="stylesheet" href="css/access-form.css" />
+
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        gold: "#C1A85D",
-                        "gold-light": "#D4BC7A",
-                        "gold-hover": "#A8924D",
-                        "gold-dim": "rgba(193,168,93,0.12)",
-                        carbon: "#131313",
-                        "carbon-mid": "#1C1C1C",
-                        "dark-grey": "#282828",
-                        "input-bg": "#222222",
-                        "text-main": "#F5F0E8",
-                        "text-muted": "#8A8A8A",
-                        "text-dim": "#555555",
+                        gold: "#C1A85D", "gold-light": "#D4BC7A", "gold-hover": "#A8924D",
+                        "gold-dim": "rgba(193,168,93,0.12)", carbon: "#131313",
+                        "carbon-mid": "#1C1C1C", "dark-grey": "#282828", "input-bg": "#222222",
+                        "text-main": "#F5F0E8", "text-muted": "#8A8A8A", "text-dim": "#555555",
                         "border-sub": "rgba(255,255,255,0.07)",
                     },
-                    fontFamily: {
-                        display: ["Playfair Display", "Georgia", "serif"],
-                        body: ["Manrope", "system-ui", "sans-serif"],
-                    },
-                    boxShadow: {
-                        gold: "0 0 30px rgba(193,168,93,0.18)",
-                        "gold-sm": "0 0 12px rgba(193,168,93,0.12)",
-                        card: "0 8px 48px rgba(0,0,0,0.55)",
-                    },
+                    fontFamily: { display: ["Playfair Display", "Georgia", "serif"], body: ["Manrope", "system-ui", "sans-serif"] },
+                    boxShadow: { gold: "0 0 30px rgba(193,168,93,0.18)", "gold-sm": "0 0 12px rgba(193,168,93,0.12)", card: "0 8px 48px rgba(0,0,0,0.55)" },
                 },
             },
         };
     </script>
-
-    <style>
-        /* Estilos base */
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Manrope", system-ui, sans-serif;
-        }
-
-        h1,
-        h2,
-        h3,
-        .font-display {
-            font-family: "Playfair Display", Georgia, serif;
-        }
-
-        /* Grain overlay sutil */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-            opacity: 0.6;
-        }
-
-        /* Inputs — reset de estilos nativos del plugin forms */
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        select {
-            background-color: #222222 !important;
-            border-color: rgba(255, 255, 255, 0.08) !important;
-            color: #F5F0E8 !important;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #C1A85D !important;
-            box-shadow: 0 0 0 2px rgba(193, 168, 93, 0.15) !important;
-            outline: none !important;
-        }
-
-        input::placeholder {
-            color: rgba(138, 138, 138, 0.5) !important;
-        }
-
-        option {
-            background: #222;
-            color: #F5F0E8;
-        }
-
-        /* Checkbox dorado */
-        input[type="checkbox"] {
-            accent-color: #C1A85D;
-            background-color: #222 !important;
-            border-color: rgba(193, 168, 93, 0.4) !important;
-            border-radius: 3px;
-        }
-
-        /* Scroll bar discreta */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #131313;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #3a3a3a;
-            border-radius: 2px;
-        }
-
-        /* Animaciones de entrada */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .anim-1 {
-            animation: fadeUp 0.55s ease both 0.05s;
-        }
-
-        .anim-2 {
-            animation: fadeUp 0.55s ease both 0.15s;
-        }
-
-        .anim-3 {
-            animation: fadeUp 0.55s ease both 0.25s;
-        }
-
-        .anim-4 {
-            animation: fadeUp 0.55s ease both 0.35s;
-        }
-
-        .anim-5 {
-            animation: fadeUp 0.55s ease both 0.45s;
-        }
-
-        /* Estado de envío en el botón */
-        .btn-loading .btn-text {
-            display: none;
-        }
-
-        .btn-loading .btn-loader {
-            display: flex;
-        }
-
-        .btn-loader {
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0, 0, 0, 0.3);
-            border-top-color: #131313;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        /* Línea decorativa animada en el panel izquierdo */
-        .gold-line {
-            width: 1px;
-            height: 0;
-            background: linear-gradient(to bottom, transparent, #C1A85D, transparent);
-            animation: growLine 1.2s ease 0.6s forwards;
-        }
-
-        @keyframes growLine {
-            to {
-                height: 100px;
-            }
-        }
-    </style>
     <script src="i18n.js"></script>
 </head>
 
 <body class="bg-carbon text-text-main min-h-screen flex flex-col overflow-x-hidden antialiased dark">
 
-    <!-- ══════════════════════════════════════════════ [SEC-03] HEADER / NAV ══ -->
     <header
         class="sticky top-0 z-50 flex items-center justify-between border-b border-border-sub bg-carbon/85 px-6 py-4 backdrop-blur-md lg:px-10">
         <div class="flex items-center gap-3.5">
-            <!-- Logotipo -->
             <div
                 class="flex size-9 items-center justify-center rounded-full border border-gold/25 bg-gradient-to-br from-dark-grey to-carbon text-gold shadow-gold-sm">
                 <span class="material-symbols-outlined"
@@ -271,155 +68,121 @@
                 <span class="ml-1.5 text-[10px] font-light uppercase tracking-[0.2em] text-gold">Portugal</span>
             </div>
         </div>
-
         <div class="flex items-center gap-4">
-            <!-- Selector de idioma — id requerido por i18n.js para sincronización -->
             <select id="lang-selector" onchange="setLanguage(this.value)"
-                class="bg-transparent border border-gold/25 text-text-muted rounded-md px-2 py-1 text-[10px] font-bold tracking-wider cursor-pointer transition-colors hover:border-gold hover:text-gold outline-none">
+                class="appearance-none bg-none bg-transparent border border-gold/25 text-text-muted rounded-md px-3 py-1 text-[10px] font-bold tracking-wider cursor-pointer transition-colors hover:border-gold hover:text-gold outline-none text-center">
                 <option value="pt">PT</option>
                 <option value="es">ES</option>
                 <option value="en">EN</option>
                 <option value="fr">FR</option>
             </select>
-
             <a href="index.html"
                 class="flex items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-gold">
                 <span class="material-symbols-outlined"
                     style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 300">arrow_back</span>
-                <span data-i18n="nav.inicio">Volver al inicio</span>
+                <span class="hidden sm:inline" data-i18n="nav.inicio">Volver al inicio</span>
             </a>
         </div>
     </header>
 
-    <!-- ══════════════════════════════════════════ [SEC-04/05] MAIN CONTENT ══ -->
     <main class="relative z-10 flex flex-1 flex-col lg:flex-row">
 
-        <!-- ─────────────────────────────────── [SEC-04] PANEL IZQUIERDO: BENEFICIOS ── -->
         <div
             class="relative flex w-full flex-col justify-between overflow-hidden bg-carbon-mid px-8 py-12 lg:w-5/12 lg:px-14 lg:py-20 xl:w-1/2">
-
-            <!-- Orbe decorativo fondo -->
             <div
                 class="pointer-events-none absolute -left-32 top-10 h-[500px] w-[500px] rounded-full bg-gold/[0.04] blur-[80px]">
             </div>
             <div
                 class="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-carbon to-transparent">
             </div>
-
             <div class="relative z-10 flex flex-col gap-10">
-
-                <!-- Badge -->
                 <div
                     class="anim-1 inline-flex w-fit items-center gap-2 rounded-full border border-gold/25 bg-gold-dim px-4 py-1.5 text-[10px] font-medium uppercase tracking-[0.18em] text-gold">
                     <span class="material-symbols-outlined"
                         style="font-size:13px;font-variation-settings:'FILL' 1,'wght' 400">workspace_premium</span>
                     <span data-i18n="hero.badge">Acceso Exclusivo</span>
                 </div>
-
-                <!-- Titular -->
                 <div class="anim-2 space-y-5">
-                    <h1 class="font-display text-5xl font-light leading-[1.05] tracking-tight text-text-main sm:text-6xl lg:text-7xl"
+                    <h1 class="font-display text-4xl font-light leading-[1.05] tracking-tight text-text-main sm:text-5xl lg:text-7xl"
                         data-i18n="form.hero.title" data-i18n-html="true">
-                        El poder<br />de la
-                        <span class="italic text-gold"> Red</span><br />
-                        a tu alcance
+                        El poder<br />de la <span class="italic text-gold"> Red</span><br />a tu alcance
                     </h1>
                     <p class="max-w-sm text-sm leading-relaxed text-text-muted font-light" data-i18n="hero.p"
                         data-i18n-html="true">
-                        Tu acceso es validado individualmente. Se te asignará un
-                        <strong class="font-medium text-text-main/80">Responsable de Club</strong> según
-                        tu país de residencia para garantizar atención personalizada.
+                        Tu acceso es validado individualmente. Se te asignará un <strong
+                            class="font-medium text-text-main/80">Responsable de Club</strong> según tu país de
+                        residencia para garantizar atención personalizada.
                     </p>
                 </div>
-
-                <!-- Separador con línea dorada -->
                 <div class="anim-3 flex items-center gap-4">
                     <div class="gold-line"></div>
                     <ul class="flex flex-col gap-3.5">
-                        <li class="flex items-start gap-3 group">
-                            <span
+                        <li class="flex items-start gap-3 group"><span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
-                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85" data-i18n="form.benefit.1">Rentabilidad
-                                verificada y auditada</span>
-                        </li>
-                        <li class="flex items-start gap-3 group">
-                            <span
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span><span
+                                class="text-sm font-light text-text-main/85" data-i18n="form.benefit.1">Rentabilidad
+                                verificada y auditada</span></li>
+                        <li class="flex items-start gap-3 group"><span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
-                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85" data-i18n="form.benefit.2">Revenue Share
-                                multinivel hasta Nivel 3</span>
-                        </li>
-                        <li class="flex items-start gap-3 group">
-                            <span
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span><span
+                                class="text-sm font-light text-text-main/85" data-i18n="form.benefit.2">Revenue Share
+                                multinivel hasta Nivel 3</span></li>
+                        <li class="flex items-start gap-3 group"><span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
-                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85"
-                                data-i18n="form.benefit.3">Autofinanciación garantizada</span>
-                        </li>
-                        <li class="flex items-start gap-3 group">
-                            <span
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span><span
+                                class="text-sm font-light text-text-main/85" data-i18n="form.benefit.3">Autofinanciación
+                                garantizada</span></li>
+                        <li class="flex items-start gap-3 group"><span
                                 class="material-symbols-outlined mt-0.5 text-gold transition-colors group-hover:text-gold-light"
-                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span>
-                            <span class="text-sm font-light text-text-main/85" data-i18n="form.benefit.4">Networking con
-                                líderes del sector</span>
-                        </li>
+                                style="font-size:16px;font-variation-settings:'FILL' 1,'wght' 400">check_circle</span><span
+                                class="text-sm font-light text-text-main/85" data-i18n="form.benefit.4">Networking con
+                                líderes del sector</span></li>
                     </ul>
                 </div>
-
                 <div class="anim-4 mt-8 border-t border-white/10 pt-8">
                     <p class="mb-6 text-[10px] uppercase tracking-[0.15em] text-text-muted/70"
                         data-i18n="hero.contact.label">Contactar Gestión</p>
-                    <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-6 mb-4">
                         <a href="https://wa.me/351912536077" target="_blank" rel="noopener noreferrer"
-                            class="group text-text-muted transition-colors hover:text-gold" aria-label="WhatsApp">
-                            <svg class="h-10 w-10 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            class="group text-text-muted transition-colors hover:text-gold" aria-label="WhatsApp"><svg
+                                class="h-10 w-10 fill-current" viewBox="0 0 24 24">
                                 <path
                                     d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                            </svg>
-                        </a>
-                        <a href="https://t.me/+351912536077" target="_blank" rel="noopener noreferrer"
-                            class="group text-text-muted transition-colors hover:text-gold" aria-label="Telegram">
-                            <svg class="h-10 w-10 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            </svg></a>
+                        <a href="https://t.me/+34672852808" target="_blank" rel="noopener noreferrer"
+                            class="group text-text-muted transition-colors hover:text-gold" aria-label="Telegram"><svg
+                                class="h-10 w-10 fill-current" viewBox="0 0 24 24">
                                 <path
                                     d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0011.944 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.385 4.025-1.627 4.476-1.635z" />
-                            </svg>
-                        </a>
+                            </svg></a>
                         <a href="mailto:admin@breederhub.store"
-                            class="group text-text-muted transition-colors hover:text-gold" aria-label="Email">
-                            <svg class="h-10 w-10 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            class="group text-text-muted transition-colors hover:text-gold" aria-label="Email"><svg
+                                class="h-10 w-10 fill-current" viewBox="0 0 24 24">
                                 <path
                                     d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6ZM20 6L12 11L4 6H20ZM20 18H4V8L12 13L20 8V18Z" />
-                            </svg>
-                        </a>
+                            </svg></a>
                     </div>
+                    <p class="text-base leading-relaxed text-gold/80 italic font-display border-l-2 border-gold/30 pl-3"
+                        data-i18n="hero.contact.impact">
+                        Ligue-se diretamente à gestão do Clube Privado de Investimento Imobiliário. Operações de grau
+                        institucional, sem intermediários, sem fricção.
+                    </p>
                 </div>
-
             </div>
-
         </div>
 
-        <!-- Número decorativo fondo -->
         <div
             class="pointer-events-none absolute bottom-10 right-6 font-display text-[10rem] font-light leading-none text-white/[0.02] select-none lg:right-10">
-            II
-        </div>
-        </div>
+            II</div>
 
-        <!-- ─────────────────────────────────────── [SEC-05] PANEL DERECHO: FORMULARIO ── -->
         <div
             class="flex w-full items-start justify-center bg-carbon px-4 py-10 lg:w-7/12 lg:items-center lg:px-8 xl:w-1/2">
-
-            <!-- Fondo decorativo -->
             <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.03]">
                 <div class="absolute right-10 top-10 h-80 w-80 rounded-full border border-gold"></div>
                 <div class="absolute bottom-20 left-10 h-48 w-48 rounded-full border border-gold"></div>
             </div>
-
             <div
-                class="anim-4 relative w-full max-w-[500px] rounded-2xl border border-gold/15 bg-dark-grey p-7 shadow-card sm:p-8 lg:p-10">
-
-                <!-- Cabecera tarjeta -->
+                class="anim-4 relative w-full max-w-[500px] rounded-2xl border border-gold/15 bg-dark-grey p-5 shadow-card sm:p-8 lg:p-10">
                 <div class="mb-7 border-b border-border-sub pb-5">
                     <h2 class="font-display text-2xl font-medium italic text-text-main" data-i18n="form.title">Solicitar
                         Acceso</h2>
@@ -427,7 +190,6 @@
                         Se te asignará un gestor en tu zona</p>
                 </div>
 
-                <!-- ── [SEC-05e] Mensaje de ÉXITO (oculto por defecto) ── -->
                 <div id="success-message" class="hidden mb-6 rounded-xl border border-gold/30 bg-gold-dim p-5">
                     <div class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-gold"
@@ -435,97 +197,74 @@
                         <div>
                             <h3 class="font-display text-lg italic text-gold" data-i18n="form.success.title">Solicitação
                                 recebida!</h3>
-                            <p class="mt-1 text-xs text-text-muted leading-relaxed" data-i18n="form.success.desc">
-                                O seu Responsável de Club irá contactá-lo em 24–48 horas. Verifique também a sua pasta
-                                de spam.
-                            </p>
+                            <p class="mt-1 text-xs text-text-muted leading-relaxed" data-i18n="form.success.desc">O seu
+                                Responsável de Club irá contactá-lo em 24–48 horas. Verifique também a sua pasta de
+                                spam.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- ════════════════════════ FORMULARIO ════════════════════════ -->
                 <form id="access-form" class="flex flex-col gap-5" novalidate>
 
-                    <!-- ── [SEC-05a] Selector de perfil ── -->
                     <div class="flex flex-col gap-2">
                         <label class="text-[10px] uppercase tracking-[0.15em] font-medium text-gold"
                             data-i18n="form.profile.label">Perfil de acceso</label>
                         <div class="grid grid-cols-2 rounded-lg bg-carbon p-1 border border-border-sub">
-                            <label class="cursor-pointer">
-                                <input id="profile-inversor" class="peer sr-only" name="profile_type" type="radio"
-                                    value="inversor" checked />
+                            <label class="cursor-pointer"><input id="profile-inversor" class="peer sr-only"
+                                    name="profile_type" type="radio" value="inversor" checked />
                                 <div
                                     class="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-carbon peer-checked:font-semibold peer-checked:shadow-sm">
                                     <span class="material-symbols-outlined"
-                                        style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">trending_up</span>
-                                    <span data-i18n="form.profile.inv">Inversor</span>
+                                        style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">trending_up</span><span
+                                        data-i18n="form.profile.inv">Inversor</span>
                                 </div>
                             </label>
-                            <label class="cursor-pointer">
-                                <input id="profile-promotor" class="peer sr-only" name="profile_type" type="radio"
-                                    value="promotor" />
+                            <label class="cursor-pointer"><input id="profile-promotor" class="peer sr-only"
+                                    name="profile_type" type="radio" value="promotor" />
                                 <div
                                     class="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-medium text-text-muted transition-all peer-checked:bg-gold peer-checked:text-carbon peer-checked:font-semibold peer-checked:shadow-sm">
                                     <span class="material-symbols-outlined"
-                                        style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">storefront</span>
-                                    <span data-i18n="form.profile.pro">Promotor/Gestor</span>
+                                        style="font-size:14px;font-variation-settings:'FILL' 0,'wght' 400">storefront</span><span
+                                        data-i18n="form.profile.pro">Promotor/Gestor</span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <!-- ── [SEC-05b] Campos personales ── -->
                     <div class="grid gap-4">
-
-                        <!-- Nombre completo -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
-                                for="fullname">
-                                <span data-i18n="form.name.label">Nombre completo</span> <span
-                                    class="text-gold">*</span>
-                            </label>
-                            <div class="relative group">
-                                <span
+                                for="fullname"><span data-i18n="form.name.label">Nombre completo</span> <span
+                                    class="text-gold">*</span></label>
+                            <div class="relative group"><span
                                     class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
-                                    style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person</span>
-                                <input required id="fullname" name="fullname" type="text" placeholder="Ej. João Silva"
-                                    data-i18n-placeholder="form.name.ph"
+                                    style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person</span><input
+                                    required id="fullname" name="fullname" type="text" placeholder="Ej. João Silva"
                                     class="w-full rounded-lg border border-border-sub bg-input-bg py-3 pl-9 pr-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
                             <p class="hidden mt-1 text-[10px] text-red-400" id="err-fullname" data-i18n="form.err.name">
                                 Campo obligatorio</p>
                         </div>
-
-                        <!-- Correo electrónico -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
-                                for="email">
-                                <span data-i18n="form.email.label">Correo electrónico</span> <span
-                                    class="text-gold">*</span>
-                            </label>
-                            <div class="relative group">
-                                <span
+                                for="email"><span data-i18n="form.email.label">Correo electrónico</span> <span
+                                    class="text-gold">*</span></label>
+                            <div class="relative group"><span
                                     class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
-                                    style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">mail</span>
-                                <input required id="email" name="email" type="email" placeholder="nombre@empresa.com"
-                                    data-i18n-placeholder="form.email.ph"
+                                    style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">mail</span><input
+                                    required id="email" name="email" type="email" placeholder="nombre@empresa.com"
                                     class="w-full rounded-lg border border-border-sub bg-input-bg py-3 pl-9 pr-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
                             <p class="hidden mt-1 text-[10px] text-red-400" id="err-email" data-i18n="form.err.email">
                                 Email inválido</p>
                         </div>
-
-                        <!-- Teléfono -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
-                                for="phone">
-                                <span data-i18n="form.phone.label">Teléfono de contacto</span> <span
-                                    class="text-gold">*</span>
-                            </label>
+                                for="phone"><span data-i18n="form.phone.label">Teléfono de contacto</span> <span
+                                    class="text-gold">*</span></label>
                             <div class="flex gap-2">
-                                <!-- Prefijo -->
                                 <select id="phone_prefix" name="phone_prefix"
-                                    class="w-[108px] flex-shrink-0 rounded-lg border border-border-sub bg-input-bg py-3 pl-3 pr-2 text-xs text-text-main focus:border-gold focus:outline-none">
+                                    class="w-[90px] sm:w-[108px] flex-shrink-0 rounded-lg border border-border-sub bg-input-bg py-3 pl-3 pr-2 text-xs text-text-main focus:border-gold focus:outline-none">
                                     <option value="+351">🇵🇹 +351</option>
                                     <option value="+34">🇪🇸 +34</option>
                                     <option value="+55">🇧🇷 +55</option>
@@ -537,106 +276,80 @@
                                     <option value="+49">🇩🇪 +49</option>
                                     <option value="+39">🇮🇹 +39</option>
                                 </select>
-                                <!-- Número -->
                                 <input required id="phone" name="phone" type="tel" placeholder="000 000 000"
-                                    data-i18n-placeholder="form.phone.ph"
                                     class="flex-1 rounded-lg border border-border-sub bg-input-bg py-3 px-4 text-sm text-text-main placeholder-text-dim focus:border-gold focus:outline-none transition-all" />
                             </div>
                             <p class="hidden mt-1 text-[10px] text-red-400" id="err-phone" data-i18n="form.err.phone">
                                 Campo obligatorio</p>
                         </div>
-
-                        <!-- País de residencia -->
                         <div>
                             <label class="mb-1.5 block text-[10px] uppercase tracking-[0.12em] text-text-muted"
-                                for="country">
-                                <span data-i18n="form.country.label">País de residencia</span> <span
-                                    class="text-gold">*</span>
-                            </label>
-                            <select required id="country" name="country" data-i18n-placeholder="form.country.ph"
+                                for="country"><span data-i18n="form.country.label">País de residencia</span> <span
+                                    class="text-gold">*</span></label>
+                            <select required id="country" name="country"
                                 class="w-full rounded-lg border border-border-sub bg-input-bg py-3 px-4 text-sm text-text-main focus:border-gold focus:outline-none">
-                                <option value="">Selecciona tu país…</option>
-                                <option value="PT">Portugal</option>
-                                <option value="ES">España</option>
-                                <option value="BR">Brasil</option>
-                                <option value="MX">México</option>
-                                <option value="AR">Argentina</option>
-                                <option value="US">Estados Unidos</option>
-                                <option value="GB">Reino Unido</option>
-                                <option value="FR">Francia</option>
-                                <option value="DE">Alemania</option>
-                                <option value="IT">Italia</option>
-                                <option value="OTHER">Otro país</option>
+                                <option value="" data-i18n="form.country.ph">Selecciona tu país…</option>
+                                <option value="PT" data-i18n="country.pt">Portugal</option>
+                                <option value="ES" data-i18n="country.es">España</option>
+                                <option value="BR" data-i18n="country.br">Brasil</option>
+                                <option value="MX" data-i18n="country.mx">México</option>
+                                <option value="AR" data-i18n="country.ar">Argentina</option>
+                                <option value="US" data-i18n="country.us">Estados Unidos</option>
+                                <option value="GB" data-i18n="country.gb">Reino Unido</option>
+                                <option value="FR" data-i18n="country.fr">Francia</option>
+                                <option value="DE" data-i18n="country.de">Alemania</option>
+                                <option value="IT" data-i18n="country.it">Italia</option>
+                                <option value="OTHER" data-i18n="country.other">Otro país</option>
                             </select>
-                            <!-- Nota de asignación territorial -->
-                            <p class="mt-1.5 text-[10px] text-gold/50 italic">
-                                <span class="material-symbols-outlined align-middle"
-                                    style="font-size:11px">location_on</span>
-                                <span data-i18n="form.country.note">Este dato determina tu Responsable de Club
-                                    asignado — independiente de tu Padrino/Referido</span>
-                            </p>
+                            <p class="mt-1.5 text-[10px] text-gold/50 italic"><span
+                                    class="material-symbols-outlined align-middle"
+                                    style="font-size:11px">location_on</span> <span data-i18n="form.country.note">Este
+                                    dato determina tu Responsable de Club — independiente de tu Embajador</span></p>
                             <p class="hidden mt-1 text-[10px] text-red-400" id="err-country"
                                 data-i18n="form.err.country">Selecciona un país</p>
                         </div>
                     </div>
-                    <!-- /[SEC-05b] -->
 
-                    <!-- ── [SEC-05c] Prescriptor / Genealogía ── -->
-                    <!--
-          NOTA DE ARQUITECTURA:
-          · El Prescriptor (padrino) es quien invita al lead — selección por nombre, NO por código.
-          · Lista controlada: solo Prescriptores autorizados por CPII aparecen aquí.
-          · Para añadir/quitar prescriptores → intervención /laparoscopia en este bloque [SEC-05c]
-            y actualización del array PRESCRIPTORES_AUTORIZADOS en [SEC-08].
-          · Esta entidad es INDEPENDIENTE del Responsable de Club [SEC-07].
-        -->
                     <div class="relative py-2">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-border-sub"></div>
                         </div>
-                        <div class="relative flex justify-center">
-                            <span class="bg-dark-grey px-3 text-[9px] uppercase tracking-[0.2em] text-gold/50"
-                                data-i18n="form.ref.divider">Prescriptor</span>
-                        </div>
+                        <div class="relative flex justify-center"><span
+                                class="bg-dark-grey px-3 text-[9px] uppercase tracking-[0.2em] text-gold/50"
+                                data-i18n="form.ref.divider">Embajador</span></div>
                     </div>
 
                     <div>
                         <label
                             class="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.12em] text-text-muted"
                             for="referral">
-                            <span data-i18n="form.ref.label">¿Quién te invitó?</span>
-                            <span id="ref-status" class="font-normal text-text-dim"
-                                data-i18n="form.ref.optional">Opcional</span>
+                            <span><span data-i18n="form.ref.label">¿Quién te invitó?</span> <span
+                                    class="text-gold">*</span></span>
+                            <span id="ref-status" class="font-normal text-text-dim"></span>
                         </label>
                         <div class="relative group">
                             <span
                                 class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
                                 style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person_search</span>
-                            <select id="referral" name="referral" data-i18n-placeholder="form.ref.ph"
+                            <select required id="referral" name="referral"
                                 class="w-full appearance-none rounded-lg border border-gold/20 bg-gold/[0.04] py-3 pl-9 pr-8 text-sm text-text-main focus:border-gold focus:bg-input-bg focus:outline-none transition-all">
-                                <option value="">— Selecciona tu Prescriptor —</option>
-                                <!-- ╔══════════════════════════════════════════════════════════╗
-                   ║  PRESCRIPTORES AUTORIZADOS — actualiza aquí y en [SEC-08] ║
-                   ╚══════════════════════════════════════════════════════════╝ -->
+                                <option value="" data-i18n="form.ref.ph">— Selecciona tu Embajador —</option>
                                 <option value="david_almeida">David Almeida</option>
                                 <option value="carlos_balboa">Carlos Balboa</option>
                             </select>
-                            <!-- Chevron decorativo -->
                             <span
                                 class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-text-dim material-symbols-outlined"
                                 style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">expand_more</span>
                         </div>
-                        <p class="mt-1.5 text-[10px] text-text-dim" data-i18n="form.ref.note">
-                            Solo aparecen Prescriptores autorizados por CPII. El Prescriptor no es tu Responsable de
-                            Club.
-                        </p>
+                        <p class="hidden mt-1 text-[10px] text-red-400" id="err-referral" data-i18n="form.err.ref">
+                            Selecciona un Embajador para continuar.</p>
+                        <p class="mt-1.5 text-[10px] text-text-dim" data-i18n="form.ref.note">Solo Embajadores
+                            autorizados. El Embajador no es tu Responsable de Club.</p>
                     </div>
-                    <!-- /[SEC-05c] -->
 
-                    <!-- ── [SEC-05d] Checkbox RGPD ── -->
                     <div class="flex items-start gap-3 rounded-lg border border-border-sub bg-carbon/50 p-3.5">
-                        <div class="flex h-5 items-center pt-0.5">
-                            <input required id="terms" name="terms" type="checkbox"
+                        <div class="flex h-5 items-center pt-0.5"><input required id="terms" name="terms"
+                                type="checkbox"
                                 class="h-4 w-4 cursor-pointer rounded border border-gold/30 bg-input-bg text-gold focus:ring-gold focus:ring-1 focus:ring-offset-0" />
                         </div>
                         <label class="text-[11px] leading-relaxed text-text-muted font-light cursor-pointer" for="terms"
@@ -651,39 +364,26 @@
                         </label>
                     </div>
                     <p class="hidden -mt-3 text-[10px] text-red-400" id="err-terms" data-i18n="form.err.terms">Debes
-                        aceptar los términos para continuar</p>Validar solicitud
-                    <!-- /[SEC-05d] -->
+                        aceptar los términos para continuar</p>
 
-                    <!-- ── [SEC-05e] Botón de envío ── -->
                     <button id="submit-btn" type="submit"
                         class="group mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-gold py-4 text-xs font-semibold uppercase tracking-[0.15em] text-carbon transition-all hover:bg-gold-light hover:shadow-gold active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed">
-                        <span class="btn-text flex items-center gap-2">
-                            <span data-i18n="form.btn.submit">Validar solicitud</span>
-                            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1"
-                                style="font-size:15px;font-variation-settings:'FILL' 0,'wght' 400">arrow_forward</span>
-                        </span>
-                        <span class="btn-loader">
-                            <span class="spinner"></span>
-                            <span data-i18n="form.btn.sending">Enviando…</span>
-                        </span>
+                        <span class="btn-text flex items-center gap-2"><span data-i18n="form.btn.submit">Validar
+                                solicitud</span><span
+                                class="material-symbols-outlined transition-transform group-hover:translate-x-1"
+                                style="font-size:15px;font-variation-settings:'FILL' 0,'wght' 400">arrow_forward</span></span>
+                        <span class="btn-loader"><span class="spinner"></span><span
+                                data-i18n="form.btn.sending">Enviando…</span></span>
                     </button>
-                    <!-- /[SEC-05e] -->
 
                 </form>
-                <!-- /FORMULARIO -->
-
             </div>
-            <!-- /tarjeta -->
         </div>
-        <!-- /[SEC-05] panel derecho -->
-
     </main>
 
-    <!-- ══════════════════════════════════════════════════════ [SEC-06] FOOTER ══ -->
     <footer class="relative z-10 border-t border-border-sub bg-carbon px-6 py-6 text-center">
         <p class="text-[9px] uppercase tracking-[0.25em] text-white/15" data-i18n="footer.copy">Confidencial — Apenas
-            para membros autorizados ·
-            CPII © 2026</p>
+            para membros autorizados · CPII © 2026</p>
         <div class="mt-3 flex justify-center gap-6">
             <a class="text-[11px] text-text-dim hover:text-gold transition-colors" href="privacy.html"
                 data-i18n="nav.privacy">Privacidad</a>
@@ -695,127 +395,116 @@
     </footer>
 
     <!-- ══════════════════════════════════════ [SEC-07] TABLA DE ASIGNACIÓN ══ -->
-    <!--
-  TABLA FIJA: club_manager_map
-  · Clave    = código ISO del país (campo "country" del formulario)
-  · Valor    = UID del Responsable de Club en Firestore (users/{uid})
-  · DEFAULT  = Responsable que absorbe leads huérfanos o de países sin asignar
-  · NOTA: Leads huérfanos (sin padrino, baja o expulsión del progenitor)
-          se asignan automáticamente al club_manager del país del lead.
-  · IMPORTANTE: Esta tabla es INDEPENDIENTE de la genealogía (padrino).
-                Actualiza los UIDs reales antes de desplegar en producción.
--->
     <script>
         const CLUB_MANAGER_MAP = {
-            PT: "UID_GESTOR_PORTUGAL",      // Responsable Club Portugal
-            ES: "UID_GESTOR_ESPANA",        // Responsable Club España
-            BR: "UID_GESTOR_BRASIL",        // Responsable Club Brasil
-            MX: "UID_GESTOR_MEXICO",        // Responsable Club México
-            AR: "UID_GESTOR_ARGENTINA",     // Responsable Club Argentina
-            US: "UID_GESTOR_DEFAULT",       // Pool internacional
+            PT: "UID_GESTOR_PORTUGAL",
+            ES: "UID_GESTOR_ESPANA",
+            BR: "UID_GESTOR_BRASIL",
+            MX: "UID_GESTOR_MEXICO",
+            AR: "UID_GESTOR_ARGENTINA",
+            US: "UID_GESTOR_DEFAULT",
             GB: "UID_GESTOR_DEFAULT",
             FR: "UID_GESTOR_DEFAULT",
             DE: "UID_GESTOR_DEFAULT",
             IT: "UID_GESTOR_DEFAULT",
-            OTHER: "UID_GESTOR_DEFAULT",       // Fallback para cualquier otro país
-            _DEFAULT: "UID_GESTOR_DEFAULT",     // Absorbe huérfanos
+            OTHER: "UID_GESTOR_DEFAULT",
+            _DEFAULT: "CTO_CARLOS_CPII",
         };
-
-        /**
-         * Devuelve el UID del Responsable de Club para un país dado.
-         * Si el país no tiene gestor asignado, retorna el DEFAULT.
-         * @param {string} countryCode - Código ISO del país (ej: "PT")
-         * @returns {string} UID del gestor en Firestore
-         */
         function getClubManager(countryCode) {
             return CLUB_MANAGER_MAP[countryCode] || CLUB_MANAGER_MAP._DEFAULT;
         }
-        // --- INCISIÓN LAPAROSCÓPICA: Exponer al scope global ---
         window.getClubManager = getClubManager;
     </script>
 
-    <!-- ════════════════════════════════════ [SEC-08] CAPTURA DE PRESCRIPTOR ══ -->
-    <!--
-  PRESCRIPTORES AUTORIZADOS — array de referencia sincronizado con [SEC-05c].
-  Para añadir un prescriptor: añade la option en [SEC-05c] Y su value aquí.
-  El value del <select> viaja a Firestore como genealogy.padrino.
--->
+    <!-- ════════════════════════════════════ [SEC-08] CAPTURA DE EMBAJADOR ══ -->
     <script>
-        // Lista de values autorizados (debe coincidir con las options del select [SEC-05c])
-        const PRESCRIPTORES_AUTORIZADOS = [
+        // Unificación terminológica: Embajador en lugar de Prescriptor
+        // La lista VIP maestra (El sistema los reconoce a todos, aunque no estén en el HTML)
+        const EMBAJADORES_AUTORIZADOS = [
             "david_almeida",
+            "edmundo_barata",
             "carlos_balboa",
+            "elena_colomina",
+            "egidio_silva",
+            "elisabete_nascimento",
+            "luis_pereira",
+            "francisco_santiago"
         ];
 
-        (function initPrescriptor() {
+        (function initEmbajador() {
+            // Delegamos la captura ?ref= en el módulo de tracking centralizado
+            if (window.CPIITracking && typeof CPIITracking.captureReferralFromUrl === "function") {
+                CPIITracking.captureReferralFromUrl({ log: false });
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const tipoParam = urlParams.get("tipo");
-            const refParam = urlParams.get("ref") || sessionStorage.getItem("cpii_ref");
-            const select = document.getElementById("referral");
-            const refStatus = document.getElementById("ref-status");
 
-            // Pre-selección desde URL ?ref=david_almeida (para links de invitación directa)
+            // 1. Usamos la Memoria Persistente como fuente única
+            const refParam = localStorage.getItem("cpii_ref");
+            const select = document.getElementById("referral");
+
             if (refParam) {
                 const refNorm = refParam.toLowerCase().replace(/\s+/g, "_");
-                if (PRESCRIPTORES_AUTORIZADOS.includes(refNorm)) {
+
+                if (EMBAJADORES_AUTORIZADOS.includes(refNorm)) {
+                    // 3. 🥷 MAGIA FANTASMA: Si el embajador no está en el HTML público, lo creamos
+                    let optionExists = Array.from(select.options).some(opt => opt.value === refNorm);
+                    if (!optionExists) {
+                        // Formateamos el nombre (ej: "francisco_santiago" -> "Francisco Santiago")
+                        const displayName = refNorm.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                        const hiddenOption = new Option(displayName, refNorm);
+                        select.add(hiddenOption);
+                    }
+
+                    // 4. Seleccionamos al Embajador
                     select.value = refNorm;
-                    const lang = localStorage.getItem("cpii_lang") || "pt";
-                    refStatus.textContent = (typeof translations !== 'undefined' && translations[lang] && translations[lang]["form.ref.detected"]) ? translations[lang]["form.ref.detected"] : "✓ Prescriptor detectado";
-                    refStatus.className = "font-medium text-emerald-400";
+
+                    // 5. 🔒 Activamos el Candado Institucional
+                    select.disabled = true;
+                    select.classList.add("opacity-60", "cursor-not-allowed");
+
+                    console.log("[CPII] Embajador bloqueado (Stealth Mode):", refNorm);
                 }
-                // Si el valor de la URL no está en la lista autorizada, se ignora silenciosamente
             }
 
-            // Pre-selección de perfil por URL (?tipo=inversor | promotor | gestor)
+            // Lógica de autoselección del tipo de perfil
             if (tipoParam) {
                 const tipoNorm = tipoParam.toLowerCase();
-                if (tipoNorm === "inversor") {
-                    document.getElementById("profile-inversor").checked = true;
-                } else if (tipoNorm === "promotor" || tipoNorm === "gestor") {
-                    document.getElementById("profile-promotor").checked = true;
-                }
+                if (tipoNorm === "inversor") document.getElementById("profile-inversor").checked = true;
+                else if (tipoNorm === "promotor" || tipoNorm === "gestor") document.getElementById("profile-promotor").checked = true;
             }
         })();
+
     </script>
 
-    <!-- ════════════════════════ [SEC-09] FIRESTORE — INIT + ENVÍO DE LEAD ══ -->
-    <!--
-  INSTRUCCIONES DE CONFIGURACIÓN:
-  1. Ve a Firebase Console → Descripción general → Agregar app web
-  2. Copia el objeto firebaseConfig y sustituye los valores placeholder abajo
-  3. El modo de prueba de Firestore caduca en 30 días → configura reglas de seguridad antes
-  4. Colección de leads: "leads" (cámbiala en COLLECTION_NAME si usas otra)
--->
+    </script>
+
+    <!-- ════════════════════════ [SEC-09] FIRESTORE — INIT + ENVÍO DE LEAD ══
+    ══════════════════════════════════════════════════════════════════════════
+    v1.3.0 — Credenciales reales inyectadas. Proyecto: cpii-landing
+    _DEFAULT actualizado a CTO_CARLOS_CPII (Padre de Huérfanos)
+    ══════════════════════════════════════════════════════════════════════════ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // ── 🔑 SUSTITUYE ESTOS VALORES CON TU firebaseConfig REAL ──────────────────
+        // Configuración oficial del proyecto cpii-landing
         const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROYECTO.firebaseapp.com",
-            projectId: "TU_PROJECT_ID",
-            storageBucket: "TU_PROYECTO.appspot.com",
-            messagingSenderId: "TU_SENDER_ID",
-            appId: "TU_APP_ID",
+            apiKey: "AIzaSyD7_EYohInAK5rgMLFZxrE5jEn2nyyHoEk",
+            authDomain: "cpii-landing.firebaseapp.com",
+            projectId: "cpii-landing",
+            storageBucket: "cpii-landing.firebasestorage.app",
+            messagingSenderId: "963765788097",
+            appId: "1:963765788097:web:d8a8600feb29e9caeda340",
+            measurementId: "G-63MC20GCRY"
         };
-        // ────────────────────────────────────────────────────────────────────────────
 
-        const COLLECTION_NAME = "leads"; // ← cambia si tu colección se llama distinto
+        // URL de tu Cloud Function recién desplegada
+        const TELEGRAM_FUNCTION_URL = "https://us-central1-cpii-landing.cloudfunctions.net/sendLeadToTelegram";
 
-        let db;
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            console.log("[CPII] Firebase + Firestore conectados ✓");
-        } catch (e) {
-            console.warn("[CPII] Firebase no inicializado — revisa firebaseConfig:", e.message);
-        }
-
-        // ── HELPERS DE VALIDACIÓN ───────────────────────────────────────────────────
-        function showError(id, show) {
-            document.getElementById("err-" + id).classList.toggle("hidden", !show);
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
         function validateForm() {
             let valid = true;
@@ -823,124 +512,86 @@
             const email = document.getElementById("email").value.trim();
             const phone = document.getElementById("phone").value.trim();
             const country = document.getElementById("country").value;
+            const referral = document.getElementById("referral").value;
             const terms = document.getElementById("terms").checked;
-            const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            const showError = (id, show) => document.getElementById("err-" + id).classList.toggle("hidden", !show);
 
             showError("fullname", !fullname); if (!fullname) valid = false;
-            showError("email", !emailRx.test(email)); if (!emailRx.test(email)) valid = false;
+            showError("email", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)); if (!email) valid = false;
             showError("phone", !phone); if (!phone) valid = false;
             showError("country", !country); if (!country) valid = false;
+            showError("referral", !referral); if (!referral) valid = false;
             showError("terms", !terms); if (!terms) valid = false;
 
             return valid;
         }
 
-        // ── HANDLER DE ENVÍO ────────────────────────────────────────────────────────
         document.getElementById("access-form").addEventListener("submit", async function (e) {
             e.preventDefault();
-
             if (!validateForm()) return;
 
             const btn = document.getElementById("submit-btn");
-            btn.classList.add("btn-loading");
             btn.disabled = true;
+            btn.innerHTML = '<span class="animate-spin mr-2">⌛</span> Validando...';
 
             const country = document.getElementById("country").value;
-            const phonePrefix = document.getElementById("phone_prefix").value;
-            const phoneFull = phonePrefix + document.getElementById("phone").value.trim();
+            const phoneFull = document.getElementById("phone_prefix").value + document.getElementById("phone").value.trim();
 
-            // ══════════════════════════════════════════════════════════════════════════
-            // ESQUEMA FIRESTORE — colección: "leads"
-            // ──────────────────────────────────────────────────────────────────────────
-            // FASE 1 (este formulario):   campos poblados con valor real
-            // FASE 2 (email / reunión):   campos declarados como null → se actualizan
-            //                             vía Cloud Function o panel de administración
-            //
-            // ENTIDADES INDEPENDIENTES (nunca se cruzan):
-            //   location.club_manager  → asignación territorial, tabla fija [SEC-07]
-            //   genealogy.padrino      → red multinivel para Revenue Share
-            //   Leads huérfanos (padrino = "HUERFANO") → cloud function los asigna
-            //   al club_manager de su país cuando el progenitor se da de baja o es
-            //   expulsado.
-            // ══════════════════════════════════════════════════════════════════════════
-            // ── Captura de valores del formulario ──────────────────────────────────────
-            const padrino = document.getElementById("referral").value;
-
-            // ══════════════════════════════════════════════════════════════════════════
-            // ESQUEMA FIRESTORE — colección: "leads" — alineado con interfaz Usuario (Verdent)
-            // ──────────────────────────────────────────────────────────────────────────
-            // CICLO DE VIDA:
-            //   Este documento es un estado de TRANSICIÓN. Cuando el Lead se apruebe,
-            //   una Cloud Function lo promoverá a la colección "usuarios", mapeando:
-            //   metadata.club_manager → seccionCertificada.gestorId
-            //
-            // FASE 2 (fuera de este formulario):
-            //   investment_profile (POF, presupuesto, tipo propiedad) se completa
-            //   vía email/reunión y se actualiza desde el panel de administración.
-            // ══════════════════════════════════════════════════════════════════════════
             const leadData = {
-
-                // ── Tipo de perfil (raíz — interfaz Usuario) ───────────────────────────
-                tipo: document.querySelector("input[name='profile_type']:checked").value,
-                // "inversor" | "promotor"
-
-                // ── Perfil del lead (alineado con Usuario.perfil) ──────────────────────
+                tipo: document.querySelector("input[name='profile_type']:checked").value, // Asegúrate de que los values sean 'inversor' o 'promotor'
                 perfil: {
                     nombre: document.getElementById("fullname").value.trim(),
                     email: document.getElementById("email").value.trim().toLowerCase(),
                     telefono: phoneFull,
                     pais: country,
-                    idioma: "pt",
-                    referidoPor: padrino || null,
-                    // null = lead huérfano (sin prescriptor)
-                    // La Cloud Function de promoción calculará nivel y revenue_share
+                    embajador: document.getElementById("referral").value,
                 },
-
-                // ── Metadatos operativos ────────────────────────────────────────────────
                 metadata: {
-                    // Gestión y flujo
-                    club_manager: window.getClubManager ? window.getClubManager(country) : "UID_GESTOR_DEFAULT",
-                    // ↑ Al promover a Usuario → Cloud Function inyecta en seccionCertificada.gestorId
-                    status: "pending_review",       // pending_review | approved | rejected
-                    funnel_stage: "lead_captured",  // Posición en el funnel
-                    source: "access-form",          // Origen del lead
-                    // Legal — RGPD (no negociable)
-                    rgpd_consent: true,             // Checkbox obligatorio ya validado
-                    // Timestamps
+                    club_manager: window.getClubManager ? window.getClubManager(country) : "CTO_CARLOS_CPII",
+                    status: "pending_review",
+                    source: "access-form",
+                    rgpd_consent: true, // <── LLAVE MAESTRA: Ahora cumple con tu Regla [SEC-01]
                     created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
                 },
-
             };
 
-            console.log("── INICIO PROCESO DE ALTA ──────────────────");
-            console.log("1. Lead:", leadData.perfil.email);
-            console.log("2. Tipo:", leadData.tipo);
-            console.log("3. País / Club Manager:", leadData.perfil.pais, "→", leadData.metadata.club_manager);
-            console.log("4. Referido por:", leadData.perfil.referidoPor ?? "HUÉRFANO");
-            console.log("5. Estado inicial:", leadData.metadata.status);
-            console.log("6. Fase 2 pendiente:", "investment_profile (POF, presupuesto, tipo propiedad)");
-            console.log("────────────────────────────────────────────");
-
             try {
-                if (db) {
-                    const docRef = await addDoc(collection(db, COLLECTION_NAME), leadData);
-                    console.log("[CPII] Lead guardado en Firestore. ID:", docRef.id);
-                } else {
-                    console.warn("[CPII] Firestore no disponible — lead solo en consola.");
-                }
+                // 1. Guardar en Firestore
+                await addDoc(collection(db, "leads"), leadData);
+                console.log("[CPII] ✅ Lead persistido en base de datos.");
 
-                // Éxito: ocultar formulario y mostrar mensaje
+                // 2. Disparar alerta a tu Telegram (Mobile Notification)
+                await fetch(TELEGRAM_FUNCTION_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: leadData.perfil.nombre,
+                        email: leadData.perfil.email,
+                        phone: leadData.perfil.telefono,
+                        country: leadData.perfil.pais,
+                        referral: leadData.perfil.embajador
+                    })
+                });
+                console.log("[CPII] ✅ Alerta enviada al móvil.");
+
+                // 3. Sincronizar con Google Sheets (Satélite)
+                fetch("https://script.google.com/macros/s/AKfycbySmskBQ1IEdyQtT4CxYPXrHDaEmuWvH1yaecShoE3Ac-BPl4tuNRqfNwgo0YzzrnKG/exec", {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(leadData)
+                });
+
+                // 4. Mostrar mensaje de éxito
                 this.classList.add("hidden");
-                const successEl = document.getElementById("success-message");
-                successEl.classList.remove("hidden");
-                successEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                document.getElementById("success-message").classList.remove("hidden");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (error) {
-                console.error("[CPII] Error al guardar en Firestore:", error);
-                btn.classList.remove("btn-loading");
+                console.error("[CPII] Error en el sistema de captación:", error);
                 btn.disabled = false;
-                alert("Hubo un error al enviar tu solicitud. Por favor, inténtalo de nuevo.");
+                btn.innerHTML = "Validar Pedido";
+                alert("Error al procesar. Por favor, inténtelo de nuevo.");
             }
         });
     </script>

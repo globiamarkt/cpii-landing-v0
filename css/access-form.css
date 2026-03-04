@@ -1,0 +1,147 @@
+/* Estilos específicos de access-form.html extraídos del bloque <style> */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Manrope", system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity: 0.6;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select {
+  background-color: #222222 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f5f0e8 !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus {
+  border-color: #c1a85d !important;
+  box-shadow: 0 0 0 2px rgba(193, 168, 93, 0.15) !important;
+  outline: none !important;
+}
+
+input::placeholder {
+  color: rgba(138, 138, 138, 0.5) !important;
+}
+
+option {
+  background: #222;
+  color: #f5f0e8;
+}
+
+input[type="checkbox"] {
+  accent-color: #c1a85d;
+  background-color: #222 !important;
+  border-color: rgba(193, 168, 93, 0.4) !important;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #131313;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 2px;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-1 {
+  animation: fadeUp 0.55s ease both 0.05s;
+}
+
+.anim-2 {
+  animation: fadeUp 0.55s ease both 0.15s;
+}
+
+.anim-3 {
+  animation: fadeUp 0.55s ease both 0.25s;
+}
+
+.anim-4 {
+  animation: fadeUp 0.55s ease both 0.35s;
+}
+
+.anim-5 {
+  animation: fadeUp 0.55s ease both 0.45s;
+}
+
+.btn-loading .btn-text {
+  display: none;
+}
+
+.btn-loading .btn-loader {
+  display: flex;
+}
+
+.btn-loader {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: #131313;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.gold-line {
+  width: 1px;
+  height: 0;
+  background: linear-gradient(to bottom, transparent, #c1a85d, transparent);
+  animation: growLine 1.2s ease 0.6s forwards;
+}
+
+@keyframes growLine {
+  to {
+    height: 100px;
+  }
+}
+
