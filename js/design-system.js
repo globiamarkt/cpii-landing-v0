@@ -2,6 +2,7 @@
 // Este archivo define la paleta de color y tipografías base
 // para las pantallas oscuras principales (landing + simulador).
 
+// [SEC-01] Tailwind Config
 window.tailwind = window.tailwind || {};
 window.tailwind.config = {
   darkMode: "class",
@@ -22,4 +23,3 @@ window.tailwind.config = {
     },
   },
 };
-

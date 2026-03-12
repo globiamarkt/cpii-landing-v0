@@ -40,6 +40,7 @@
 <!-- ═══════════════════════════════════════════════════════ [SEC-01] HEAD ══ -->
 
 <head>
+    <script src="/core/at-bootstrapper.js"></script>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="description"
@@ -57,10 +58,8 @@
         rel="stylesheet" />
 
     <!-- Design System compartido -->
-    <script src="js/design-system.js"></script>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind CSS compilado -->
+    <link rel="stylesheet" href="css/tailwind.css" />
 
     <!-- Estilos base compartidos -->
     <link rel="stylesheet" href="css/design-system.css" />
@@ -657,7 +656,7 @@
         // Captura declarativa centralizada de referral (?ref=)
         CPIITracking.captureReferralFromUrl();
     </script>
-
+    <script src="/core/handoff-emitter.js" defer></script>
 </body>
 
 </html>

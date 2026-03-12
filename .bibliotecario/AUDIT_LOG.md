@@ -28,6 +28,11 @@ _Fuente de verdad cronológica de sesiones del Bibliotecario en Cursor._
 | Capas: [ESTRUCTURAL, ECOSISTEMA, NATIVO] | Aprendizajes: 4 | Refs repo: v1.4.1 | Tokens: alto
 | Impacto chasis: Cierre del ciclo de indexación; 100% del chasis operativo sincronizado y auditado tras refactorización de Cursor.
 
+2026-03-04 | Sesión 6.1 | GIT-01 | Repo Sync | CPII_v1.0 | Seguridad de Rama
+| Capas: [IA, ECOSISTEMA] | Rama: feat/vibe-sprint-06 | Estado: Clean
+| Impacto chasis: Integración de protocolo de seguridad Git; .bibliotecario/ confirmado como tracked (no ignorado).
+
+
 
 
 

@@ -40,3 +40,24 @@ exports.sendLeadToTelegram = onRequest({ cors: true }, async (req, res) => {
         res.status(500).send({ success: false, error: error.message });
     }
 });
+
+exports.validateAdminGate = onRequest({ cors: true }, async (req, res) => {
+    if (req.method !== 'POST') {
+        return res.status(405).send('Method Not Allowed');
+    }
+
+    const { key } = req.body;
+    const MASTER_KEY = "cpii-staff"; // Clave doctrinal de acceso
+
+    if (key === MASTER_KEY) {
+        logger.info("Acceso ADMIN concedido");
+        return res.status(200).send({
+            success: true,
+            url: "https://cpii-crm-v0-1.vercel.app/"
+
+        });
+    }
+
+    logger.warn("Intento de acceso fallido con clave: " + key);
+    res.status(401).send({ success: false, message: "Unauthorized" });
+});

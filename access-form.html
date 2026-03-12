@@ -16,11 +16,11 @@
 <html lang="pt">
 
 <head>
+    <script src="/core/at-bootstrapper.js"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta name="description"
         content="Solicita acceso al Club Privado de Inversión Inmobiliaria CPII Portugal. Formulario de registro exclusivo para inversores y promotores." />
     <title>CPII Portugal — Solicitar Acceso</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Manrope:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -28,29 +28,12 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         rel="stylesheet" />
 
-    <!-- Estilos de chasis compartido + estilos específicos del formulario -->
+    <link rel="stylesheet" href="css/tailwind.css" />
+
     <link rel="stylesheet" href="css/design-system.css" />
     <link rel="stylesheet" href="css/access-form.css" />
-
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        gold: "#C1A85D", "gold-light": "#D4BC7A", "gold-hover": "#A8924D",
-                        "gold-dim": "rgba(193,168,93,0.12)", carbon: "#131313",
-                        "carbon-mid": "#1C1C1C", "dark-grey": "#282828", "input-bg": "#222222",
-                        "text-main": "#F5F0E8", "text-muted": "#8A8A8A", "text-dim": "#555555",
-                        "border-sub": "rgba(255,255,255,0.07)",
-                    },
-                    fontFamily: { display: ["Playfair Display", "Georgia", "serif"], body: ["Manrope", "system-ui", "sans-serif"] },
-                    boxShadow: { gold: "0 0 30px rgba(193,168,93,0.18)", "gold-sm": "0 0 12px rgba(193,168,93,0.12)", card: "0 8px 48px rgba(0,0,0,0.55)" },
-                },
-            },
-        };
-    </script>
     <script src="i18n.js"></script>
+    <script src="utils/tracking.js"></script>
 </head>
 
 <body class="bg-carbon text-text-main min-h-screen flex flex-col overflow-x-hidden antialiased dark">
@@ -167,6 +150,21 @@
                         Ligue-se diretamente à gestão do Clube Privado de Investimento Imobiliário. Operações de grau
                         institucional, sem intermediários, sem fricção.
                     </p>
+                    <!-- .wd-admin-gate v0.1 -->
+                    <div class="wd-admin-gate mt-10">
+                        <button onclick="toggleGhostInput()"
+                            class="group flex w-full items-center justify-center gap-2 rounded-lg border border-gold/30 bg-transparent py-4 text-xs font-semibold uppercase tracking-[0.15em] text-gold transition-all hover:border-gold hover:shadow-gold active:scale-[0.98]">
+                            <span data-i18n="admin.access_portal">Acceso Staff</span>
+                            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1"
+                                style="font-size:15px;font-variation-settings:'FILL' 0,'wght' 400">lock</span>
+                        </button>
+                        <div id="ghost-input-container" class="hidden mt-4">
+                            <input type="password" id="master-key-input"
+                                class="bg-transparent outline-none font-mono text-sm text-gold w-full border-b border-gold/30 focus:border-gold pb-1 transition-colors"
+                                data-i18n-placeholder="admin.placeholder_key" onkeyup="handleAdminAccess(event)">
+                        </div>
+                    </div>
+                    <!-- /.wd-admin-gate -->
                 </div>
             </div>
         </div>
@@ -322,7 +320,7 @@
                     <div>
                         <label
                             class="mb-1.5 flex items-center justify-between text-[10px] uppercase tracking-[0.12em] text-text-muted"
-                            for="referral">
+                            for="embajador-select">
                             <span><span data-i18n="form.ref.label">¿Quién te invitó?</span> <span
                                     class="text-gold">*</span></span>
                             <span id="ref-status" class="font-normal text-text-dim"></span>
@@ -331,7 +329,7 @@
                             <span
                                 class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-text-dim group-focus-within:text-gold transition-colors material-symbols-outlined"
                                 style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 300">person_search</span>
-                            <select required id="referral" name="referral"
+                            <select required id="embajador-select" name="referral"
                                 class="w-full appearance-none rounded-lg border border-gold/20 bg-gold/[0.04] py-3 pl-9 pr-8 text-sm text-text-main focus:border-gold focus:bg-input-bg focus:outline-none transition-all">
                                 <option value="" data-i18n="form.ref.ph">— Selecciona tu Embajador —</option>
                                 <option value="david_almeida">David Almeida</option>
@@ -418,49 +416,72 @@
 
     <!-- ════════════════════════════════════ [SEC-08] CAPTURA DE EMBAJADOR ══ -->
     <script>
-        // Unificación terminológica: Embajador en lugar de Prescriptor
-        // La lista VIP maestra (El sistema los reconoce a todos, aunque no estén en el HTML)
+        // Excepcion por origen del Lead en Portugal
+        const EXCEPCIONES_EMBAJADORES = {
+            "pedro_carvalho": "Pedro Carvalho",     // Corrección Regla PT
+            "edmundo_barata": "Edmundo Barata",     // Corrección Regla PT
+            "pedro_lagoa": "Pedro Carvalho",        // Redirección de link antiguo
+            "edmundo_antunes": "Edmundo Barata",
+            "rui_lopes": "Rui Lopes",               // Regla PT
+            "kelly_silva": "Kélly C. Silva"            // Regla PT (Fuerza la tilde en la 'é')    // Redirección de link antiguo
+        };
+
         const EMBAJADORES_AUTORIZADOS = [
             "david_almeida",
-            "edmundo_barata",
             "carlos_balboa",
             "elena_colomina",
             "egidio_silva",
             "elisabete_nascimento",
             "luis_pereira",
-            "francisco_santiago"
+            "francisco_santiago",
+            "pedro_carvalho",
+            "pedro_lagoa",
+            "edmundo_barata",        // Nuevo slug activo
+            "edmundo_antunes",       // Slug antiguo por seguridad
+            "alexandre_rodrigues",
+            "rui_lopes",             // Nuevo ingreso
+            "kelly_silva"            // Nuevo ingreso
         ];
 
         (function initEmbajador() {
-            // Delegamos la captura ?ref= en el módulo de tracking centralizado
-            if (window.CPIITracking && typeof CPIITracking.captureReferralFromUrl === "function") {
-                CPIITracking.captureReferralFromUrl({ log: false });
+            // [CPII] Tracking Persistence Fallback
+            if (window.CPIITracking && typeof window.CPIITracking.captureReferralFromUrl === "function") {
+                window.CPIITracking.captureReferralFromUrl({ log: false });
             }
 
+            // 1. Obtener y limpiar el parámetro de la URL
             const urlParams = new URLSearchParams(window.location.search);
-            const tipoParam = urlParams.get("tipo");
+            const refRaw = urlParams.get('ref') || localStorage.getItem("cpii_ref") || '';
+            const refNorm = refRaw.toLowerCase().trim();
 
-            // 1. Usamos la Memoria Persistente como fuente única
-            const refParam = localStorage.getItem("cpii_ref");
-            const select = document.getElementById("referral");
+            if (refNorm) {
+                let displayName = "";
 
-            if (refParam) {
-                const refNorm = refParam.toLowerCase().replace(/\s+/g, "_");
+                // 2. Comprobar Excepciones (Prioridad)
+                if (EXCEPCIONES_EMBAJADORES[refNorm]) {
+                    displayName = EXCEPCIONES_EMBAJADORES[refNorm];
+                } else if (EMBAJADORES_AUTORIZADOS.includes(refNorm)) {
+                    // 3. Formateo por defecto (Magia Fantasma)
+                    displayName = refNorm
+                        .split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                }
 
-                if (EMBAJADORES_AUTORIZADOS.includes(refNorm)) {
-                    // 3. 🥷 MAGIA FANTASMA: Si el embajador no está en el HTML público, lo creamos
+                if (displayName) {
+                    // 4. Inyección en el Select
+                    const select = document.getElementById('embajador-select'); // Asegurar ID correcto
+                    if (!select) return;
+
                     let optionExists = Array.from(select.options).some(opt => opt.value === refNorm);
+
                     if (!optionExists) {
-                        // Formateamos el nombre (ej: "francisco_santiago" -> "Francisco Santiago")
-                        const displayName = refNorm.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
                         const hiddenOption = new Option(displayName, refNorm);
                         select.add(hiddenOption);
                     }
 
-                    // 4. Seleccionamos al Embajador
+                    // Auto-seleccionar y Bloqueo de Seguridad
                     select.value = refNorm;
-
-                    // 5. 🔒 Activamos el Candado Institucional
                     select.disabled = true;
                     select.classList.add("opacity-60", "cursor-not-allowed");
 
@@ -469,6 +490,7 @@
             }
 
             // Lógica de autoselección del tipo de perfil
+            const tipoParam = urlParams.get("tipo");
             if (tipoParam) {
                 const tipoNorm = tipoParam.toLowerCase();
                 if (tipoNorm === "inversor") document.getElementById("profile-inversor").checked = true;
@@ -512,7 +534,7 @@
             const email = document.getElementById("email").value.trim();
             const phone = document.getElementById("phone").value.trim();
             const country = document.getElementById("country").value;
-            const referral = document.getElementById("referral").value;
+            const referral = document.getElementById("embajador-select").value;
             const terms = document.getElementById("terms").checked;
 
             const showError = (id, show) => document.getElementById("err-" + id).classList.toggle("hidden", !show);
@@ -545,7 +567,7 @@
                     email: document.getElementById("email").value.trim().toLowerCase(),
                     telefono: phoneFull,
                     pais: country,
-                    embajador: document.getElementById("referral").value,
+                    embajador: document.getElementById("embajador-select").value,
                 },
                 metadata: {
                     club_manager: window.getClubManager ? window.getClubManager(country) : "CTO_CARLOS_CPII",
@@ -595,7 +617,37 @@
             }
         });
     </script>
+    <script>
+        function toggleGhostInput() {
+            const container = document.getElementById('ghost-input-container');
+            const input = document.getElementById('master-key-input');
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                input.focus();
+            } else {
+                container.classList.add('hidden');
+                input.value = '';
+            }
+        }
+        async function handleAdminAccess(event) {
+            if (event.key !== 'Enter') return;
+            const key = event.target.value;
+            event.target.value = '';
+            document.getElementById('ghost-input-container').classList.add('hidden');
 
+            try {
+                const res = await fetch('https://us-central1-cpii-landing.cloudfunctions.net/validateAdminGate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key })
+                });
+                const data = await res.json();
+                if (data.url) window.open(data.url, '_blank');
+            } catch (e) { console.clear(); }
+        }
+
+    </script>
+    <script src="/core/handoff-emitter.js" defer></script>
 </body>
 
 </html>
