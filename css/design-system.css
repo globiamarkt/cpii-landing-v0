@@ -1,0 +1,68 @@
+/* CPII Design System — estilos base compartidos */
+
+body {
+  font-family: "Manrope", system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+/* Selector de idioma */
+#lang-selector {
+  background: transparent;
+  border: 1px solid rgba(193, 168, 93, 0.25);
+  color: #b2afa3;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+#lang-selector:hover {
+  border-color: #C1A85D;
+  color: #C1A85D;
+}
+
+#lang-selector option {
+  background: #1e1b14;
+  color: #F5F0E8;
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161513;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #35332c;
+  border-radius: 2px;
+}
+
+/* Slider Thumb (simulador) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #C1A85D;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
